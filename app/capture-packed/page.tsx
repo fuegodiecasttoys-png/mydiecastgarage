@@ -88,7 +88,8 @@ export default function CapturePage() {
   const [year, setYear] = useState("")
   const [location, setLocation] = useState("")
   const [notes, setNotes] = useState("")
-
+  const [value, setValue] = useState('')
+  
   const [loading, setLoading] = useState(false)
   const [monthlyCount, setMonthlyCount] = useState(0)
   const [message, setMessage] = useState<string | null>(null)
