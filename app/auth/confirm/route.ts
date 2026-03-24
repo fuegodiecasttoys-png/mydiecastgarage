@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabase } from "../../lib/supabaseServer";
+import { createClient } from "../../lib/supabaseServer";
 
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url);
@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
   if (!token_hash || !type) {
     return NextResponse.redirect(`${origin}/login`);
   }
-
+  const supabase = await createClient();
   const { error } = await supabase.auth.verifyOtp({
     token_hash,
     type: type as "email",
