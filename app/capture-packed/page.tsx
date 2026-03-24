@@ -8,7 +8,7 @@ import {
   type ChangeEvent,
   type CSSProperties,
 } from "react"
-import { supabase } from "../lib/supabaseServer"
+import { supabase } from "../lib/supabaseClient"
 
 const FREE_LIMIT = 20
 

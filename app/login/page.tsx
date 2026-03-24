@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import { supabase } from "../lib/supabaseServer";
+import { supabase } from "../lib/supabaseClient";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
