@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {
   useEffect,
@@ -7,8 +7,9 @@ import {
   useState,
   type ChangeEvent,
   type CSSProperties,
-} from "react"
-import { supabase } from "../lib/supabaseClient"
+} from "react";
+
+import { supabase } from "../lib/supabaseClient";
 
 const FREE_LIMIT = 20
 
@@ -66,7 +67,7 @@ const disabledButtonStyle: CSSProperties = {
 
 export default function CapturePage() {
   const fileInputRef = useRef<HTMLInputElement | null>(null)
-
+  const [user, setUser] = useState<any>(null);
   const [file, setFile] = useState<File | null>(null)
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
 
@@ -104,7 +105,15 @@ export default function CapturePage() {
   useEffect(() => {
     void fetchMonthlyCount()
   }, [])
+  useEffect(() => {
+  async function loadUser() {
+    const { data: { user } } = await supabase.auth.getUser();
+    console.log("USER:", user)
+    setUser(user);
+  }
 
+  loadUser();
+}, []);
   useEffect(() => {
     return () => {
       if (previewUrl && previewUrl.startsWith("blob:")) {
