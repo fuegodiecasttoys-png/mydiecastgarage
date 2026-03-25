@@ -2,20 +2,25 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { supabase } from "../lib/supabaseClient";
 
 export default function LoginPage() {
+  const router = useRouter();
+
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [keepLoggedIn, setKeepLoggedIn] = useState(true);
   const [loading, setLoading] = useState(false);
 
   async function handleLogin() {
-    if (!email) return;
+    if (!email || !password) return;
 
     setLoading(true);
 
-    const { error } = await supabase.auth.signInWithOtp({
+    const { error } = await supabase.auth.signInWithPassword({
       email,
+      password,
     });
 
     setLoading(false);
@@ -25,7 +30,8 @@ export default function LoginPage() {
       return;
     }
 
-    alert("Check your email for your login link.");
+    // 👇 ESTE ERA EL QUE TE FALTABA
+    router.push("/mygarage");
   }
 
   return (
@@ -84,7 +90,6 @@ export default function LoginPage() {
             style={{
               margin: 0,
               fontSize: 34,
-              lineHeight: 1,
               fontWeight: 800,
               letterSpacing: "-0.04em",
             }}
@@ -95,7 +100,6 @@ export default function LoginPage() {
           <p
             style={{
               marginTop: 12,
-              marginBottom: 0,
               fontSize: 15,
               lineHeight: 1.5,
               color: "rgba(255,255,255,0.68)",
@@ -105,6 +109,7 @@ export default function LoginPage() {
           </p>
         </div>
 
+        {/* EMAIL */}
         <div style={{ marginBottom: 14 }}>
           <label
             htmlFor="email"
@@ -140,6 +145,29 @@ export default function LoginPage() {
           />
         </div>
 
+        {/* PASSWORD */}
+        <div style={{ marginBottom: 14 }}>
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            style={{
+              width: "100%",
+              height: 54,
+              borderRadius: 16,
+              border: "1px solid rgba(255,255,255,0.12)",
+              background: "rgba(255,255,255,0.04)",
+              color: "#ffffff",
+              padding: "0 16px",
+              outline: "none",
+              fontSize: 15,
+              boxSizing: "border-box",
+            }}
+          />
+        </div>
+
+        {/* CHECKBOX */}
         <label
           style={{
             display: "flex",
@@ -165,6 +193,7 @@ export default function LoginPage() {
           Keep me logged in
         </label>
 
+        {/* BUTTON */}
         <button
           onClick={handleLogin}
           disabled={loading}
@@ -173,45 +202,44 @@ export default function LoginPage() {
             height: 54,
             borderRadius: 16,
             border: "none",
-            background: "linear-gradient(180deg, #37b8ff 0%, #1583ff 100%)",
+            background:
+              "linear-gradient(180deg, #37b8ff 0%, #1583ff 100%)",
             color: "#ffffff",
             fontWeight: 800,
             fontSize: 16,
             cursor: loading ? "not-allowed" : "pointer",
-            boxShadow: "0 12px 30px rgba(21,131,255,0.35)",
             opacity: loading ? 0.7 : 1,
+            boxShadow: "0 12px 30px rgba(21,131,255,0.35)",
             transition: "all 0.2s ease",
           }}
         >
-          {loading ? "Sending link..." : "Enter the garage"}
+          {loading ? "Signing in..." : "Enter the garage"}
         </button>
-        <p
-  style={{
-    textAlign: "center",
-    marginTop: 18,
-    marginBottom: 0,
-    fontSize: 13,
-    color: "rgba(255,255,255,0.6)",
-  }}
->
-  Don&apos;t have an account?{" "}
-  <a
-    href="/signup"
-    style={{
-      color: "#37b8ff",
-      fontWeight: 700,
-      textDecoration: "none",
-      padding: "6px 10px",
-      borderRadius: 8,
-      border: "1px solid rgba(55,184,255,0.3)",
-      background: "rgba(55,184,255,0.08)",
-    }}
-  >
-    Sign up
-  </a>
-</p>
 
-        
+        <p
+          style={{
+            textAlign: "center",
+            marginTop: 18,
+            fontSize: 13,
+            color: "rgba(255,255,255,0.6)",
+          }}
+        >
+          Don&apos;t have an account?{" "}
+          <a
+            href="/signup"
+            style={{
+              color: "#37b8ff",
+              fontWeight: 700,
+              textDecoration: "none",
+              padding: "6px 10px",
+              borderRadius: 8,
+              border: "1px solid rgba(55,184,255,0.3)",
+              background: "rgba(55,184,255,0.08)",
+            }}
+          >
+            Sign up
+          </a>
+        </p>
       </div>
     </div>
   );
