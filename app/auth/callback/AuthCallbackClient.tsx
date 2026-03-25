@@ -43,7 +43,7 @@ export default function AuthCallbackClient() {
           return;
         }
 
-        router.replace("/mygarage");
+        router.replace("/");
         return;
       }
 
