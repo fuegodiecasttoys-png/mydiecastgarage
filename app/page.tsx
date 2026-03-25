@@ -1,9 +1,33 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "./lib/supabaseClient";
+
+const buttonStyle: React.CSSProperties = {
+  flex: 1,
+  minHeight: 92,
+  borderRadius: 22,
+  border: "1px solid rgba(255,255,255,0.10)",
+  background: "rgba(14,14,16,0.96)",
+  color: "#ffffff",
+  fontSize: 18,
+  fontWeight: 800,
+  cursor: "pointer",
+  boxShadow: "0 10px 28px rgba(0,0,0,0.32)",
+};
+
+const cardStyle: React.CSSProperties = {
+  width: "100%",
+  maxWidth: 430,
+  background: "rgba(14,14,16,0.88)",
+  border: "1px solid rgba(255,255,255,0.08)",
+  borderRadius: 32,
+  padding: "30px 20px 24px",
+  boxShadow:
+    "0 24px 80px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.04)",
+  backdropFilter: "blur(10px)",
+};
 
 export default function Home() {
   const router = useRouter();
@@ -25,40 +49,26 @@ export default function Home() {
       style={{
         minHeight: "100vh",
         background:
-          "radial-gradient(circle at top, rgba(32,110,255,0.14) 0%, rgba(11,11,11,1) 28%, rgba(8,8,8,1) 100%)",
-        color: "#ffffff",
-        fontFamily: "system-ui, sans-serif",
-        padding: "24px",
+          "radial-gradient(circle at top, rgba(18,95,255,0.18) 0%, rgba(7,7,9,1) 32%, rgba(3,3,4,1) 100%)",
         display: "grid",
         placeItems: "center",
+        padding: 20,
+        fontFamily: "system-ui, sans-serif",
       }}
     >
-      <div
-        style={{
-          width: "100%",
-          maxWidth: 430,
-          background: "rgba(20,20,20,0.88)",
-          border: "1px solid rgba(255,255,255,0.12)",
-          borderRadius: 28,
-          padding: "32px 20px",
-          boxShadow:
-            "0 24px 80px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.04)",
-          backdropFilter: "blur(10px)",
-        }}
-      >
-        <div style={{ textAlign: "center", marginBottom: 28 }}>
-          <Image
+      <div style={cardStyle}>
+        <div style={{ textAlign: "center", marginBottom: 22 }}>
+          <img
             src="/logo.png"
             alt="My Diecast Garage logo"
-            width={170}
-            height={170}
             style={{
-              width: "170px",
+              width: 215,
+              maxWidth: "84%",
               height: "auto",
-              objectFit: "contain",
+              display: "block",
               margin: "0 auto",
+              filter: "drop-shadow(0 0 24px rgba(30,144,255,0.18))",
             }}
-            priority
           />
         </div>
 
@@ -67,19 +77,19 @@ export default function Home() {
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
             gap: 16,
-            marginBottom: 18,
+            marginBottom: 16,
           }}
         >
           <button
             onClick={() => router.push("/capture-packed")}
-            style={smallButton}
+            style={buttonStyle}
           >
             Add Packed
           </button>
 
           <button
             onClick={() => router.push("/capture-loose")}
-            style={smallButton}
+            style={buttonStyle}
           >
             Add Loose
           </button>
@@ -88,12 +98,23 @@ export default function Home() {
         <button
           onClick={() => router.push("/mygarage")}
           style={{
-            ...bigButton,
-            marginBottom: 18,
+            ...buttonStyle,
+            width: "100%",
+            minHeight: 112,
+            marginBottom: 16,
+            display: "block",
           }}
         >
-          <div style={{ fontSize: 18, fontWeight: 800 }}>My Garage</div>
-          <div style={{ fontSize: 13, opacity: 0.7, marginTop: 6 }}>
+          <div style={{ fontSize: 20, fontWeight: 800, marginBottom: 6 }}>
+            My Garage
+          </div>
+          <div
+            style={{
+              fontSize: 14,
+              fontWeight: 600,
+              color: "rgba(255,255,255,0.66)",
+            }}
+          >
             View your collection
           </div>
         </button>
@@ -105,34 +126,10 @@ export default function Home() {
             gap: 16,
           }}
         >
-          <button style={smallButton}>How To</button>
-          <button style={smallButton}>Add Friends</button>
+          <button style={buttonStyle}>How To</button>
+          <button style={buttonStyle}>Add Friends</button>
         </div>
       </div>
     </div>
   );
 }
-
-const smallButton: React.CSSProperties = {
-  border: "1px solid rgba(255,255,255,0.12)",
-  background: "rgba(18,18,18,0.95)",
-  color: "#ffffff",
-  borderRadius: 20,
-  padding: "22px 14px",
-  fontSize: 15,
-  fontWeight: 800,
-  cursor: "pointer",
-  boxShadow: "0 8px 24px rgba(0,0,0,0.28)",
-};
-
-const bigButton: React.CSSProperties = {
-  width: "100%",
-  border: "1px solid rgba(255,255,255,0.12)",
-  background: "rgba(18,18,18,0.95)",
-  color: "#ffffff",
-  borderRadius: 24,
-  padding: "26px 18px",
-  cursor: "pointer",
-  boxShadow: "0 8px 24px rgba(0,0,0,0.28)",
-  textAlign: "center",
-};
