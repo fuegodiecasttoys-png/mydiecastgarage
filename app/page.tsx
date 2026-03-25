@@ -130,7 +130,15 @@ export default function Home() {
           <Link href="/howto">
   <button style={buttonStyle}>How To</button>
 </Link>
-          <button style={buttonStyle}>Add Friends</button>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+  <button style={buttonStyle}>
+    Add Friends
+  </button>
+
+  <span style={{ fontSize: 12, opacity: 0.5, marginTop: 6 }}>
+    coming soon
+  </span>
+</div>
         </div>
       </div>
     </div>
