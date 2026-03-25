@@ -15,12 +15,39 @@ export default function AuthCallbackClient() {
 
     async function handleAuth() {
       const code = searchParams.get("code");
+      const tokenHash = searchParams.get("token_hash");
+      const type = searchParams.get("type");
 
       if (code) {
-        await supabase.auth.exchangeCodeForSession(code);
+        const { error } = await supabase.auth.exchangeCodeForSession(code);
+
+        if (error) {
+          alert(error.message);
+          router.replace("/login");
+          return;
+        }
+
+        router.replace("/mygarage");
+        return;
       }
 
-      router.replace("/mygarage");
+      if (tokenHash && type) {
+        const { error } = await supabase.auth.verifyOtp({
+          token_hash: tokenHash,
+          type: type as "signup" | "email" | "recovery" | "invite" | "magiclink" | "email_change",
+        });
+
+        if (error) {
+          alert(error.message);
+          router.replace("/login");
+          return;
+        }
+
+        router.replace("/mygarage");
+        return;
+      }
+
+      router.replace("/login");
     }
 
     handleAuth();
