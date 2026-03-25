@@ -108,7 +108,36 @@ export default function MyGarage() {
                   textDecoration: "none",
                   color: "inherit",
                 }}
-              >
+              > 
+              <div style={{ marginBottom: 6 }}>
+  {item.type === "packed" ? (
+    <span
+      style={{
+        background: "#1e3a8a",
+        color: "white",
+        padding: "4px 10px",
+        borderRadius: 8,
+        fontSize: 12,
+      }}
+    >
+      📦 Packed
+    </span>
+  ) : (
+    <span
+      style={{
+        background: "#065f46",
+        color: "white",
+        padding: "4px 10px",
+        borderRadius: 8,
+        fontSize: 12,
+      }}
+    >
+      🟢 Loose
+    </span>
+  )}
+</div>
+
+
                 <div
                   style={{
                     display: "flex",
@@ -187,7 +216,8 @@ export default function MyGarage() {
                         marginBottom: 4,
                       }}
                     >
-                      {item.brand ?? "Unknown"}
+                      {item.brand ?? "Unknown"} · {item.type ?? "no-type"}
+
                     </div>
 
                     <div
