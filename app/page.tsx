@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "./lib/supabaseClient";
+import Link from "next/link";
 
 const buttonStyle: React.CSSProperties = {
   flex: 1,
@@ -126,7 +127,9 @@ export default function Home() {
             gap: 16,
           }}
         >
-          <button style={buttonStyle}>How To</button>
+          <Link href="/howto">
+  <button style={buttonStyle}>How To</button>
+</Link>
           <button style={buttonStyle}>Add Friends</button>
         </div>
       </div>

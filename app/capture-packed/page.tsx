@@ -63,6 +63,33 @@ const disabledButtonStyle: CSSProperties = {
   background: "rgba(255,255,255,0.08)",
   cursor: "not-allowed",
 }
+async function compressImage(file: File) {
+  return new Promise<File>((resolve) => {
+    const img = new Image();
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d")!;
+
+    img.onload = () => {
+      const maxWidth = 800;
+      const scale = Math.min(1, maxWidth / img.width);
+
+      canvas.width = Math.round(img.width * scale);
+      canvas.height = Math.round(img.height * scale);
+
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+      canvas.toBlob(
+        (blob) => {
+          resolve(new File([blob!], file.name.replace(/\.\w+$/, ".jpg"), { type: "image/jpeg" }));
+        },
+        "image/jpeg",
+        0.7
+      );
+    };
+
+    img.src = URL.createObjectURL(file);
+  });
+}
 
 export default function CapturePage() {
   const fileInputRef = useRef<HTMLInputElement | null>(null)
@@ -236,10 +263,10 @@ export default function CapturePage() {
 
       const fileExt = file.name.split(".").pop() || "jpg"
       const fileName = `${user.id}/${Date.now()}.${fileExt}`
-
+      const compressedFile = await compressImage(file)
       const { error: uploadError } = await supabase.storage
         .from("captures")
-        .upload(fileName, file)
+        .upload(fileName, compressedFile)
 
       if (uploadError) {
         console.error(uploadError)
