@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 import { supabase } from "../lib/supabaseClient";
 
 export default function SignupPage() {
@@ -10,11 +10,25 @@ export default function SignupPage() {
   const [username, setUsername] = useState("");
   const [name, setName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
   async function handleSignup() {
-    if (!email || !username || !name || !lastName) {
+    if (
+      !email ||
+      !username ||
+      !name ||
+      !lastName ||
+      !password ||
+      !confirmPassword
+    ) {
       alert("Please fill out all fields.");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      alert("Passwords do not match");
       return;
     }
 
@@ -40,21 +54,18 @@ export default function SignupPage() {
       return;
     }
 
-    
-
-
-
-    const { error } = await supabase.auth.signInWithOtp({
-  email: email.trim().toLowerCase(),
-  options: {
-  
-    data: {
-      username: cleanUsername,
-      name: name.trim(),
-      last_name: lastName.trim(),
-    },
-  },
-});
+    const { error } = await supabase.auth.signUp({
+      email: email.trim().toLowerCase(),
+      password,
+      options: {
+        emailRedirectTo: "https://www.mydiecastgarage.app/auth/callback",
+        data: {
+          username: cleanUsername,
+          name: name.trim(),
+          last_name: lastName.trim(),
+        },
+      },
+    });
 
     setLoading(false);
 
@@ -145,19 +156,9 @@ export default function SignupPage() {
 
         <div style={{ display: "grid", gap: 14 }}>
           <div>
-            <label
-              htmlFor="email"
-              style={{
-                display: "block",
-                marginBottom: 8,
-                fontSize: 13,
-                fontWeight: 600,
-                color: "rgba(255,255,255,0.78)",
-              }}
-            >
+            <label htmlFor="email" style={labelStyle}>
               Email
             </label>
-
             <input
               id="email"
               type="email"
@@ -169,13 +170,37 @@ export default function SignupPage() {
           </div>
 
           <div>
-            <label
-              htmlFor="username"
-              style={labelStyle}
-            >
+            <label htmlFor="password" style={labelStyle}>
+              Password
+            </label>
+            <input
+              id="password"
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              style={inputStyle}
+            />
+          </div>
+
+          <div>
+            <label htmlFor="confirmPassword" style={labelStyle}>
+              Confirm password
+            </label>
+            <input
+              id="confirmPassword"
+              type="password"
+              placeholder="Confirm password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              style={inputStyle}
+            />
+          </div>
+
+          <div>
+            <label htmlFor="username" style={labelStyle}>
               Username
             </label>
-
             <input
               id="username"
               type="text"
@@ -187,13 +212,9 @@ export default function SignupPage() {
           </div>
 
           <div>
-            <label
-              htmlFor="name"
-              style={labelStyle}
-            >
+            <label htmlFor="name" style={labelStyle}>
               First name
             </label>
-
             <input
               id="name"
               type="text"
@@ -205,13 +226,9 @@ export default function SignupPage() {
           </div>
 
           <div>
-            <label
-              htmlFor="lastName"
-              style={labelStyle}
-            >
+            <label htmlFor="lastName" style={labelStyle}>
               Last name
             </label>
-
             <input
               id="lastName"
               type="text"
@@ -231,7 +248,8 @@ export default function SignupPage() {
             height: 54,
             borderRadius: 16,
             border: "none",
-            background: "linear-gradient(180deg, #37b8ff 0%, #1583ff 100%)",
+            background:
+              "linear-gradient(180deg, #37b8ff 0%, #1583ff 100%)",
             color: "#ffffff",
             fontWeight: 800,
             fontSize: 16,
@@ -242,7 +260,7 @@ export default function SignupPage() {
             marginTop: 20,
           }}
         >
-          {loading ? "Sending link..." : "Create account"}
+          {loading ? "Creating account..." : "Create account"}
         </button>
 
         <p
@@ -271,7 +289,7 @@ export default function SignupPage() {
   );
 }
 
-const labelStyle: React.CSSProperties = {
+const labelStyle: CSSProperties = {
   display: "block",
   marginBottom: 8,
   fontSize: 13,
@@ -279,7 +297,7 @@ const labelStyle: React.CSSProperties = {
   color: "rgba(255,255,255,0.78)",
 };
 
-const inputStyle: React.CSSProperties = {
+const inputStyle: CSSProperties = {
   width: "100%",
   height: 54,
   borderRadius: 16,
