@@ -11,15 +11,38 @@ export default function Home() {
     async function checkUser() {
       const { data } = await supabase.auth.getUser();
 
-      if (data.user) {
-        router.push("/mygarage");
-      } else {
+      // 👉 Si NO hay usuario → login
+      if (!data.user) {
         router.push("/login");
       }
+
+      // 👉 Si SÍ hay usuario → se queda aquí (home)
     }
 
     checkUser();
   }, [router]);
 
-  return <div>Loading...</div>;
+  return (
+    <div style={{ padding: 20, textAlign: "center" }}>
+      <h1>My Diecast Garage</h1>
+
+      <div style={{ marginTop: 20 }}>
+        <button onClick={() => router.push("/capture-packed")}>
+          Add Packed
+        </button>
+      </div>
+
+      <div style={{ marginTop: 10 }}>
+        <button onClick={() => router.push("/capture-loose")}>
+          Add Loose
+        </button>
+      </div>
+
+      <div style={{ marginTop: 20 }}>
+        <button onClick={() => router.push("/mygarage")}>
+          My Garage
+        </button>
+      </div>
+    </div>
+  );
 }
