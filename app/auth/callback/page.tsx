@@ -1,30 +1,12 @@
-"use client";
+import { Suspense } from "react";
+import AuthCallbackClient from "./AuthCallbackClient";
 
-import { useEffect, useRef } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { supabase } from "@/app/lib/supabaseClient";
+export const dynamic = "force-dynamic";
 
-export default function CallbackPage() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const hasRun = useRef(false);
-
-  useEffect(() => {
-    if (hasRun.current) return;
-    hasRun.current = true;
-
-    async function handleAuth() {
-      const code = searchParams.get("code");
-
-      if (code) {
-        await supabase.auth.exchangeCodeForSession(code);
-      }
-
-      router.replace("/mygarage");
-    }
-
-    handleAuth();
-  }, [router, searchParams]);
-
-  return <div>Logging you in...</div>;
+export default function Page() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <AuthCallbackClient />
+    </Suspense>
+  );
 }
