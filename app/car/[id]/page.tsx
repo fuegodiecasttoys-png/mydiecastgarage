@@ -29,7 +29,18 @@ export default function CarDetail() {
   const router = useRouter()
 
   const [item, setItem] = useState<Item | null>(null)
+const handleSave = async () => {
+  if (!item) return
 
+  await supabase
+    .from("items")
+    .update({
+      name: item.name,
+    })
+    .eq("id", item.id)
+
+  setIsEditing(false)
+}
   useEffect(() => {
     const loadItem = async () => {
       const { data } = await supabase
@@ -56,9 +67,18 @@ export default function CarDetail() {
         fontFamily: "system-ui",
       }}
     >
-      <button onClick={() => setIsEditing(!isEditing)}>
-  {isEditing ? "Cancel" : "Edit"}
-</button>
+      <div style={{ display: "flex", gap: 10, marginBottom: 20 }}>
+  <button onClick={() => setIsEditing(!isEditing)}>
+    {isEditing ? "Cancel" : "Edit"}
+  </button>
+
+  {isEditing && (
+    <button onClick={handleSave}>
+      Save
+    </button>
+  )}
+</div>
+
       <div
   style={{
     width: "100%",
