@@ -61,6 +61,44 @@ const handleLogout = async () => {
       position: "relative",
     }}
   >
+    <div style={{
+  position: "absolute",
+  top: 20,
+  left: 20,
+  display: "flex",
+  gap: 10
+}}>
+  <button
+    onClick={() => router.push("/")}
+    style={{
+      background: "transparent",
+      border: "1px solid rgba(255,255,255,0.2)",
+      color: "#fff",
+      padding: "6px 10px",
+      borderRadius: 8,
+      fontSize: 12,
+      cursor: "pointer"
+    }}
+  >
+    🏠
+  </button>
+
+  <button
+    onClick={() => router.push("/mygarage")}
+    style={{
+      background: "transparent",
+      border: "1px solid rgba(255,255,255,0.2)",
+      color: "#fff",
+      padding: "6px 10px",
+      borderRadius: 8,
+      fontSize: 12,
+      cursor: "pointer"
+    }}
+  >
+    🚗
+  </button>
+</div>
+
     <div
       style={{
         position: "absolute",

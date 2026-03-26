@@ -24,6 +24,7 @@ type Item = {
 }
 
 export default function CarDetail() {
+  const [isEditing, setIsEditing] = useState(false)
   const { id } = useParams()
   const router = useRouter()
 
@@ -55,6 +56,9 @@ export default function CarDetail() {
         fontFamily: "system-ui",
       }}
     >
+      <button onClick={() => setIsEditing(!isEditing)}>
+  {isEditing ? "Cancel" : "Edit"}
+</button>
       <div
   style={{
     width: "100%",
@@ -111,7 +115,17 @@ export default function CarDetail() {
 
   <div style={{ display: "flex", justifyContent: "space-between" }}>
     <span style={{ opacity: 0.6 }}>Model</span>
-    <span>{item.name}</span>
+    {isEditing ? (
+  <input
+    type="text"
+    value={item.name || ""}
+    onChange={(e) =>
+      setItem({ ...item, name: e.target.value })
+    }
+  />
+) : (
+  <span>{item.name}</span>
+)}
   </div>
 
   <div style={{ display: "flex", justifyContent: "space-between" }}>
