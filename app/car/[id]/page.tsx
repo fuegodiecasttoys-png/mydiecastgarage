@@ -29,18 +29,21 @@ export default function CarDetail() {
   const router = useRouter()
 
   const [item, setItem] = useState<Item | null>(null)
-const handleSave = async () => {
-  if (!item) return
+  const [editItem, setEditItem] = useState<Item | null>(null)
+  const handleSave = async () => {
+  if (!editItem) return
 
   await supabase
     .from("items")
     .update({
-      name: item.name,
+      name: editItem.name,
     })
-    .eq("id", item.id)
+    .eq("id", editItem.id)
 
+  setItem(editItem)
   setIsEditing(false)
 }
+
   useEffect(() => {
     const loadItem = async () => {
       const { data } = await supabase
@@ -68,9 +71,17 @@ const handleSave = async () => {
       }}
     >
       <div style={{ display: "flex", gap: 10, marginBottom: 20 }}>
-  <button onClick={() => setIsEditing(!isEditing)}>
-    {isEditing ? "Cancel" : "Edit"}
-  </button>
+  <button
+  onClick={() => {
+    if (!isEditing && item) {
+      setEditItem(item)
+    }
+    setIsEditing(!isEditing)
+  }}
+>
+  {isEditing ? "Cancel" : "Edit"}
+</button>
+
 
   {isEditing && (
     <button onClick={handleSave}>
@@ -138,10 +149,10 @@ const handleSave = async () => {
     {isEditing ? (
   <input
     type="text"
-    value={item.name || ""}
-    onChange={(e) =>
-      setItem({ ...item, name: e.target.value })
-    }
+    value={editItem?.name || ""}
+onChange={(e) =>
+  setEditItem({ ...editItem!, name: e.target.value })
+}
   />
 ) : (
   <span>{item.name}</span>
