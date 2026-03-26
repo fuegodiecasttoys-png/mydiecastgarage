@@ -30,19 +30,22 @@ export default function CarDetail() {
 
   const [item, setItem] = useState<Item | null>(null)
   const [editItem, setEditItem] = useState<Item | null>(null)
+
   const handleSave = async () => {
-  if (!editItem) return
+    if (!editItem) return
 
-  await supabase
-    .from("items")
-    .update({
-      name: editItem.name,
-    })
-    .eq("id", editItem.id)
+    await supabase
+      .from("items")
+      .update({
+        name: editItem.name,
+        brand: editItem.brand,
+        color: editItem.color,
+      })
+      .eq("id", editItem.id)
 
-  setItem(editItem)
-  setIsEditing(false)
-}
+    setItem(editItem)
+    setIsEditing(false)
+  }
 
   useEffect(() => {
     const loadItem = async () => {
@@ -70,143 +73,104 @@ export default function CarDetail() {
         fontFamily: "system-ui",
       }}
     >
+      {/* BUTTONS */}
       <div style={{ display: "flex", gap: 10, marginBottom: 20 }}>
-  <button
-  onClick={() => {
-    if (!isEditing && item) {
-      setEditItem(item)
-    }
-    setIsEditing(!isEditing)
-  }}
->
-  {isEditing ? "Cancel" : "Edit"}
-</button>
-
-
-  {isEditing && (
-    <button onClick={handleSave}>
-      Save
-    </button>
-  )}
-</div>
-
-      <div
-  style={{
-    width: "100%",
-    maxWidth: 200,
-    margin: "0 auto",
-  }}
->
-        
-        {/* BACK */}
         <button
-          onClick={() => router.push("/mygarage")}
-          style={{
-            marginBottom: 20,
-            background: "none",
-            border: "none",
-            color: "#aaa",
-            cursor: "pointer",
+          onClick={() => {
+            if (!isEditing) setEditItem(item)
+            setIsEditing(!isEditing)
           }}
         >
-          ← Back
+          {isEditing ? "Cancel" : "Edit"}
         </button>
 
-        {/* IMAGE */}
-        <div
-          style={{
-            width: "100%",
-            maxWidth: 200,
-            aspectRatio: "1",
-            borderRadius: 16,
-            overflow: "hidden",
-            background: "#222",
-            margin: "0 auto 20px",
-          }}
-        >
-          {item.photo_url && (
-            <img
-              src={item.photo_url}
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-              }}
-            />
-          )}
-        </div>
-
-
-        <div style={{ marginBottom: 12, width: "100%" }}>
-
-  <div style={{ display: "flex", justifyContent: "space-between" }}>
-   <span style={{ opacity: 0.6 }}>Brand</span>
-    <span>{item.brand}</span>
-  </div>
-
-  <div style={{ display: "flex", justifyContent: "space-between" }}>
-    <span style={{ opacity: 0.6 }}>Model</span>
-    {isEditing ? (
-  <input
-    type="text"
-    value={editItem?.name || ""}
-onChange={(e) =>
-  setEditItem({ ...editItem!, name: e.target.value })
-}
-  />
-) : (
-  <span>{item.name}</span>
-)}
-  </div>
-
-  <div style={{ display: "flex", justifyContent: "space-between" }}>
-    <span style={{ opacity: 0.6 }}>Color</span>
-    <span>{item.color}</span>
-  </div>
-
-  <div style={{ display: "flex", justifyContent: "space-between" }}>
-    <span style={{ opacity: 0.6 }}>Scale</span>
-    <span>{item.scale}</span>
-  </div>
-
-  <div style={{ display: "flex", justifyContent: "space-between" }}>
-  <span style={{ opacity: 0.6 }}>Qty</span>
-  <span>{item.qty ?? 1}</span>
-</div>
-
-</div>
-
-
-        {/* ⭐ RAREZA */}
-        <div style={{ marginBottom: 10 }}>
-          {item.sth && <span style={{ color: "gold" }}>⭐ STH </span>}
-          {item.th && <span style={{ color: "silver" }}>⭐ TH </span>}
-          {item.chase && <span style={{ color: "orange" }}>⭐ Chase</span>}
-        </div>
-
-        {/* MODEL INFO */}
-        <div style={{ marginBottom: 10 }}>
-          <div>Number: {item.main_number}</div>
-          <div>Subnumber: {item.sub_number}</div>
-          <div>Series: {item.series}</div>
-          <div>Year: {item.year}</div>
-        </div>
-
-        {/* EXTRA */}
-        <div style={{ marginBottom: 10 }}>
-          <div>Location: {item.location}</div>
-        </div>
-
-        {/* NOTES */}
-        {item.notes && (
-          <div style={{ marginBottom: 10 }}>
-            <div style={{ opacity: 0.6, marginBottom: 6 }}>
-              Notes
-            </div>
-            <div>{item.notes}</div>
-          </div>
+        {isEditing && (
+          <button onClick={handleSave}>
+            Save
+          </button>
         )}
+      </div>
 
+      {/* BACK */}
+      <button
+        onClick={() => router.push("/mygarage")}
+        style={{ marginBottom: 20 }}
+      >
+        ← Back
+      </button>
+
+      {/* IMAGE */}
+      <div style={{ marginBottom: 20 }}>
+        {item.photo_url && (
+          <img
+            src={item.photo_url}
+            style={{
+              width: "100%",
+              maxWidth: 200,
+              borderRadius: 16,
+            }}
+          />
+        )}
+      </div>
+
+      {/* BRAND */}
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <span style={{ opacity: 0.6 }}>Brand</span>
+
+        {isEditing ? (
+          <input
+            value={editItem?.brand || ""}
+            onChange={(e) =>
+              setEditItem({ ...editItem!, brand: e.target.value })
+            }
+          />
+        ) : (
+          <span>{item.brand}</span>
+        )}
+      </div>
+
+      {/* NAME */}
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <span style={{ opacity: 0.6 }}>Model</span>
+
+        {isEditing ? (
+          <input
+            value={editItem?.name || ""}
+            onChange={(e) =>
+              setEditItem({ ...editItem!, name: e.target.value })
+            }
+          />
+        ) : (
+          <span>{item.name}</span>
+        )}
+      </div>
+
+      {/* COLOR */}
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <span style={{ opacity: 0.6 }}>Color</span>
+
+        {isEditing ? (
+          <input
+            value={editItem?.color || ""}
+            onChange={(e) =>
+              setEditItem({ ...editItem!, color: e.target.value })
+            }
+          />
+        ) : (
+          <span>{item.color}</span>
+        )}
+      </div>
+
+      {/* SCALE */}
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <span style={{ opacity: 0.6 }}>Scale</span>
+        <span>{item.scale}</span>
+      </div>
+
+      {/* QTY */}
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <span style={{ opacity: 0.6 }}>Qty</span>
+        <span>{item.qty ?? 1}</span>
       </div>
     </div>
   )
