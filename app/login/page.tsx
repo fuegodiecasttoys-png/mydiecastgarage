@@ -31,7 +31,7 @@ export default function LoginPage() {
     }
 
     // 👇 ESTE ERA EL QUE TE FALTABA
-    router.push("/app");
+    router.push("/");
   }
 
   return (
