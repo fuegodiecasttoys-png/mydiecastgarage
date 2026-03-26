@@ -27,6 +27,7 @@ export default function CarDetail() {
   const [isEditing, setIsEditing] = useState(false)
   const { id } = useParams()
   const router = useRouter()
+  const [showImageModal, setShowImageModal] = useState(false)
 
   const [item, setItem] = useState<Item | null>(null)
   const [editItem, setEditItem] = useState<Item | null>(null)
@@ -223,14 +224,16 @@ export default function CarDetail() {
             <img
               src={item.photo_url}
               alt={item.name || "Diecast"}
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-              }}
+              onClick={() => setShowImageModal(true)}
+style={{
+  width: "100%",
+  height: "100%",
+  objectFit: "cover",
+  cursor: "pointer"
+}}
             />
           )}
-        </div>
+          </div>
 
         <div style={{ marginBottom: 12, width: "100%" }}>
           <div style={rowStyle}>
@@ -432,6 +435,33 @@ export default function CarDetail() {
             )}
           </div>
         )}
+        {showImageModal && (
+  <div
+    onClick={() => setShowImageModal(false)}
+    style={{
+      position: "fixed",
+      top: 0,
+      left: 0,
+      width: "100vw",
+      height: "100vh",
+      background: "rgba(0,0,0,0.9)",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      zIndex: 999
+    }}
+  >
+    <img
+      src={item?.photo_url || ""}
+      style={{
+        maxWidth: "90%",
+        maxHeight: "90%",
+        borderRadius: 12
+      }}
+    />
+  </div>
+)}
+
       </div>
     </div>
   )
