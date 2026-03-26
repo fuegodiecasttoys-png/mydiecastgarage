@@ -44,20 +44,47 @@ export default function Home() {
 
     checkUser();
   }, [router]);
-
+const handleLogout = async () => {
+  await supabase.auth.signOut()
+  router.push("/login")
+}
   return (
+  <div
+    style={{
+      minHeight: "100vh",
+      background:
+        "radial-gradient(circle at top, rgba(18,95,255,0.18), transparent 35%), #05070d",
+      display: "grid",
+      placeItems: "center",
+      padding: 20,
+      fontFamily: "system-ui, sans-serif",
+      position: "relative",
+    }}
+  >
     <div
       style={{
-        minHeight: "100vh",
-        background:
-          "radial-gradient(circle at top, rgba(18,95,255,0.18) 0%, rgba(7,7,9,1) 32%, rgba(3,3,4,1) 100%)",
-        display: "grid",
-        placeItems: "center",
-        padding: 20,
-        fontFamily: "system-ui, sans-serif",
+        position: "absolute",
+        top: 20,
+        right: 20,
       }}
     >
-      <div style={cardStyle}>
+      <button
+        onClick={handleLogout}
+        style={{
+          background: "transparent",
+          border: "1px solid rgba(255,255,255,0.2)",
+          color: "#fff",
+          padding: "8px 14px",
+          borderRadius: 10,
+          fontSize: 12,
+          cursor: "pointer",
+        }}
+      >
+        Sign Out
+      </button>
+    </div>
+
+    <div style={cardStyle}>
         <div style={{ textAlign: "center", marginBottom: 22 }}>
           <img
             src="/logo.png"
@@ -127,8 +154,10 @@ export default function Home() {
             gap: 16,
           }}
         >
-          <Link href="/howto">
-  <button style={buttonStyle}>How To</button>
+          <Link href="/howto" style={{ flex: 1 }}>
+  <button style={{ ...buttonStyle, width: "100%" }}>
+    How To
+  </button>
 </Link>
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
   <button style={buttonStyle}>
