@@ -10,20 +10,20 @@ type Item = {
   color: string | null
   scale: string | null
   photo_url: string | null
-  type: string |null
+  type: string | null
   main_number: string | null
   sub_number: string | null
   series: string | null
   year: string | null
   location: string | null
   qty: number | null
-
 }
 
 export default function MyGarage() {
   const [items, setItems] = useState<Item[]>([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState("")
+
   useEffect(() => {
     const fetchItems = async () => {
       const { data, error } = await supabase
@@ -40,57 +40,62 @@ export default function MyGarage() {
 
     fetchItems()
   }, [])
+
   const handleExport = () => {
-  const headers = [
-    "Name",
-    "Brand",
-    "Color",
-    "Scale",
-    "Type",
-    "Main #",
-    "Sub #",
-    "Series",
-    "Year",
-    "Location",
-    "Qty"
-  ]
+    const headers = [
+      "Name",
+      "Brand",
+      "Color",
+      "Scale",
+      "Type",
+      "Main #",
+      "Sub #",
+      "Series",
+      "Year",
+      "Location",
+      "Qty",
+    ]
 
-  const rows = items.map(item => [
-    item.name ?? "",
-    item.brand ?? "",
-    item.color ?? "",
-    item.scale ?? "",
-    item.type ?? "",
-    item.main_number ?? "",
-    item.sub_number ?? "",
-    item.series ?? "",
-    item.year ?? "",
-    item.location ?? "",
-    item.qty ?? ""
-  ])
+    const rows = items.map((item) => [
+      item.name ?? "",
+      item.brand ?? "",
+      item.color ?? "",
+      item.scale ?? "",
+      item.type ?? "",
+      item.main_number ?? "",
+      item.sub_number ?? "",
+      item.series ?? "",
+      item.year ?? "",
+      item.location ?? "",
+      item.qty ?? "",
+    ])
 
-  const csvContent =
-    [headers, ...rows]
-      .map(e => e.join(","))
+    const csvContent = [headers, ...rows]
+      .map((row) => row.join(","))
       .join("\n")
 
-  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" })
-  const url = URL.createObjectURL(blob)
+    const blob = new Blob([csvContent], {
+      type: "text/csv;charset=utf-8;",
+    })
 
-  const link = document.createElement("a")
-  link.href = url
-  link.download = "my_diecast_garage.csv"
-  link.click()
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement("a")
+    link.href = url
+    link.download = "my_diecast_garage.csv"
+    link.click()
+    URL.revokeObjectURL(url)
+  }
+
   const filteredItems = items.filter((item) => {
-  const text = search.toLowerCase()
+    const text = search.toLowerCase()
 
-  return (
-    item.name?.toLowerCase().includes(text) ||
-    item.brand?.toLowerCase().includes(text) ||
-    item.color?.toLowerCase().includes(text)
-  )
-})
-}
+    return (
+      item.name?.toLowerCase().includes(text) ||
+      item.brand?.toLowerCase().includes(text) ||
+      item.color?.toLowerCase().includes(text)
+    )
+  })
+
   return (
     <div
       style={{
@@ -98,7 +103,8 @@ export default function MyGarage() {
         background: "#0f0f0f",
         padding: 20,
         color: "#fff",
-        fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, sans-serif",
+        fontFamily:
+          'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
       }}
     >
       <div
@@ -129,40 +135,42 @@ export default function MyGarage() {
           >
             My Garage
           </h1>
+
           <input
-  type="text"
-  placeholder="Search your garage..."
-  value={search}
-  onChange={(e) => setSearch(e.target.value)}
-  style={{
-    width: "100%",
-    padding: "10px 12px",
-    marginTop: 10,
-    marginBottom: 10,
-    borderRadius: 8,
-    border: "1px solid #333",
-    background: "#111",
-    color: "white",
-    fontSize: 14,
-  }}
-/>
+            type="text"
+            placeholder="Search your garage..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            style={{
+              width: "100%",
+              padding: "10px 12px",
+              marginTop: 10,
+              marginBottom: 10,
+              borderRadius: 8,
+              border: "1px solid #333",
+              background: "#111",
+              color: "white",
+              fontSize: 14,
+              boxSizing: "border-box",
+            }}
+          />
 
           <div style={{ marginTop: 10, marginBottom: 10 }}>
-  <button
-    onClick={handleExport}
-    style={{
-      padding: "8px 14px",
-      borderRadius: 8,
-      border: "1px solid rgba(255,255,255,0.2)",
-      background: "rgba(255,255,255,0.05)",
-      color: "white",
-      fontSize: 13,
-      cursor: "pointer"
-    }}
-  >
-    Export to Excel
-  </button>
-</div>
+            <button
+              onClick={handleExport}
+              style={{
+                padding: "8px 14px",
+                borderRadius: 8,
+                border: "1px solid rgba(255,255,255,0.2)",
+                background: "rgba(255,255,255,0.05)",
+                color: "white",
+                fontSize: 13,
+                cursor: "pointer",
+              }}
+            >
+              Export to Excel
+            </button>
+          </div>
 
           <div
             style={{
@@ -191,7 +199,7 @@ export default function MyGarage() {
         {/* LIST */}
         {!loading && (
           <div style={{ display: "grid", gap: 16 }}>
-            {items.map((item) => (
+            {filteredItems.map((item) => (
               <a
                 key={item.id}
                 href={`/car/${item.id}`}
@@ -199,35 +207,34 @@ export default function MyGarage() {
                   textDecoration: "none",
                   color: "inherit",
                 }}
-              > 
-              <div style={{ marginBottom: 6 }}>
-  {item.type === "packed" ? (
-    <span
-      style={{
-        background: "#1e3a8a",
-        color: "white",
-        padding: "4px 10px",
-        borderRadius: 8,
-        fontSize: 12,
-      }}
-    >
-      📦 Packed
-    </span>
-  ) : (
-    <span
-      style={{
-        background: "#065f46",
-        color: "white",
-        padding: "4px 10px",
-        borderRadius: 8,
-        fontSize: 12,
-      }}
-    >
-      🟢 Loose
-    </span>
-  )}
-</div>
-
+              >
+                <div style={{ marginBottom: 6 }}>
+                  {item.type === "packed" ? (
+                    <span
+                      style={{
+                        background: "#1e3a8a",
+                        color: "white",
+                        padding: "4px 10px",
+                        borderRadius: 8,
+                        fontSize: 12,
+                      }}
+                    >
+                      📦 Packed
+                    </span>
+                  ) : (
+                    <span
+                      style={{
+                        background: "#065f46",
+                        color: "white",
+                        padding: "4px 10px",
+                        borderRadius: 8,
+                        fontSize: 12,
+                      }}
+                    >
+                      🟢 Loose
+                    </span>
+                  )}
+                </div>
 
                 <div
                   style={{
@@ -241,22 +248,7 @@ export default function MyGarage() {
                     border: "1px solid rgba(255,255,255,0.08)",
                     position: "relative",
                   }}
-                  >
-                    <div
-  style={{
-    position: "absolute",
-    top: 6,
-    right: 6,
-    fontSize: 14,
-  }}
->
-  {item.type === "sth" && (
-    <span style={{ color: "gold" }}>
-      ⭐
-    </span>
-  )}
-</div>
-
+                >
                   {/* IMAGE */}
                   <div
                     style={{
@@ -307,8 +299,7 @@ export default function MyGarage() {
                         marginBottom: 4,
                       }}
                     >
-                      {item.brand ?? "Unknown"} · {item.type ?? "no-type"}
-
+                      {item.brand ?? "Unknown"} • {item.type ?? "no-type"}
                     </div>
 
                     <div
@@ -358,6 +349,19 @@ export default function MyGarage() {
         )}
 
         {/* EMPTY */}
+        {!loading && filteredItems.length === 0 && (
+          <div
+            style={{
+              marginTop: 30,
+              opacity: 0.6,
+              fontSize: 16,
+              textAlign: "center",
+            }}
+          >
+            No results found.
+          </div>
+        )}
+
         {!loading && items.length === 0 && (
           <div
             style={{
