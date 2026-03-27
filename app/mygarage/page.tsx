@@ -11,6 +11,13 @@ type Item = {
   scale: string | null
   photo_url: string | null
   type: string |null
+  main_number: string | null
+  sub_number: string | null
+  series: string | null
+  year: string | null
+  location: string | null
+  qty: number | null
+
 }
 
 export default function MyGarage() {
@@ -33,7 +40,48 @@ export default function MyGarage() {
 
     fetchItems()
   }, [])
+  const handleExport = () => {
+  const headers = [
+    "Name",
+    "Brand",
+    "Color",
+    "Scale",
+    "Type",
+    "Main #",
+    "Sub #",
+    "Series",
+    "Year",
+    "Location",
+    "Qty"
+  ]
 
+  const rows = items.map(item => [
+    item.name ?? "",
+    item.brand ?? "",
+    item.color ?? "",
+    item.scale ?? "",
+    item.type ?? "",
+    item.main_number ?? "",
+    item.sub_number ?? "",
+    item.series ?? "",
+    item.year ?? "",
+    item.location ?? "",
+    item.qty ?? ""
+  ])
+
+  const csvContent =
+    [headers, ...rows]
+      .map(e => e.join(","))
+      .join("\n")
+
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" })
+  const url = URL.createObjectURL(blob)
+
+  const link = document.createElement("a")
+  link.href = url
+  link.download = "my_diecast_garage.csv"
+  link.click()
+}
   return (
     <div
       style={{
@@ -72,6 +120,22 @@ export default function MyGarage() {
           >
             My Garage
           </h1>
+          <div style={{ marginTop: 10, marginBottom: 10 }}>
+  <button
+    onClick={handleExport}
+    style={{
+      padding: "8px 14px",
+      borderRadius: 8,
+      border: "1px solid rgba(255,255,255,0.2)",
+      background: "rgba(255,255,255,0.05)",
+      color: "white",
+      fontSize: 13,
+      cursor: "pointer"
+    }}
+  >
+    Export to Excel
+  </button>
+</div>
 
           <div
             style={{
