@@ -23,7 +23,7 @@ type Item = {
 export default function MyGarage() {
   const [items, setItems] = useState<Item[]>([])
   const [loading, setLoading] = useState(true)
-
+  const [search, setSearch] = useState("")
   useEffect(() => {
     const fetchItems = async () => {
       const { data, error } = await supabase
@@ -81,6 +81,15 @@ export default function MyGarage() {
   link.href = url
   link.download = "my_diecast_garage.csv"
   link.click()
+  const filteredItems = items.filter((item) => {
+  const text = search.toLowerCase()
+
+  return (
+    item.name?.toLowerCase().includes(text) ||
+    item.brand?.toLowerCase().includes(text) ||
+    item.color?.toLowerCase().includes(text)
+  )
+})
 }
   return (
     <div
@@ -120,6 +129,24 @@ export default function MyGarage() {
           >
             My Garage
           </h1>
+          <input
+  type="text"
+  placeholder="Search your garage..."
+  value={search}
+  onChange={(e) => setSearch(e.target.value)}
+  style={{
+    width: "100%",
+    padding: "10px 12px",
+    marginTop: 10,
+    marginBottom: 10,
+    borderRadius: 8,
+    border: "1px solid #333",
+    background: "#111",
+    color: "white",
+    fontSize: 14,
+  }}
+/>
+
           <div style={{ marginTop: 10, marginBottom: 10 }}>
   <button
     onClick={handleExport}
