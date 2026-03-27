@@ -80,44 +80,7 @@ const handleLogout = async () => {
       cursor: "pointer"
     }}
   >
-    🏠
-  </button>
-
-  <button
-    onClick={() => router.push("/mygarage")}
-    style={{
-      background: "transparent",
-      border: "1px solid rgba(255,255,255,0.2)",
-      color: "#fff",
-      padding: "6px 10px",
-      borderRadius: 8,
-      fontSize: 12,
-      cursor: "pointer"
-    }}
-  >
-    🚗
-  </button>
-</div>
-
-    <div
-      style={{
-        position: "absolute",
-        top: 20,
-        right: 20,
-      }}
-    >
-      <button
-        onClick={handleLogout}
-        style={{
-          background: "transparent",
-          border: "1px solid rgba(255,255,255,0.2)",
-          color: "#fff",
-          padding: "8px 14px",
-          borderRadius: 10,
-          fontSize: 12,
-          cursor: "pointer",
-        }}
-      >
+    
         Sign Out
       </button>
     </div>
