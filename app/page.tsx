@@ -61,124 +61,150 @@ const handleLogout = async () => {
       position: "relative",
     }}
   >
-    <div style={{
-  position: "absolute",
-  top: 20,
-  left: 20,
-  display: "flex",
-  gap: 10
-}}>
-  <button
-    onClick={() => router.push("/")}
-    style={{
-      background: "transparent",
-      border: "1px solid rgba(255,255,255,0.2)",
-      color: "#fff",
-      padding: "6px 10px",
-      borderRadius: 8,
-      fontSize: 12,
-      cursor: "pointer"
-    }}
-  >
-    
+    {/* TOP BUTTONS */}
+    <div
+      style={{
+        position: "absolute",
+        top: 20,
+        left: 20,
+        display: "flex",
+        gap: 10,
+      }}
+    >
+      <button
+        onClick={() => router.push("/")}
+        style={{
+          background: "transparent",
+          border: "1px solid rgba(255,255,255,0.2)",
+          color: "#fff",
+          padding: "6px 10px",
+          borderRadius: 8,
+          fontSize: 12,
+          cursor: "pointer",
+        }}
+      >
+        Home
+      </button>
+
+      <button
+        onClick={handleLogout}
+        style={{
+          background: "transparent",
+          border: "1px solid rgba(255,255,255,0.2)",
+          color: "#fff",
+          padding: "6px 10px",
+          borderRadius: 8,
+          fontSize: 12,
+          cursor: "pointer",
+        }}
+      >
         Sign Out
       </button>
     </div>
 
+    {/* CARD */}
     <div style={cardStyle}>
-        <div style={{ textAlign: "center", marginBottom: 22 }}>
-          <img
-            src="/logo.png"
-            alt="My Diecast Garage logo"
-            style={{
-              width: 215,
-              maxWidth: "84%",
-              height: "auto",
-              display: "block",
-              margin: "0 auto",
-              filter: "drop-shadow(0 0 24px rgba(30,144,255,0.18))",
-            }}
-          />
-        </div>
-
-        <div
+      {/* LOGO */}
+      <div style={{ textAlign: "center", marginBottom: 22 }}>
+        <img
+          src="/logo.png"
+          alt="My Diecast Garage"
           style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: 16,
-            marginBottom: 16,
+            width: 215,
+            maxWidth: "84%",
+            height: "auto",
+            display: "block",
+            margin: "0 auto",
+            filter: "drop-shadow(0 0 24px rgba(30,144,255,0.18))",
           }}
-        >
-          <button
-            onClick={() => router.push("/capture-packed")}
-            style={buttonStyle}
-          >
-            Add Packed
-          </button>
+        />
+      </div>
 
-          <button
-            onClick={() => router.push("/capture-loose")}
-            style={buttonStyle}
-          >
-            Add Loose
-          </button>
-        </div>
+      {/* ADD BUTTONS */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: 16,
+          marginBottom: 16,
+        }}
+      >
+        <button
+          onClick={() => router.push("/capture-packed")}
+          style={buttonStyle}
+        >
+          Add Packed
+        </button>
 
         <button
-          onClick={() => router.push("/mygarage")}
+          onClick={() => router.push("/capture-loose")}
+          style={buttonStyle}
+        >
+          Add Loose
+        </button>
+      </div>
+
+      {/* MY GARAGE */}
+      <button
+        onClick={() => router.push("/mygarage")}
+        style={{
+          ...buttonStyle,
+          width: "100%",
+          minHeight: 112,
+          marginBottom: 16,
+          display: "block",
+        }}
+      >
+        <div style={{ fontSize: 20, fontWeight: 800, marginBottom: 6 }}>
+          My Garage
+        </div>
+        <div
+          style={{
+            fontSize: 14,
+            fontWeight: 600,
+            color: "rgba(255,255,255,0.66)",
+          }}
+        >
+          View your collection
+        </div>
+      </button>
+
+      {/* WISHLIST (centrado limpio) */}
+      <div style={{ display: "flex", justifyContent: "center", marginBottom: 16 }}>
+        <Link href="/wishlist" style={{ width: 260 }}>
+          <button style={{ ...buttonStyle, width: "100%" }}>
+            Wishlist
+          </button>
+        </Link>
+      </div>
+
+      {/* HOW TO abajo */}
+      <Link href="/howto">
+        <button
           style={{
             ...buttonStyle,
             width: "100%",
-            minHeight: 112,
             marginBottom: 16,
-            display: "block",
           }}
         >
-          <div style={{ fontSize: 20, fontWeight: 800, marginBottom: 6 }}>
-            My Garage
-          </div>
-          <div
-            style={{
-              fontSize: 14,
-              fontWeight: 600,
-              color: "rgba(255,255,255,0.66)",
-            }}
-          >
-            View your collection
-          </div>
+          How To
         </button>
+      </Link>
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: 16,
-          }}
-        >
-        <div style={{ display: "flex", justifyContent: "center" }}>
-  <Link href="/wishlist" style={{ width: 260 }}>
-    <button style={{ ...buttonStyle, width: "100%" }}>
-      Wishlist
-    </button>
-  </Link>
-</div>
-         
-          <Link href="/howto" style={{ flex: 1 }}>
-  <button style={{ ...buttonStyle, width: "100%" }}>
-    How To
-  </button>
-</Link>
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-  <button style={buttonStyle}>
-    Add Friends
-  </button>
-
-  <span style={{ fontSize: 12, opacity: 0.5, marginTop: 6 }}>
-    coming soon
-  </span>
-</div>
-        </div>
+      {/* ADD FRIENDS */}
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <button style={buttonStyle}>Add Friends</button>
+        <span style={{ fontSize: 12, opacity: 0.5, marginTop: 6 }}>
+          coming soon
+        </span>
       </div>
     </div>
-  );
+  </div>
+);
 }
