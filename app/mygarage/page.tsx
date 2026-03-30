@@ -23,6 +23,9 @@ export default function MyGarage() {
   const [items, setItems] = useState<Item[]>([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState("")
+  const [sort, setSort] = useState("newest")
+  const [page, setPage] = useState(1)
+  const itemsPerPage = 20
 
   useEffect(() => {
     const fetchItems = async () => {
@@ -95,6 +98,34 @@ export default function MyGarage() {
       item.color?.toLowerCase().includes(text)
     )
   })
+  const sortedItems = [...filteredItems].sort((a, b) => {
+  if (sort === "newest") {
+    return (b.id ?? 0) - (a.id ?? 0)
+  }
+
+  if (sort === "oldest") {
+    return (a.id ?? 0) - (b.id ?? 0)
+  }
+
+  if (sort === "az") {
+    return (a.name ?? "").localeCompare(b.name ?? "")
+  }
+
+  if (sort === "za") {
+    return (b.name ?? "").localeCompare(a.name ?? "")
+  }
+
+  return 0
+})
+
+  const startIndex = (page - 1) * itemsPerPage
+const paginatedItems = sortedItems.slice(
+  startIndex,
+  startIndex + itemsPerPage
+)
+
+const totalPages = Math.ceil(filteredItems.length / itemsPerPage)
+
 
   return (
     <div
@@ -176,7 +207,25 @@ export default function MyGarage() {
     🔎
   </button>
 </div>
-
+<select
+  value={sort}
+  onChange={(e) => setSort(e.target.value)}
+  style={{
+    width: "100%",
+    padding: "10px",
+    marginBottom: 10,
+    borderRadius: 8,
+    border: "1px solid #333",
+    background: "#111",
+    color: "white",
+    fontSize: 14
+  }}
+>
+  <option value="newest">Newest</option>
+  <option value="oldest">Oldest</option>
+  <option value="az">A → Z</option>
+  <option value="za">Z → A</option>
+</select>
           <div style={{ marginTop: 10, marginBottom: 10 }}>
             <button
               onClick={handleExport}
@@ -221,7 +270,7 @@ export default function MyGarage() {
         {/* LIST */}
         {!loading && (
           <div style={{ display: "grid", gap: 16 }}>
-            {filteredItems.map((item) => (
+            {paginatedItems.map((item) => (
               <a
                 key={item.id}
                 href={`/car/${item.id}`}
@@ -383,6 +432,54 @@ export default function MyGarage() {
             No results found.
           </div>
         )}
+{totalPages > 1 && (
+  <div
+    style={{
+      display: "flex",
+      justifyContent: "center",
+      gap: 10,
+      marginTop: 20,
+    }}
+  >
+    <button
+      onClick={() => setPage((p) => Math.max(p - 1, 1))}
+      disabled={page === 1}
+      style={{
+        padding: "6px 12px",
+        borderRadius: 6,
+        border: "1px solid #333",
+        background: "#111",
+        color: "white",
+        opacity: page === 1 ? 0.4 : 1,
+        cursor: "pointer",
+      }}
+    >
+      ⬅️
+    </button>
+
+    <span style={{ alignSelf: "center", fontSize: 14 }}>
+      {page} / {totalPages}
+    </span>
+
+    <button
+      onClick={() =>
+        setPage((p) => Math.min(p + 1, totalPages))
+      }
+      disabled={page === totalPages}
+      style={{
+        padding: "6px 12px",
+        borderRadius: 6,
+        border: "1px solid #333",
+        background: "#111",
+        color: "white",
+        opacity: page === totalPages ? 0.4 : 1,
+        cursor: "pointer",
+      }}
+    >
+      ➡️
+    </button>
+  </div>
+)}
 
         {!loading && items.length === 0 && (
           <div
