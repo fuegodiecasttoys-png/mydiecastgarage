@@ -136,24 +136,38 @@ export default function MyGarage() {
             My Garage
           </h1>
 
-          <input
-            type="text"
-            placeholder="Search your garage..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            style={{
-              width: "100%",
-              padding: "10px 12px",
-              marginTop: 10,
-              marginBottom: 10,
-              borderRadius: 8,
-              border: "1px solid #333",
-              background: "#111",
-              color: "white",
-              fontSize: 14,
-              boxSizing: "border-box",
-            }}
-          />
+          <div style={{ position: "relative", marginTop: 10 }}>
+  <span
+    style={{
+      position: "absolute",
+      left: 12,
+      top: "50%",
+      transform: "translateY(-50%)",
+      opacity: 0.6,
+      fontSize: 14,
+      pointerEvents: "none",
+    }}
+  >
+    🔎
+  </span>
+
+  <input
+    type="text"
+    placeholder="Search your garage..."
+    value={search}
+    onChange={(e) => setSearch(e.target.value)}
+    style={{
+      width: "100%",
+      padding: "10px 12px 10px 34px",
+      borderRadius: 8,
+      border: "1px solid #333",
+      background: "#111",
+      color: "white",
+      fontSize: 14,
+      boxSizing: "border-box",
+    }}
+  />
+</div>
 
           <div style={{ marginTop: 10, marginBottom: 10 }}>
             <button
