@@ -156,7 +156,7 @@ const handleLogout = async () => {
           }}
         >
         <div style={{ display: "flex", justifyContent: "center" }}>
-  <Link href="/wishlist" style={{ width: "100%" }}>
+  <Link href="/wishlist" style={{ width: 260 }}>
     <button style={{ ...buttonStyle, width: "100%" }}>
       Wishlist
     </button>
