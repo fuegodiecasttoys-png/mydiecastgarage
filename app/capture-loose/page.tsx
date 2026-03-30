@@ -362,7 +362,20 @@ export default function CapturePage() {
             }}
           />
         </div>
-
+         <a
+  href="/"
+  style={{
+    position: "fixed",
+    top: 20,
+    left: 20,
+    fontSize: 20,
+    textDecoration: "none",
+    color: "white",
+    zIndex: 999,
+  }}
+>
+  🏠
+</a>
         <div
           style={{
             borderTop: "1px solid rgba(255,255,255,0.08)",

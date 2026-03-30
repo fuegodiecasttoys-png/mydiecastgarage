@@ -138,6 +138,20 @@ const totalPages = Math.ceil(filteredItems.length / itemsPerPage)
           'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
       }}
     >
+      <a
+  href="/"
+  style={{
+    position: "absolute",
+    top: 20,
+    left: 20,
+    fontSize: 20,
+    textDecoration: "none",
+    color: "white",
+    zIndex: 10,
+  }}
+>
+  🏠
+</a>
       <div
         style={{
           maxWidth: 520,
