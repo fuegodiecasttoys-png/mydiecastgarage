@@ -155,6 +155,11 @@ const handleLogout = async () => {
             gap: 16,
           }}
         >
+          <Link href="/wishlist" style={{ flex: 1 }}>
+  <button style={{ ...buttonStyle, width: "100%" }}>
+    Wishlist
+  </button>
+</Link>
           <Link href="/howto" style={{ flex: 1 }}>
   <button style={{ ...buttonStyle, width: "100%" }}>
     How To
