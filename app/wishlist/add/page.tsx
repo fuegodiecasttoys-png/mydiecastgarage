@@ -113,10 +113,11 @@ export default function AddWishlistPage() {
       ]);
 
       if (error) {
-        console.error(error);
-        alert("Could not save wishlist item");
-        return;
-      }
+  console.error("WISHLIST INSERT ERROR:", error);
+  alert(`DB error: ${error.message || JSON.stringify(error)}`);
+  return;
+}
+
 
       router.push("/wishlist");
     } catch (err) {
