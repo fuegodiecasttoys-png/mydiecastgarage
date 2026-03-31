@@ -79,7 +79,7 @@ export default function AddWishlistPage() {
         const filePath = `wishlist/${fileName}`;
 
         const { error: uploadError } = await supabase.storage
-          .from("car-photos")
+          .from("captures")
           .upload(filePath, imageFile);
 
         if (uploadError) {
@@ -89,7 +89,7 @@ export default function AddWishlistPage() {
         }
 
         const { data: publicUrlData } = supabase.storage
-          .from("car-photos")
+          .from("captures")
           .getPublicUrl(filePath);
 
         photo_url = publicUrlData.publicUrl;
