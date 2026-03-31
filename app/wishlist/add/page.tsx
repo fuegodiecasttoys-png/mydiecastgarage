@@ -99,7 +99,7 @@ export default function AddWishlistPage() {
         {
           user_id: user.id,
           photo_url,
-          name: name.trim(),
+          model: name.trim(),
           brand: brand.trim() || null,
           color: color.trim() || null,
           scale: scale.trim() || null,
