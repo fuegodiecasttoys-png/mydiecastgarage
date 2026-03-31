@@ -197,7 +197,7 @@ export default function AddWishlistPage() {
             <input
               value={model}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Nissan Skyline R34"
+            
               style={inputStyle}
             />
           </div>
@@ -207,7 +207,7 @@ export default function AddWishlistPage() {
             <input
               value={brand}
               onChange={(e) => setBrand(e.target.value)}
-              placeholder="Hot Wheels"
+              
               style={inputStyle}
             />
           </div>
@@ -217,7 +217,7 @@ export default function AddWishlistPage() {
             <input
               value={color}
               onChange={(e) => setColor(e.target.value)}
-              placeholder="Black"
+            
               style={inputStyle}
             />
           </div>
@@ -227,7 +227,7 @@ export default function AddWishlistPage() {
             <input
               value={scale}
               onChange={(e) => setScale(e.target.value)}
-              placeholder="1:64"
+              
               style={inputStyle}
             />
           </div>
@@ -237,7 +237,7 @@ export default function AddWishlistPage() {
             <input
               value={mainNumber}
               onChange={(e) => setMainNumber(e.target.value)}
-              placeholder="5/5"
+              
               style={inputStyle}
             />
           </div>
@@ -247,7 +247,7 @@ export default function AddWishlistPage() {
             <input
               value={subNumber}
               onChange={(e) => setSubNumber(e.target.value)}
-              placeholder="Optional"
+              
               style={inputStyle}
             />
           </div>
@@ -257,7 +257,7 @@ export default function AddWishlistPage() {
             <input
               value={series}
               onChange={(e) => setSeries(e.target.value)}
-              placeholder="Fast & Furious"
+              
               style={inputStyle}
             />
           </div>
@@ -267,7 +267,7 @@ export default function AddWishlistPage() {
             <input
               value={year}
               onChange={(e) => setYear(e.target.value)}
-              placeholder="2024"
+            
               style={inputStyle}
             />
           </div>
@@ -277,7 +277,7 @@ export default function AddWishlistPage() {
             <textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              placeholder="Black F-150 Lightning..."
+            
               rows={4}
               style={{
                 ...inputStyle,
