@@ -26,7 +26,7 @@ const labelStyle = {
 export default function AddWishlistPage() {
   const router = useRouter();
 
-  const [name, setName] = useState("");
+  const [model, setName] = useState("");
   const [brand, setBrand] = useState("");
   const [color, setColor] = useState("");
   const [scale, setScale] = useState("");
@@ -54,7 +54,7 @@ export default function AddWishlistPage() {
   };
 
   const handleSave = async () => {
-    if (!name.trim()) {
+    if (!model.trim()) {
       alert("Name is required");
       return;
     }
@@ -99,7 +99,7 @@ export default function AddWishlistPage() {
         {
           user_id: user.id,
           photo_url,
-          model: name.trim(),
+          model: model.trim(),
           brand: brand.trim() || null,
           color: color.trim() || null,
           scale: scale.trim() || null,
@@ -193,9 +193,9 @@ export default function AddWishlistPage() {
           </div>
 
           <div>
-            <label style={labelStyle}>Name *</label>
+            <label style={labelStyle}>Model *</label>
             <input
-              value={name}
+              value={model}
               onChange={(e) => setName(e.target.value)}
               placeholder="Nissan Skyline R34"
               style={inputStyle}
