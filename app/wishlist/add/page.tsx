@@ -118,7 +118,6 @@ export default function AddWishlistPage() {
   return;
 }
 
-
       router.push("/wishlist");
     } catch (err) {
       console.error(err);
