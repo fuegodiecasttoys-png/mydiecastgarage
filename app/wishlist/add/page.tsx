@@ -153,12 +153,12 @@ export default function AddWishlistPage() {
       </button>
 
       <div style={{ maxWidth: 520, margin: "0 auto" }}>
-        <div style={{ textAlign: "center", marginBottom: 18 }}>
+        <div style={{ textAlign: "center", marginBottom: 10 }}>
   <img
     src="/logo.png"
     alt="My Diecast Garage logo"
     style={{
-      width: 140,
+      width: 160,
       maxWidth: "60%",
       height: "auto",
       display: "block",
@@ -167,7 +167,7 @@ export default function AddWishlistPage() {
     }}
   />
 </div>
-        <h1 style={{ marginBottom: 20 }}>+ Add Wishlist Item</h1>
+        <h1 style={{ marginBottom: 20, textAlign: "center" }}>+ Add Wishlist Item</h1>
 
         <div style={{ display: "grid", gap: 16 }}>
           <div>
