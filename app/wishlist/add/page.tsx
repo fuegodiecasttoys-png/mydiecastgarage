@@ -83,10 +83,10 @@ export default function AddWishlistPage() {
           .upload(filePath, imageFile);
 
         if (uploadError) {
-          console.error(uploadError);
-          alert("Could not upload image");
-          return;
-        }
+  console.error("UPLOAD ERROR FULL:", uploadError);
+  alert(`Upload error: ${uploadError.message || JSON.stringify(uploadError)}`);
+  return;
+}
 
         const { data: publicUrlData } = supabase.storage
           .from("captures")
