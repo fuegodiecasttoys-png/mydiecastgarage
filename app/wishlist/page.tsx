@@ -6,7 +6,7 @@ import { supabase } from "../lib/supabaseClient";
 
 type WishlistItem = {
   id: number;
-  model: string | null;
+  name: string | null;
   brand: string | null;
   color: string | null;
   scale: string | null;
@@ -59,7 +59,7 @@ export default function WishlistPage() {
 
     return items.filter((item) => {
       return (
-        item.model?.toLowerCase().includes(text) ||
+        item.name?.toLowerCase().includes(text) ||
         item.brand?.toLowerCase().includes(text) ||
         item.color?.toLowerCase().includes(text) ||
         item.scale?.toLowerCase().includes(text) ||
@@ -91,11 +91,11 @@ export default function WishlistPage() {
       }
 
       if (sort === "az") {
-        return (a.model ?? "").localeCompare(b.model ?? "");
+        return (a.name ?? "").localeCompare(b.name ?? "");
       }
 
       if (sort === "za") {
-        return (b.model ?? "").localeCompare(a.model ?? "");
+        return (b.name ?? "").localeCompare(a.name ?? "");
       }
 
       if (sort === "priority") {
@@ -164,7 +164,7 @@ export default function WishlistPage() {
       <button
         onClick={() => router.push("/")}
         style={{
-          position: "fixed",
+          position: "absolute",
           top: 20,
           left: 20,
           background: "transparent",
@@ -172,93 +172,177 @@ export default function WishlistPage() {
           color: "white",
           fontSize: 20,
           cursor: "pointer",
-          zIndex: 999,
+          zIndex: 10,
         }}
       >
         🏠
       </button>
 
-      <div style={{ maxWidth: 520, margin: "0 auto" }}>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginTop: 30,
-            marginBottom: 20,
-            gap: 12,
-          }}
-        >
-          <div style={{ fontSize: 22, fontWeight: 700 }}>⭐ My Wishlist</div>
-
-          <button
-            onClick={() => router.push("/wishlist/add")}
+      <div
+        style={{
+          maxWidth: 520,
+          margin: "0 auto",
+        }}
+      >
+        {/* HEADER */}
+        <div style={{ textAlign: "center", marginBottom: 22 }}>
+          <img
+            src="/logo.png"
+            alt="My Diecast Garage"
             style={{
-              background: "rgba(30,144,255,0.15)",
-              border: "1px solid rgba(30,144,255,0.4)",
-              color: "#fff",
-              padding: "8px 14px",
-              borderRadius: 10,
-              fontSize: 14,
-              cursor: "pointer",
-              whiteSpace: "nowrap",
+              width: 170,
+              height: "auto",
+              display: "block",
+              margin: "0 auto",
+            }}
+          />
+
+          <h1
+            style={{
+              fontSize: 28,
+              margin: "10px 0 4px 0",
+              fontWeight: 800,
             }}
           >
-            + Add
-          </button>
+            ⭐ My Wishlist
+          </h1>
+
+          <div
+            style={{
+              display: "flex",
+              gap: 8,
+              marginTop: 10,
+              marginBottom: 10,
+            }}
+          >
+            <input
+              type="text"
+              placeholder="Search your wishlist..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              style={{
+                flex: 1,
+                padding: "10px 12px",
+                borderRadius: 8,
+                border: "1px solid #333",
+                background: "#111",
+                color: "white",
+                fontSize: 14,
+                boxSizing: "border-box",
+              }}
+            />
+
+            <button
+              type="button"
+              style={{
+                width: 44,
+                borderRadius: 8,
+                border: "1px solid rgba(255,255,255,0.2)",
+                background: "rgba(255,255,255,0.05)",
+                color: "white",
+                fontSize: 16,
+                cursor: "pointer",
+              }}
+            >
+              🔎
+            </button>
+          </div>
+
+          <select
+            value={sort}
+            onChange={(e) => setSort(e.target.value)}
+            style={{
+              width: "100%",
+              padding: "10px",
+              marginBottom: 10,
+              borderRadius: 8,
+              border: "1px solid #333",
+              background: "#111",
+              color: "white",
+              fontSize: 14,
+            }}
+          >
+            <option value="newest">Newest</option>
+            <option value="oldest">Oldest</option>
+            <option value="az">A → Z</option>
+            <option value="za">Z → A</option>
+            <option value="priority">Priority</option>
+          </select>
+
+          <div style={{ marginTop: 10, marginBottom: 10 }}>
+            <button
+              onClick={() => router.push("/wishlist/add")}
+              style={{
+                padding: "8px 14px",
+                borderRadius: 8,
+                border: "1px solid rgba(255,255,255,0.2)",
+                background: "rgba(255,255,255,0.05)",
+                color: "white",
+                fontSize: 13,
+                cursor: "pointer",
+              }}
+            >
+              + Add
+            </button>
+          </div>
+
+          <div
+            style={{
+              opacity: 0.72,
+              fontSize: 16,
+              fontWeight: 600,
+            }}
+          >
+            {filteredItems.length} wishlist items
+          </div>
         </div>
 
-        <input
-          type="text"
-          placeholder="Search your wishlist..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          style={{
-            width: "100%",
-            padding: "12px 14px",
-            marginBottom: 10,
-            borderRadius: 12,
-            border: "1px solid rgba(255,255,255,0.12)",
-            background: "#111",
-            color: "#fff",
-            fontSize: 15,
-            boxSizing: "border-box",
-          }}
-        />
+        {/* LOADING */}
+        {loading && (
+          <p
+            style={{
+              opacity: 0.7,
+              fontSize: 16,
+              marginTop: 8,
+              textAlign: "center",
+            }}
+          >
+            Loading...
+          </p>
+        )}
 
-        <select
-          value={sort}
-          onChange={(e) => setSort(e.target.value)}
-          style={{
-            width: "100%",
-            padding: "12px 14px",
-            marginBottom: 14,
-            borderRadius: 12,
-            border: "1px solid rgba(255,255,255,0.12)",
-            background: "#111",
-            color: "#fff",
-            fontSize: 15,
-            boxSizing: "border-box",
-          }}
-        >
-          <option value="newest">Newest</option>
-          <option value="oldest">Oldest</option>
-          <option value="az">A → Z</option>
-          <option value="za">Z → A</option>
-          <option value="priority">Priority</option>
-        </select>
+        {/* EMPTY SEARCH */}
+        {!loading && filteredItems.length === 0 && items.length > 0 && (
+          <div
+            style={{
+              marginTop: 30,
+              opacity: 0.6,
+              fontSize: 16,
+              textAlign: "center",
+            }}
+          >
+            No results found.
+          </div>
+        )}
 
-        <div style={{ opacity: 0.7, marginBottom: 14 }}>
-          {loading ? "Loading..." : `${sortedItems.length} wishlist items`}
-        </div>
+        {/* EMPTY TOTAL */}
+        {!loading && items.length === 0 && (
+          <div
+            style={{
+              marginTop: 30,
+              opacity: 0.6,
+              fontSize: 16,
+              textAlign: "center",
+            }}
+          >
+            Your wishlist is empty.
+          </div>
+        )}
 
-        {loading ? (
-          <div style={{ opacity: 0.6 }}>Loading...</div>
-        ) : sortedItems.length === 0 ? (
-          <div style={{ opacity: 0.6 }}>No items yet...</div>
-        ) : (
+        {/* LIST */}
+        {!loading && filteredItems.length > 0 && (
           <>
-            <div style={{ display: "grid", gap: 12 }}>
+            <div style={{ display: "grid", gap: 16 }}>
               {paginatedItems.map((item) => {
                 const badge = priorityBadge(item.priority);
 
@@ -273,100 +357,112 @@ export default function WishlistPage() {
                   >
                     <div
                       style={{
-                        background: "#111",
+                        display: "flex",
+                        gap: 12,
+                        alignItems: "center",
+                        padding: 10,
+                        borderRadius: 16,
+                        background:
+                          "linear-gradient(180deg, #171717 0%, #101010 100%)",
                         border: "1px solid rgba(255,255,255,0.08)",
-                        borderRadius: 18,
-                        padding: 14,
+                        position: "relative",
                       }}
                     >
+                      {/* IMAGE */}
                       <div
                         style={{
+                          width: 64,
+                          height: 64,
+                          borderRadius: 14,
+                          overflow: "hidden",
+                          flexShrink: 0,
+                          background: "#222",
                           display: "flex",
-                          gap: 12,
                           alignItems: "center",
+                          justifyContent: "center",
+                          border: "1px solid rgba(255,255,255,0.08)",
                         }}
                       >
+                        {item.photo_url ? (
+                          <img
+                            src={item.photo_url}
+                            alt={item.name ?? "Wishlist item"}
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              objectFit: "cover",
+                              display: "block",
+                            }}
+                          />
+                        ) : (
+                          <div
+                            style={{
+                              fontSize: 12,
+                              opacity: 0.5,
+                            }}
+                          >
+                            No photo
+                          </div>
+                        )}
+                      </div>
+
+                      {/* INFO */}
+                      <div style={{ minWidth: 0, flex: 1 }}>
                         <div
                           style={{
-                            width: 86,
-                            height: 86,
-                            borderRadius: 14,
-                            overflow: "hidden",
-                            background: "#1a1a1a",
-                            border: "1px solid rgba(255,255,255,0.06)",
-                            flexShrink: 0,
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
+                            fontSize: 11,
+                            opacity: 0.7,
+                            textTransform: "uppercase",
+                            fontWeight: 600,
+                            letterSpacing: "0.04em",
+                            marginBottom: 4,
                           }}
                         >
-                          {item.photo_url ? (
-                            <img
-                              src={item.photo_url}
-                              alt={item.model || "Wishlist item"}
-                              style={{
-                                width: "100%",
-                                height: "100%",
-                                objectFit: "cover",
-                                display: "block",
-                              }}
-                            />
-                          ) : (
-                            <div style={{ opacity: 0.35, fontSize: 12 }}>
-                              No Photo
-                            </div>
-                          )}
+                          {item.brand ?? "Unknown"} • wishlist
                         </div>
 
-                        <div style={{ flex: 1, minWidth: 0 }}>
-                          <div
-                            style={{
-                              fontSize: 17,
-                              fontWeight: 800,
-                              marginBottom: 4,
-                            }}
-                          >
-                            {`${item.brand || ""} ${item.model || ""}`.trim() || "No name"}
-                          </div>
+                        <div
+                          style={{
+                            fontSize: 14,
+                            fontWeight: 600,
+                            lineHeight: 1.1,
+                            marginBottom: 4,
+                            wordBreak: "break-word",
+                            paddingRight: 82,
+                          }}
+                        >
+                          {item.name ?? "Unnamed model"}
+                        </div>
 
-                          <div
-                            style={{
-                              opacity: 0.75,
-                              fontSize: 14,
-                              marginBottom: 6,
-                            }}
-                          >
-                            {item.brand || ""}
-                            {item.color ? ` • ${item.color}` : ""}
-                            {item.scale ? ` • ${item.scale}` : ""}
-                          </div>
-
-                          <div
-                            style={{
-                              opacity: 0.55,
-                              fontSize: 13,
-                              marginBottom: 8,
-                            }}
-                          >
-                            {item.series || "-"}
-                            {item.main_number ? ` • ${item.main_number}` : ""}
-                            {item.sub_number ? ` • ${item.sub_number}` : ""}
-                            {item.year ? ` • ${item.year}` : ""}
-                          </div>
-
-                          <div
-                            style={{
-                              display: "inline-block",
-                              padding: "6px 10px",
-                              borderRadius: 999,
-                              fontSize: 12,
-                              ...badge,
-                            }}
-                          >
-                            {badge.label}
-                          </div>
+                        <div
+                          style={{
+                            fontSize: 13,
+                            opacity: 0.85,
+                            fontWeight: 500,
+                          }}
+                        >
+                          {item.color ?? "-"}
+                          {item.series ? ` • ${item.series}` : ""}
+                          {item.year ? ` • ${item.year}` : ""}
                         </div>
                       </div>
+
+                      {/* PRIORITY */}
+                      <span
+                        style={{
+                          position: "absolute",
+                          right: 10,
+                          bottom: 10,
+                          fontSize: 12,
+                          fontWeight: 600,
+                          padding: "4px 10px",
+                          borderRadius: 10,
+                          background: badge.bg,
+                          border: badge.border,
+                        }}
+                      >
+                        {badge.label}
+                      </span>
                     </div>
                   </a>
                 );
@@ -377,47 +473,45 @@ export default function WishlistPage() {
               <div
                 style={{
                   display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  gap: 12,
-                  marginTop: 16,
+                  justifyContent: "center",
+                  gap: 10,
+                  marginTop: 20,
                 }}
               >
                 <button
-                  onClick={() => setPage((prev) => Math.max(1, prev - 1))}
+                  onClick={() => setPage((p) => Math.max(p - 1, 1))}
                   disabled={page === 1}
                   style={{
-                    padding: "10px 14px",
-                    borderRadius: 10,
-                    border: "1px solid rgba(255,255,255,0.12)",
-                    background: page === 1 ? "#181818" : "#111",
-                    color: page === 1 ? "#666" : "#fff",
-                    cursor: page === 1 ? "not-allowed" : "pointer",
+                    padding: "6px 12px",
+                    borderRadius: 6,
+                    border: "1px solid #333",
+                    background: "#111",
+                    color: "white",
+                    opacity: page === 1 ? 0.4 : 1,
+                    cursor: "pointer",
                   }}
                 >
-                  ← Prev
+                  ⬅️
                 </button>
 
-                <div style={{ opacity: 0.75 }}>
-                  Page {page} of {totalPages}
-                </div>
+                <span style={{ alignSelf: "center", fontSize: 14 }}>
+                  {page} / {totalPages}
+                </span>
 
                 <button
-                  onClick={() =>
-                    setPage((prev) => Math.min(totalPages, prev + 1))
-                  }
+                  onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
                   disabled={page === totalPages}
                   style={{
-                    padding: "10px 14px",
-                    borderRadius: 10,
-                    border: "1px solid rgba(255,255,255,0.12)",
-                    background: page === totalPages ? "#181818" : "#111",
-                    color: page === totalPages ? "#666" : "#fff",
-                    cursor:
-                      page === totalPages ? "not-allowed" : "pointer",
+                    padding: "6px 12px",
+                    borderRadius: 6,
+                    border: "1px solid #333",
+                    background: "#111",
+                    color: "white",
+                    opacity: page === totalPages ? 0.4 : 1,
+                    cursor: "pointer",
                   }}
                 >
-                  Next →
+                  ➡️
                 </button>
               </div>
             )}
