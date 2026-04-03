@@ -6,7 +6,7 @@ import { supabase } from "../lib/supabaseClient";
 
 type WishlistItem = {
   id: number;
-  name: string | null;
+  model: string | null;
   brand: string | null;
   color: string | null;
   scale: string | null;
@@ -59,7 +59,7 @@ export default function WishlistPage() {
 
     return items.filter((item) => {
       return (
-        item.name?.toLowerCase().includes(text) ||
+        item.model?.toLowerCase().includes(text) ||
         item.brand?.toLowerCase().includes(text) ||
         item.color?.toLowerCase().includes(text) ||
         item.scale?.toLowerCase().includes(text) ||
@@ -91,11 +91,11 @@ export default function WishlistPage() {
       }
 
       if (sort === "az") {
-        return (a.name ?? "").localeCompare(b.name ?? "");
+        return (a.model ?? "").localeCompare(b.model ?? "");
       }
 
       if (sort === "za") {
-        return (b.name ?? "").localeCompare(a.name ?? "");
+        return (b.model ?? "").localeCompare(a.model ?? "");
       }
 
       if (sort === "priority") {
@@ -184,7 +184,6 @@ export default function WishlistPage() {
           margin: "0 auto",
         }}
       >
-        {/* HEADER */}
         <div style={{ textAlign: "center", marginBottom: 22 }}>
           <img
             src="/logo.png"
@@ -297,7 +296,6 @@ export default function WishlistPage() {
           </div>
         </div>
 
-        {/* LOADING */}
         {loading && (
           <p
             style={{
@@ -311,7 +309,6 @@ export default function WishlistPage() {
           </p>
         )}
 
-        {/* EMPTY SEARCH */}
         {!loading && filteredItems.length === 0 && items.length > 0 && (
           <div
             style={{
@@ -325,7 +322,6 @@ export default function WishlistPage() {
           </div>
         )}
 
-        {/* EMPTY TOTAL */}
         {!loading && items.length === 0 && (
           <div
             style={{
@@ -339,7 +335,6 @@ export default function WishlistPage() {
           </div>
         )}
 
-        {/* LIST */}
         {!loading && filteredItems.length > 0 && (
           <>
             <div style={{ display: "grid", gap: 16 }}>
@@ -368,7 +363,6 @@ export default function WishlistPage() {
                         position: "relative",
                       }}
                     >
-                      {/* IMAGE */}
                       <div
                         style={{
                           width: 64,
@@ -386,7 +380,7 @@ export default function WishlistPage() {
                         {item.photo_url ? (
                           <img
                             src={item.photo_url}
-                            alt={item.name ?? "Wishlist item"}
+                            alt={item.model ?? "Wishlist item"}
                             style={{
                               width: "100%",
                               height: "100%",
@@ -406,7 +400,6 @@ export default function WishlistPage() {
                         )}
                       </div>
 
-                      {/* INFO */}
                       <div style={{ minWidth: 0, flex: 1 }}>
                         <div
                           style={{
@@ -431,7 +424,7 @@ export default function WishlistPage() {
                             paddingRight: 82,
                           }}
                         >
-                          {item.name ?? "Unnamed model"}
+                          {item.model ?? "Unnamed model"}
                         </div>
 
                         <div
@@ -447,7 +440,6 @@ export default function WishlistPage() {
                         </div>
                       </div>
 
-                      {/* PRIORITY */}
                       <span
                         style={{
                           position: "absolute",
@@ -521,4 +513,3 @@ export default function WishlistPage() {
     </div>
   );
 }
-
