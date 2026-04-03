@@ -326,7 +326,7 @@ export default function WishlistPage() {
                               marginBottom: 4,
                             }}
                           >
-                            {item.name || "Unnamed"}
+                            {`${item.brand || ""} ${item.name || "No name"}`}
                           </div>
 
                           <div
@@ -336,7 +336,7 @@ export default function WishlistPage() {
                               marginBottom: 6,
                             }}
                           >
-                            {item.brand || "-"}
+                            {item.brand || ""}
                             {item.color ? ` • ${item.color}` : ""}
                             {item.scale ? ` • ${item.scale}` : ""}
                           </div>
