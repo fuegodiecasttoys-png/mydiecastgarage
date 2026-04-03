@@ -6,7 +6,7 @@ import { supabase } from "../lib/supabaseClient";
 
 type WishlistItem = {
   id: number;
-  name: string | null;
+  model: string | null;
   brand: string | null;
   color: string | null;
   scale: string | null;
@@ -59,7 +59,7 @@ export default function WishlistPage() {
 
     return items.filter((item) => {
       return (
-        item.name?.toLowerCase().includes(text) ||
+        item.model?.toLowerCase().includes(text) ||
         item.brand?.toLowerCase().includes(text) ||
         item.color?.toLowerCase().includes(text) ||
         item.scale?.toLowerCase().includes(text) ||
@@ -91,11 +91,11 @@ export default function WishlistPage() {
       }
 
       if (sort === "az") {
-        return (a.name ?? "").localeCompare(b.name ?? "");
+        return (a.model ?? "").localeCompare(b.model ?? "");
       }
 
       if (sort === "za") {
-        return (b.name ?? "").localeCompare(a.name ?? "");
+        return (b.model ?? "").localeCompare(a.model ?? "");
       }
 
       if (sort === "priority") {
@@ -303,7 +303,7 @@ export default function WishlistPage() {
                           {item.photo_url ? (
                             <img
                               src={item.photo_url}
-                              alt={item.name || "Wishlist item"}
+                              alt={item.model || "Wishlist item"}
                               style={{
                                 width: "100%",
                                 height: "100%",
@@ -326,7 +326,7 @@ export default function WishlistPage() {
                               marginBottom: 4,
                             }}
                           >
-                            {`${item.brand || ""} ${item.name || "No name"}`}
+                            {`${item.brand || ""} ${item.model || ""}`.trim() || "No name"}
                           </div>
 
                           <div
