@@ -221,6 +221,22 @@ Build your garage, your way.
           />
           Keep me logged in
         </label>
+        <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 6 }}>
+  <button
+    type="button"
+    onClick={() => setShowPassword(!showPassword)}
+    style={{
+      fontSize: 12,
+      color: "#4da6ff",
+      background: "none",
+      border: "none",
+      cursor: "pointer",
+    }}
+  >
+    {showPassword ? "Hide password" : "Show password"}
+  </button>
+</div>
+
 
         {/* BUTTON */}
         <button
