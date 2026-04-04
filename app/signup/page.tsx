@@ -13,6 +13,8 @@ export default function SignupPage() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   async function handleSignup() {
     if (
@@ -28,7 +30,7 @@ export default function SignupPage() {
     }
 
     if (password !== confirmPassword) {
-      alert("Passwords do not match");
+      alert("Passwords do not match.");
       return;
     }
 
@@ -106,8 +108,8 @@ export default function SignupPage() {
         <div style={{ textAlign: "center", marginBottom: 24 }}>
           <div
             style={{
-              width: 72,
-              height: 72,
+              width: 110,
+              height: 110,
               margin: "0 auto 18px",
               borderRadius: 20,
               background:
@@ -121,9 +123,9 @@ export default function SignupPage() {
           >
             <Image
               src="/logo.png"
-              alt="Diecast Vault logo"
-              width={42}
-              height={42}
+              alt="My Diecast Garage logo"
+              width={95}
+              height={95}
               style={{ objectFit: "contain" }}
               priority
             />
@@ -132,8 +134,8 @@ export default function SignupPage() {
           <h1
             style={{
               margin: 0,
-              fontSize: 32,
-              lineHeight: 1,
+              fontSize: 34,
+              lineHeight: 1.05,
               fontWeight: 800,
               letterSpacing: "-0.04em",
             }}
@@ -144,13 +146,17 @@ export default function SignupPage() {
           <p
             style={{
               marginTop: 12,
-              marginBottom: 0,
-              fontSize: 15,
+              marginBottom: 28,
+              fontSize: 14,
               lineHeight: 1.5,
               color: "rgba(255,255,255,0.68)",
             }}
           >
-            A better way to manage your diecast collection.
+            Join My Diecast Garage and start organizing your collection.
+            <br />
+            Track packed and loose cars in one place.
+            <br />
+            Build your garage, your way.
           </p>
         </div>
 
@@ -165,34 +171,6 @@ export default function SignupPage() {
               placeholder="you@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              style={inputStyle}
-            />
-          </div>
-
-          <div>
-            <label htmlFor="password" style={labelStyle}>
-              Password
-            </label>
-            <input
-              id="password"
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              style={inputStyle}
-            />
-          </div>
-
-          <div>
-            <label htmlFor="confirmPassword" style={labelStyle}>
-              Confirm password
-            </label>
-            <input
-              id="confirmPassword"
-              type="password"
-              placeholder="Confirm password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
               style={inputStyle}
             />
           </div>
@@ -238,6 +216,60 @@ export default function SignupPage() {
               style={inputStyle}
             />
           </div>
+
+          <div>
+            <label htmlFor="password" style={labelStyle}>
+              Password
+            </label>
+            <input
+              id="password"
+              type={showPassword ? "text" : "password"}
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              style={inputStyle}
+            />
+          </div>
+
+          <div>
+            <label htmlFor="confirmPassword" style={labelStyle}>
+              Confirm password
+            </label>
+            <input
+              id="confirmPassword"
+              type={showConfirmPassword ? "text" : "password"}
+              placeholder="Confirm password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              style={inputStyle}
+            />
+          </div>
+        </div>
+
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginTop: 12,
+            marginBottom: 20,
+          }}
+        >
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            style={toggleButtonStyle}
+          >
+            {showPassword ? "Hide password" : "Show password"}
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+            style={toggleButtonStyle}
+          >
+            {showConfirmPassword ? "Hide confirm" : "Show confirm"}
+          </button>
         </div>
 
         <button
@@ -248,8 +280,7 @@ export default function SignupPage() {
             height: 54,
             borderRadius: 16,
             border: "none",
-            background:
-              "linear-gradient(180deg, #37b8ff 0%, #1583ff 100%)",
+            background: "linear-gradient(180deg, #37b8ff 0%, #1583ff 100%)",
             color: "#ffffff",
             fontWeight: 800,
             fontSize: 16,
@@ -257,7 +288,6 @@ export default function SignupPage() {
             boxShadow: "0 12px 30px rgba(21,131,255,0.35)",
             opacity: loading ? 0.7 : 1,
             transition: "all 0.2s ease",
-            marginTop: 20,
           }}
         >
           {loading ? "Creating account..." : "Create account"}
@@ -277,8 +307,12 @@ export default function SignupPage() {
             href="/login"
             style={{
               color: "#37b8ff",
-              fontWeight: 600,
+              fontWeight: 700,
               textDecoration: "none",
+              padding: "6px 10px",
+              borderRadius: 8,
+              border: "1px solid rgba(55,184,255,0.3)",
+              background: "rgba(55,184,255,0.08)",
             }}
           >
             Sign in
@@ -308,4 +342,13 @@ const inputStyle: CSSProperties = {
   outline: "none",
   fontSize: 15,
   boxSizing: "border-box",
+};
+
+const toggleButtonStyle: CSSProperties = {
+  fontSize: 12,
+  color: "#4da6ff",
+  background: "none",
+  border: "none",
+  cursor: "pointer",
+  padding: 0,
 };
