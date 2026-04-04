@@ -172,12 +172,27 @@ Build your garage, your way.
               boxSizing: "border-box",
             }}
           />
-<button
-  type="button"
+<span
   onClick={() => setShowPassword(!showPassword)}
+  style={{
+    position: "absolute",
+    right: 10,
+    top: "50%",
+    transform: "translateY(-50%)",
+    cursor: "pointer",
+    width: 28,
+    height: 28,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 8,
+    background: "rgba(255,255,255,0.08)",
+    border: "1px solid rgba(255,255,255,0.15)",
+    fontSize: 14,
+  }}
 >
-  {showPassword ? "Hide password" : "Show password"}
-</button>
+  👁
+</span>
 
           
         </div>
