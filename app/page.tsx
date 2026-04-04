@@ -20,7 +20,7 @@ const buttonStyle: CSSProperties = {
 const cardStyle: CSSProperties = {
   width: "100%",
   maxWidth: 430,
-  background: "rgba(14,14,16,0.96)",
+  background: "#0e0e10",
   border: "1px solid rgba(255,255,255,0.08)",
   borderRadius: 24,
   padding: "30px 20px 24px",
