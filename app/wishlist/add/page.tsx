@@ -445,21 +445,22 @@ export default function AddWishlistPage() {
 
           <div style={{ display: "grid", gap: 12 }}>
             <input
-              type="text"
-              placeholder="Brand"
-              value={brand}
-              onChange={(e) => setBrand(e.target.value)}
-              disabled={saving}
-              style={inputStyle}
-            />
-
-            <input
-              type="text"
+            type="text"
               placeholder="Model"
               value={model}
               onChange={(e) => setModel(e.target.value)}
               disabled={saving}
               style={inputStyle}
+             
+            />
+
+            <input
+              type="text"
+              placeholder="Brand"
+              value={brand}
+              onChange={(e) => setBrand(e.target.value)}
+              disabled={saving}
+              style={inputStyle} 
             />
 
             <input

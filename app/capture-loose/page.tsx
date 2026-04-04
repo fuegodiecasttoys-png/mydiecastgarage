@@ -525,19 +525,20 @@ export default function CapturePage() {
 
           <div style={{ display: "grid", gap: 12 }}>
             <input
-              type="text"
-              placeholder="Model"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              disabled={loading || locked}
-              style={inputStyle}
-            />
-
-            <input
-              type="text"
+            type="text"
               placeholder="Brand"
               value={brand}
               onChange={(e) => setBrand(e.target.value)}
+              disabled={loading || locked}
+              style={inputStyle}
+             
+            />
+
+            <input
+               type="text"
+              placeholder="Model"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               disabled={loading || locked}
               style={inputStyle}
             />
