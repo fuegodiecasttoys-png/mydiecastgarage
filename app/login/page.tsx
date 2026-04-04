@@ -177,8 +177,7 @@ Build your garage, your way.
   style={{
     position: "absolute",
     right: 10,
-    top: "50%",
-    transform: "translateY(-50%)",
+    top: "13",
     cursor: "pointer",
     width: 28,
     height: 28,
