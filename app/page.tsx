@@ -32,6 +32,20 @@ const cardStyle: CSSProperties = {
 export default function Home() {
   const router = useRouter();
 
+  // 🔒 Logout
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut();
+
+    if (error) {
+      console.error(error);
+      alert("Error logging out");
+      return;
+    }
+
+    router.push("/login");
+  };
+
+  // 🔒 Check user logged in
   useEffect(() => {
     async function checkUser() {
       const { data } = await supabase.auth.getUser();
@@ -43,11 +57,6 @@ export default function Home() {
 
     checkUser();
   }, [router]);
-
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    router.push("/login");
-  };
 
   return (
   <div
@@ -104,7 +113,26 @@ export default function Home() {
     </div>
 
     {/* CARD */}
-    <div style={cardStyle}>
+    <div style={{ ...cardStyle, position: "relative" }}>
+
+      <button
+  onClick={handleLogout}
+  style={{
+    position: "absolute",
+    top: 20,
+    right: 20,
+    background: "transparent",
+    border: "1px solid rgba(255,255,255,0.2)",
+    color: "white",
+    padding: "6px 12px",
+    borderRadius: 8,
+    cursor: "pointer",
+    fontSize: 12,
+  }}
+>
+  Logout
+</button>
+
       {/* LOGO */}
       <div style={{ textAlign: "center", marginBottom: 22 }}>
         <img
