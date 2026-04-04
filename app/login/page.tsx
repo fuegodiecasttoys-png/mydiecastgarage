@@ -78,9 +78,9 @@ export default function LoginPage() {
           >
             <Image
               src="/logo.png"
-              alt="Diecast Vault logo"
-              width={42}
-              height={42}
+              alt="My Diecast Garage logo"
+              width={70}
+              height={70}
               style={{ objectFit: "contain" }}
               priority
             />
@@ -94,18 +94,23 @@ export default function LoginPage() {
               letterSpacing: "-0.04em",
             }}
           >
-            Diecast Vault
+            My Diecast Garage
           </h1>
 
           <p
             style={{
               marginTop: 12,
-              fontSize: 15,
+              fontSize: 14,
               lineHeight: 1.5,
+              marginBottom: 28,
               color: "rgba(255,255,255,0.68)",
             }}
           >
-            A better way to manage your diecast collection.
+            Organize track, and showcase your diecast collection.
+<br />
+From packed to loose, manage every car in one place.
+<br />
+Build your garage, your way.
           </p>
         </div>
 
