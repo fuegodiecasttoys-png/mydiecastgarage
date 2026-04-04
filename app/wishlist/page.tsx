@@ -411,7 +411,7 @@ export default function WishlistPage() {
                             marginBottom: 4,
                           }}
                         >
-                          {item.brand ?? "Unknown"}
+                          {item.brand ?? "No brand"}
                         </div>
 
                         <div
