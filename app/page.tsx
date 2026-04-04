@@ -70,7 +70,7 @@ export default function Home() {
       position: "relative",
     }}
   >
-    {/* TOP BUTTONS */}
+    
     
 
     {/* CARD */}

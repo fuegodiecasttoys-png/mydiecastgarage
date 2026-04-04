@@ -305,7 +305,7 @@ export default function AddWishlistPage() {
             zIndex: 999,
           }}
         >
-          🏠
+          ← Back
         </a>
 
         <div
