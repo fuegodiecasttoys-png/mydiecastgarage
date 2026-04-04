@@ -63,8 +63,8 @@ export default function LoginPage() {
         <div style={{ textAlign: "center", marginBottom: 24 }}>
           <div
             style={{
-              width: 72,
-              height: 72,
+              width: 110,
+              height: 110,
               margin: "0 auto 18px",
               borderRadius: 20,
               background:
@@ -79,8 +79,8 @@ export default function LoginPage() {
             <Image
               src="/logo.png"
               alt="My Diecast Garage logo"
-              width={70}
-              height={70}
+              width={95}
+              height={95}
               style={{ objectFit: "contain" }}
               priority
             />
