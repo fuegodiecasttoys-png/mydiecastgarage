@@ -20,13 +20,13 @@ const buttonStyle: CSSProperties = {
 const cardStyle: CSSProperties = {
   width: "100%",
   maxWidth: 430,
-  background: "rgba(14,14,16,0.88)",
+  background: "rgba(14,14,16,0.96)",
   border: "1px solid rgba(255,255,255,0.08)",
-  borderRadius: 32,
+  borderRadius: 24,
   padding: "30px 20px 24px",
-  boxShadow:
-    "0 24px 80px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.04)",
+  boxShadow: "0 24px 80px rgba(0,0,0,0.45)",
   backdropFilter: "blur(10px)",
+  overflow: "hidden",
 };
 
 export default function Home() {
