@@ -14,7 +14,6 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-
   async function handleLogin() {
     if (!email || !password) return;
 
@@ -32,7 +31,6 @@ export default function LoginPage() {
       return;
     }
 
-    // 👇 ESTE ERA EL QUE TE FALTABA
     router.push("/");
   }
 
@@ -102,21 +100,20 @@ export default function LoginPage() {
           <p
             style={{
               marginTop: 12,
+              marginBottom: 28,
               fontSize: 14,
               lineHeight: 1.5,
-              marginBottom: 28,
               color: "rgba(255,255,255,0.68)",
             }}
           >
-            Organize track, and showcase your diecast collection.
-<br />
-From packed to loose, manage every car in one place.
-<br />
-Build your garage, your way.
+            Organize, track, and showcase your diecast collection.
+            <br />
+            From packed to loose, manage every car in one place.
+            <br />
+            Build your garage, your way.
           </p>
         </div>
 
-        {/* EMAIL */}
         <div style={{ marginBottom: 14 }}>
           <label
             htmlFor="email"
@@ -152,7 +149,6 @@ Build your garage, your way.
           />
         </div>
 
-        {/* PASSWORD */}
         <div style={{ marginBottom: 14 }}>
           <input
             type={showPassword ? "text" : "password"}
@@ -172,63 +168,56 @@ Build your garage, your way.
               boxSizing: "border-box",
             }}
           />
-
-
-          
         </div>
 
-        {/* CHECKBOX */}
-        <label
+        <div
           style={{
             display: "flex",
+            justifyContent: "space-between",
             alignItems: "center",
-            gap: 10,
-            fontSize: 14,
-            color: "rgba(255,255,255,0.74)",
             marginBottom: 20,
-            userSelect: "none",
           }}
         >
-          <input
-            type="checkbox"
-            checked={keepLoggedIn}
-            onChange={(e) => setKeepLoggedIn(e.target.checked)}
+          <label
             style={{
-              width: 16,
-              height: 16,
-              accentColor: "#1ea7ff",
-              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+              fontSize: 14,
+              color: "rgba(255,255,255,0.74)",
+              userSelect: "none",
             }}
-          />
-          Keep me logged in
-        </label>
-        <div
-  style={{
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginTop: 6,
-  }}
->
-  <span /> {/* espacio vacío izquierda */}
+          >
+            <input
+              type="checkbox"
+              checked={keepLoggedIn}
+              onChange={(e) => setKeepLoggedIn(e.target.checked)}
+              style={{
+                width: 16,
+                height: 16,
+                accentColor: "#1ea7ff",
+                cursor: "pointer",
+              }}
+            />
+            Keep me logged in
+          </label>
 
-  <button
-    type="button"
-    onClick={() => setShowPassword(!showPassword)}
-    style={{
-      fontSize: 12,
-      color: "#4da6ff",
-      background: "none",
-      border: "none",
-      cursor: "pointer",
-    }}
-  >
-    {showPassword ? "Hide password" : "Show password"}
-  </button>
-</div>
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            style={{
+              fontSize: 12,
+              color: "#4da6ff",
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              padding: 0,
+            }}
+          >
+            {showPassword ? "Hide password" : "Show password"}
+          </button>
+        </div>
 
-
-        {/* BUTTON */}
         <button
           onClick={handleLogin}
           disabled={loading}
@@ -237,8 +226,7 @@ Build your garage, your way.
             height: 54,
             borderRadius: 16,
             border: "none",
-            background:
-              "linear-gradient(180deg, #37b8ff 0%, #1583ff 100%)",
+            background: "linear-gradient(180deg, #37b8ff 0%, #1583ff 100%)",
             color: "#ffffff",
             fontWeight: 800,
             fontSize: 16,
