@@ -58,12 +58,11 @@ export default function Home() {
     checkUser();
   }, [router]);
 
-  return (
+ return (
   <div
     style={{
       minHeight: "100vh",
-      background:
-        "radial-gradient(circle at top, rgba(18,95,255,0.18), transparent 35%), #05070d",
+      background: "#05070d",
       display: "grid",
       placeItems: "center",
       padding: 20,
@@ -72,45 +71,7 @@ export default function Home() {
     }}
   >
     {/* TOP BUTTONS */}
-    <div
-      style={{
-        position: "absolute",
-        top: 20,
-        left: 20,
-        display: "flex",
-        gap: 10,
-      }}
-    >
-      <button
-        onClick={() => router.push("/")}
-        style={{
-          background: "transparent",
-          border: "1px solid rgba(255,255,255,0.2)",
-          color: "#fff",
-          padding: "6px 10px",
-          borderRadius: 8,
-          fontSize: 12,
-          cursor: "pointer",
-        }}
-      >
-        Home
-      </button>
-
-      <button
-        onClick={handleLogout}
-        style={{
-          background: "transparent",
-          border: "1px solid rgba(255,255,255,0.2)",
-          color: "#fff",
-          padding: "6px 10px",
-          borderRadius: 8,
-          fontSize: 12,
-          cursor: "pointer",
-        }}
-      >
-        Sign Out
-      </button>
-    </div>
+    
 
     {/* CARD */}
     <div style={{ ...cardStyle, position: "relative" }}>
