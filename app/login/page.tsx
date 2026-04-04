@@ -172,26 +172,7 @@ Build your garage, your way.
               boxSizing: "border-box",
             }}
           />
-<span
-  onClick={() => setShowPassword(!showPassword)}
-  style={{
-    position: "absolute",
-    right: 10,
-    top: "13",
-    cursor: "pointer",
-    width: 28,
-    height: 28,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 8,
-    background: "rgba(255,255,255,0.08)",
-    border: "1px solid rgba(255,255,255,0.15)",
-    fontSize: 14,
-  }}
->
-  👁
-</span>
+
 
           
         </div>
@@ -221,7 +202,16 @@ Build your garage, your way.
           />
           Keep me logged in
         </label>
-        <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 6 }}>
+        <div
+  style={{
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: 6,
+  }}
+>
+  <span /> {/* espacio vacío izquierda */}
+
   <button
     type="button"
     onClick={() => setShowPassword(!showPassword)}
