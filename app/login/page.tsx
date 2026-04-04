@@ -10,12 +10,14 @@ export default function LoginPage() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [keepLoggedIn, setKeepLoggedIn] = useState(true);
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
   async function handleLogin() {
-    if (!email || !password) return;
+    if (!email || !password) {
+  alert("Please enter your email and password.");
+  return;
+}
 
     setLoading(true);
 
@@ -150,9 +152,23 @@ export default function LoginPage() {
         </div>
 
         <div style={{ marginBottom: 14 }}>
-          <input
-            type={showPassword ? "text" : "password"}
-            placeholder="Password"
+  <label
+    htmlFor="password"
+    style={{
+      display: "block",
+      marginBottom: 8,
+      fontSize: 13,
+      fontWeight: 600,
+      color: "rgba(255,255,255,0.78)",
+    }}
+  >
+    Password
+  </label>
+
+  <input
+    id="password"
+    type={showPassword ? "text" : "password"}
+    placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             style={{
@@ -178,29 +194,6 @@ export default function LoginPage() {
             marginBottom: 20,
           }}
         >
-          <label
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 10,
-              fontSize: 14,
-              color: "rgba(255,255,255,0.74)",
-              userSelect: "none",
-            }}
-          >
-            <input
-              type="checkbox"
-              checked={keepLoggedIn}
-              onChange={(e) => setKeepLoggedIn(e.target.checked)}
-              style={{
-                width: 16,
-                height: 16,
-                accentColor: "#1ea7ff",
-                cursor: "pointer",
-              }}
-            />
-            Keep me logged in
-          </label>
 
           <button
             type="button"
