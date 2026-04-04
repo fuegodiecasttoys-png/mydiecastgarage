@@ -12,6 +12,8 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [keepLoggedIn, setKeepLoggedIn] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
 
   async function handleLogin() {
     if (!email || !password) return;
@@ -153,7 +155,7 @@ Build your garage, your way.
         {/* PASSWORD */}
         <div style={{ marginBottom: 14 }}>
           <input
-            type="password"
+            type={showPassword ? "text" : "password"}
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -170,6 +172,14 @@ Build your garage, your way.
               boxSizing: "border-box",
             }}
           />
+<button
+  type="button"
+  onClick={() => setShowPassword(!showPassword)}
+>
+  {showPassword ? "Hide password" : "Show password"}
+</button>
+
+          
         </div>
 
         {/* CHECKBOX */}
