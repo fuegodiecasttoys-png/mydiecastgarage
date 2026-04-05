@@ -211,7 +211,24 @@ export default function CarDetail() {
           >
             ← Back
           </button>
-
+          <button
+  type="button"
+  onClick={handleDelete}
+  style={{
+    width: "100%",
+    marginBottom: 16,
+    padding: "12px 14px",
+    borderRadius: 12,
+    border: "1px solid rgba(239,68,68,0.35)",
+    background: "rgba(127,29,29,0.35)",
+    color: "#fecaca",
+    fontSize: 15,
+    fontWeight: 700,
+    cursor: "pointer",
+  }}
+>
+  Delete diecast
+</button>
           <div style={{ display: "flex", gap: 14 }}>
             <button
               onClick={() => {
@@ -234,24 +251,7 @@ export default function CarDetail() {
               </button>
             )}
           </div>
-          <button
-  type="button"
-  onClick={handleDelete}
-  style={{
-    width: "100%",
-    marginBottom: 16,
-    padding: "12px 14px",
-    borderRadius: 12,
-    border: "1px solid rgba(239,68,68,0.35)",
-    background: "rgba(127,29,29,0.35)",
-    color: "#fecaca",
-    fontSize: 15,
-    fontWeight: 700,
-    cursor: "pointer",
-  }}
->
-  Delete diecast
-</button>
+          
 
         </div>
 
