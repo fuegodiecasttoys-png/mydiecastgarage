@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState, type CSSProperties } from "react";
 import { supabase } from "../lib/supabaseClient";
+import { useRouter } from "next/navigation";
 
 export default function SignupPage() {
   const [email, setEmail] = useState("");
@@ -15,7 +16,7 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
+  const router = useRouter();
   async function handleSignup() {
     const cleanEmail = email.trim().toLowerCase();
     const cleanUsername = username.trim().toLowerCase();
@@ -80,7 +81,7 @@ export default function SignupPage() {
   return;
 }
 
-      alert("Account created successfully. You can now sign in.");
+     router.push("/");
 
     } finally {
       setLoading(false);
