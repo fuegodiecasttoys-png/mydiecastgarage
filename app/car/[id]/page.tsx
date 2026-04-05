@@ -140,6 +140,26 @@ export default function CarDetail() {
 
     loadItem()
   }, [id, router])
+  async function handleDelete() {
+  if (!item) return
+
+  const confirmed = confirm("Delete this diecast? This cannot be undone.")
+
+  if (!confirmed) return
+
+  const { error } = await supabase
+    .from("items")
+    .delete()
+    .eq("id", item.id)
+
+  if (error) {
+    console.error(error)
+    alert("Error deleting item")
+    return
+  }
+
+  router.push("/mygarage")
+}
 
   async function handleSave() {
     if (!editItem) return
@@ -214,6 +234,25 @@ export default function CarDetail() {
               </button>
             )}
           </div>
+          <button
+  type="button"
+  onClick={handleDelete}
+  style={{
+    width: "100%",
+    marginBottom: 16,
+    padding: "12px 14px",
+    borderRadius: 12,
+    border: "1px solid rgba(239,68,68,0.35)",
+    background: "rgba(127,29,29,0.35)",
+    color: "#fecaca",
+    fontSize: 15,
+    fontWeight: 700,
+    cursor: "pointer",
+  }}
+>
+  Delete diecast
+</button>
+
         </div>
 
         <div
