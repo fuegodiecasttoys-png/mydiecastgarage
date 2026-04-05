@@ -1,9 +1,8 @@
 "use client";
 
-import { useEffect, type CSSProperties } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "./lib/supabaseClient";
-import Link from "next/link";
 
 const buttonStyle: CSSProperties = {
   minHeight: 92,
@@ -31,7 +30,7 @@ const cardStyle: CSSProperties = {
 
 export default function Home() {
   const router = useRouter();
-
+  const [checkingAuth, setCheckingAuth] = useState(true);
   // 🔒 Logout
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
@@ -42,21 +41,28 @@ export default function Home() {
       return;
     }
 
-    router.push("/login");
+    router.replace("/login");
   };
 
   // 🔒 Check user logged in
   useEffect(() => {
     async function checkUser() {
-      const { data } = await supabase.auth.getUser();
+  const { data } = await supabase.auth.getUser();
 
-      if (!data.user) {
-        router.push("/login");
-      }
-    }
+  if (!data.user) {
+    router.push("/login");
+    return;
+  }
+
+  setCheckingAuth(false);
+}
+
 
     checkUser();
   }, [router]);
+  if (checkingAuth) {
+  return null;
+}
 
  return (
   <div
