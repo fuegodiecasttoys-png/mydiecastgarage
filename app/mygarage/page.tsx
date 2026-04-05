@@ -1,8 +1,8 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { supabase } from "../lib/supabaseClient"
 import Link from "next/link"
+import { useEffect, useMemo, useState } from "react"
+import { supabase } from "../lib/supabaseClient"
 
 type Item = {
   id: number
@@ -23,157 +23,190 @@ type Item = {
   chase: boolean | null
 }
 
+const pageStyle = {
+  minHeight: "100vh",
+  background: "#0f0f0f",
+  padding: 20,
+  color: "#fff",
+  fontFamily: 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
+} as const
+
+const containerStyle = {
+  maxWidth: 520,
+  margin: "0 auto",
+} as const
+
+const homeLinkStyle = {
+  position: "absolute",
+  top: 20,
+  left: 20,
+  fontSize: 20,
+  textDecoration: "none",
+  color: "white",
+  zIndex: 10,
+} as const
+
+const searchInputStyle = {
+  flex: 1,
+  padding: "10px 12px",
+  borderRadius: 8,
+  border: "1px solid #333",
+  background: "#111",
+  color: "white",
+  fontSize: 14,
+  boxSizing: "border-box" as const,
+} as const
+
+const searchButtonStyle = {
+  width: 44,
+  borderRadius: 8,
+  border: "1px solid rgba(255,255,255,0.2)",
+  background: "rgba(255,255,255,0.05)",
+  color: "white",
+  fontSize: 16,
+  cursor: "pointer",
+} as const
+
+const sortSelectStyle = {
+  width: "100%",
+  padding: "10px",
+  marginBottom: 10,
+  borderRadius: 8,
+  border: "1px solid #333",
+  background: "#111",
+  color: "white",
+  fontSize: 14,
+} as const
+
+const exportButtonStyle = {
+  padding: "8px 14px",
+  borderRadius: 8,
+  border: "1px solid rgba(255,255,255,0.2)",
+  background: "rgba(255,255,255,0.05)",
+  color: "white",
+  fontSize: 13,
+  cursor: "pointer",
+  opacity: 0.6,
+} as const
+
+const cardStyle = {
+  display: "flex",
+  gap: 12,
+  alignItems: "center",
+  padding: 12,
+  borderRadius: 18,
+  background: "linear-gradient(180deg, #1a1a1a 0%, #0f0f0f 100%)",
+  border: "1px solid rgba(255,255,255,0.08)",
+  position: "relative" as const,
+  boxShadow: "0 10px 30px rgba(0,0,0,0.4)",
+  transition: "all 0.2s ease",
+} as const
+
+const imageWrapStyle = {
+  width: 70,
+  height: 70,
+  borderRadius: 16,
+  overflow: "hidden",
+  flexShrink: 0,
+  background: "#111",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  border: "1px solid rgba(255,255,255,0.10)",
+  boxShadow: "0 6px 18px rgba(0,0,0,0.5)",
+} as const
+
+const scaleBadgeStyle = {
+  position: "absolute" as const,
+  right: 10,
+  bottom: 10,
+  fontSize: 12,
+  fontWeight: 600,
+  padding: "4px 10px",
+  borderRadius: 10,
+  border: "1px solid rgba(255,255,255,0.18)",
+  background: "rgba(255,255,255,0.04)",
+} as const
+
 export default function MyGarage() {
   const [items, setItems] = useState<Item[]>([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState("")
   const [sort, setSort] = useState("newest")
   const [page, setPage] = useState(1)
+
   const itemsPerPage = 20
 
   useEffect(() => {
-    const fetchItems = async () => {
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+    async function fetchItems() {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
 
-  if (!user) {
-    setLoading(false)
-    return
-  }
+      if (!user) {
+        setLoading(false)
+        return
+      }
 
-  const { data, error } = await supabase
-    .from("items")
-    .select("*")
-    .eq("user_id", user.id)
-    .order("created_at", { ascending: false })
+      const { data, error } = await supabase
+        .from("items")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
 
-  if (!error) {
-    setItems((data as Item[]) || [])
-  }
+      if (!error) {
+        setItems((data as Item[]) || [])
+      }
 
-  setLoading(false)
-}
-
+      setLoading(false)
+    }
 
     fetchItems()
   }, [])
 
-  const handleExport = () => {
-    const headers = [
-      "Name",
-      "Brand",
-      "Color",
-      "Scale",
-      "Type",
-      "Main #",
-      "Sub #",
-      "Series",
-      "Year",
-      "Location",
-      "Qty",
-    ]
+  const filteredItems = useMemo(() => {
+    const text = search.toLowerCase().trim()
 
-    const rows = items.map((item) => [
-      item.name ?? "",
-      item.brand ?? "",
-      item.color ?? "",
-      item.scale ?? "",
-      item.type ?? "",
-      item.main_number ?? "",
-      item.sub_number ?? "",
-      item.series ?? "",
-      item.year ?? "",
-      item.location ?? "",
-      item.qty ?? "",
-    ])
+    if (!text) return items
 
-    const csvContent = [headers, ...rows]
-      .map((row) => row.join(","))
-      .join("\n")
+    return items.filter((item) => {
+      return (
+        item.name?.toLowerCase().includes(text) ||
+        item.brand?.toLowerCase().includes(text) ||
+        item.color?.toLowerCase().includes(text)
+      )
+    })
+  }, [items, search])
 
-    const blob = new Blob([csvContent], {
-      type: "text/csv;charset=utf-8;",
+  const sortedItems = useMemo(() => {
+    const sorted = [...filteredItems]
+
+    sorted.sort((a, b) => {
+      if (sort === "newest") return (b.id ?? 0) - (a.id ?? 0)
+      if (sort === "oldest") return (a.id ?? 0) - (b.id ?? 0)
+      if (sort === "az") return (a.name ?? "").localeCompare(b.name ?? "")
+      if (sort === "za") return (b.name ?? "").localeCompare(a.name ?? "")
+      return 0
     })
 
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement("a")
-    link.href = url
-    link.download = "my_diecast_garage.csv"
-    link.click()
-    URL.revokeObjectURL(url)
-  }
+    return sorted
+  }, [filteredItems, sort])
 
-  const filteredItems = items.filter((item) => {
-    const text = search.toLowerCase()
-
-    return (
-      item.name?.toLowerCase().includes(text) ||
-      item.brand?.toLowerCase().includes(text) ||
-      item.color?.toLowerCase().includes(text)
-    )
-  })
-  const sortedItems = [...filteredItems].sort((a, b) => {
-  if (sort === "newest") {
-    return (b.id ?? 0) - (a.id ?? 0)
-  }
-
-  if (sort === "oldest") {
-    return (a.id ?? 0) - (b.id ?? 0)
-  }
-
-  if (sort === "az") {
-    return (a.name ?? "").localeCompare(b.name ?? "")
-  }
-
-  if (sort === "za") {
-    return (b.name ?? "").localeCompare(a.name ?? "")
-  }
-
-  return 0
-})
-
+  const totalPages = Math.ceil(sortedItems.length / itemsPerPage)
   const startIndex = (page - 1) * itemsPerPage
-const paginatedItems = sortedItems.slice(
-  startIndex,
-  startIndex + itemsPerPage
-)
+  const paginatedItems = sortedItems.slice(startIndex, startIndex + itemsPerPage)
 
-const totalPages = Math.ceil(filteredItems.length / itemsPerPage)
-
+  useEffect(() => {
+    setPage(1)
+  }, [search, sort])
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: "#0f0f0f",
-        padding: 20,
-        color: "#fff",
-        fontFamily:
-          'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
-      }}
-    >
-      <Link
-  href="/"
-  style={{
-    position: "absolute",
-    top: 20,
-    left: 20,
-    fontSize: 20,
-    textDecoration: "none",
-    color: "white",
-    zIndex: 10,
-  }}
->
-  🏠
-</Link>
-      <div
-        style={{
-          maxWidth: 520,
-          margin: "0 auto",
-        }}
-      >
-        {/* HEADER */}
+    <div style={pageStyle}>
+      <Link href="/" style={homeLinkStyle}>
+        🏠
+      </Link>
+
+      <div style={containerStyle}>
         <div style={{ textAlign: "center", marginBottom: 22 }}>
           <img
             src="/logo.png"
@@ -197,80 +230,44 @@ const totalPages = Math.ceil(filteredItems.length / itemsPerPage)
           </h1>
 
           <div
-  style={{
-    display: "flex",
-    gap: 8,
-    marginTop: 10,
-    marginBottom: 10,
-  }}
->
-  <input
-    type="text"
-    placeholder="Search your garage..."
-    value={search}
-    onChange={(e) => setSearch(e.target.value)}
-    style={{
-      flex: 1,
-      padding: "10px 12px",
-      borderRadius: 8,
-      border: "1px solid #333",
-      background: "#111",
-      color: "white",
-      fontSize: 14,
-      boxSizing: "border-box",
-    }}
-  />
+            style={{
+              display: "flex",
+              gap: 8,
+              marginTop: 10,
+              marginBottom: 10,
+            }}
+          >
+            <input
+              type="text"
+              placeholder="Search your garage..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              style={searchInputStyle}
+            />
 
-  <button
-    type="button"
-    style={{
-      width: 44,
-      borderRadius: 8,
-      border: "1px solid rgba(255,255,255,0.2)",
-      background: "rgba(255,255,255,0.05)",
-      color: "white",
-      fontSize: 16,
-      cursor: "pointer",
-    }}
-  >
-    🔎
-  </button>
-</div>
-<select
-  value={sort}
-  onChange={(e) => setSort(e.target.value)}
-  style={{
-    width: "100%",
-    padding: "10px",
-    marginBottom: 10,
-    borderRadius: 8,
-    border: "1px solid #333",
-    background: "#111",
-    color: "white",
-    fontSize: 14
-  }}
->
-  <option value="newest">Newest</option>
-  <option value="oldest">Oldest</option>
-  <option value="az">A → Z</option>
-  <option value="za">Z → A</option>
-</select>
+            <button type="button" style={searchButtonStyle}>
+              🔎
+            </button>
+          </div>
+
+          <select
+            value={sort}
+            onChange={(e) => setSort(e.target.value)}
+            style={sortSelectStyle}
+          >
+            <option value="newest">Newest</option>
+            <option value="oldest">Oldest</option>
+            <option value="az">A → Z</option>
+            <option value="za">Z → A</option>
+          </select>
+
           <div style={{ marginTop: 10, marginBottom: 10 }}>
             <button
-  onClick={() => alert("Pro feature 💎")}
-  style={{
-    padding: "8px 14px",
-    borderRadius: 8,
-    border: "1px solid rgba(255,255,255,0.2)",
-    background: "rgba(255,255,255,0.05)",
-    color: "white",
-    fontSize: 13,
-    cursor: "pointer",
-    opacity: 0.6,
-  }}
->
-  Export to Excel 🔒
-</button>
+              onClick={() => alert("Pro feature 💎")}
+              style={exportButtonStyle}
+            >
+              Export to Excel 🔒
+            </button>
           </div>
 
           <div
@@ -280,19 +277,10 @@ const totalPages = Math.ceil(filteredItems.length / itemsPerPage)
               fontWeight: 600,
             }}
           >
-            <div
-  style={{
-    opacity: 0.72,
-    fontSize: 16,
-    fontWeight: 600,
-  }}
->
-  {items.length} diecasts in your garage 🚗🔥
-</div>
+            {items.length} diecasts in your garage 🚗🔥
           </div>
         </div>
 
-        {/* LOADING */}
         {loading && (
           <p
             style={{
@@ -305,11 +293,10 @@ const totalPages = Math.ceil(filteredItems.length / itemsPerPage)
           </p>
         )}
 
-        {/* LIST */}
-        {!loading && (
+        {!loading && paginatedItems.length > 0 && (
           <div style={{ display: "grid", gap: 16 }}>
             {paginatedItems.map((item) => (
-              <a
+              <Link
                 key={item.id}
                 href={`/car/${item.id}`}
                 style={{
@@ -345,37 +332,8 @@ const totalPages = Math.ceil(filteredItems.length / itemsPerPage)
                   )}
                 </div>
 
-                <div
-  style={{
-    display: "flex",
-    gap: 12,
-    alignItems: "center",
-    padding: 12,
-    borderRadius: 18,
-    background:
-      "linear-gradient(180deg, #1a1a1a 0%, #0f0f0f 100%)",
-    border: "1px solid rgba(255,255,255,0.08)",
-    position: "relative",
-    boxShadow: "0 10px 30px rgba(0,0,0,0.4)",
-    transition: "all 0.2s ease",
-  }}
->
-                  {/* IMAGE */}
-                  <div
-  style={{
-    width: 70,
-    height: 70,
-    borderRadius: 16,
-    overflow: "hidden",
-    flexShrink: 0,
-    background: "#111",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    border: "1px solid rgba(255,255,255,0.10)",
-    boxShadow: "0 6px 18px rgba(0,0,0,0.5)",
-  }}
->
+                <div style={cardStyle}>
+                  <div style={imageWrapStyle}>
                     {item.photo_url ? (
                       <img
                         src={item.photo_url}
@@ -399,7 +357,6 @@ const totalPages = Math.ceil(filteredItems.length / itemsPerPage)
                     )}
                   </div>
 
-                  {/* INFO */}
                   <div style={{ minWidth: 0, flex: 1 }}>
                     <div
                       style={{
@@ -415,19 +372,19 @@ const totalPages = Math.ceil(filteredItems.length / itemsPerPage)
                     </div>
 
                     <div
-  style={{
-    fontSize: 16,
-    fontWeight: 800,
-    lineHeight: 1.15,
-    marginBottom: 6,
-    wordBreak: "break-word",
-    paddingRight: 72,
-    color: "#ffffff",
-    letterSpacing: "-0.02em",
-  }}
->
-  {item.name ?? "Unnamed model"}
-</div>
+                      style={{
+                        fontSize: 16,
+                        fontWeight: 800,
+                        lineHeight: 1.15,
+                        marginBottom: 6,
+                        wordBreak: "break-word",
+                        paddingRight: 72,
+                        color: "#ffffff",
+                        letterSpacing: "-0.02em",
+                      }}
+                    >
+                      {item.name ?? "Unnamed model"}
+                    </div>
 
                     <div
                       style={{
@@ -437,86 +394,84 @@ const totalPages = Math.ceil(filteredItems.length / itemsPerPage)
                       }}
                     >
                       {item.color ?? "-"}
-                      <div
-  style={{
-    display: "flex",
-    gap: 6,
-    marginTop: 6,
-    flexWrap: "wrap",
-  }}
->
-  {item.sth && (
-    <span
-      style={{
-        background: "#f59e0b",
-        color: "#000",
-        padding: "2px 8px",
-        borderRadius: 6,
-        fontSize: 11,
-        fontWeight: 700,
-      }}
-    >
-      🔥 STH
-    </span>
-  )}
+                    </div>
 
-  {item.th && (
-    <span
-      style={{
-        background: "#22c55e",
-        color: "#000",
-        padding: "2px 8px",
-        borderRadius: 6,
-        fontSize: 11,
-        fontWeight: 700,
-      }}
-    >
-      TH
-    </span>
-  )}
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: 6,
+                        marginTop: 6,
+                        flexWrap: "wrap",
+                      }}
+                    >
+                      {item.sth && (
+                        <span
+                          style={{
+                            background: "#f59e0b",
+                            color: "#000",
+                            padding: "2px 8px",
+                            borderRadius: 6,
+                            fontSize: 11,
+                            fontWeight: 700,
+                          }}
+                        >
+                          🔥 STH
+                        </span>
+                      )}
 
-  {item.chase && (
-    <span
-      style={{
-        background: "#e11d48",
-        color: "#fff",
-        padding: "2px 8px",
-        borderRadius: 6,
-        fontSize: 11,
-        fontWeight: 700,
-      }}
-    >
-      Chase
-    </span>
-  )}
-</div>
+                      {item.th && (
+                        <span
+                          style={{
+                            background: "#22c55e",
+                            color: "#000",
+                            padding: "2px 8px",
+                            borderRadius: 6,
+                            fontSize: 11,
+                            fontWeight: 700,
+                          }}
+                        >
+                          TH
+                        </span>
+                      )}
+
+                      {item.chase && (
+                        <span
+                          style={{
+                            background: "#e11d48",
+                            color: "#fff",
+                            padding: "2px 8px",
+                            borderRadius: 6,
+                            fontSize: 11,
+                            fontWeight: 700,
+                          }}
+                        >
+                          Chase
+                        </span>
+                      )}
                     </div>
                   </div>
 
-                  {/* SCALE */}
-                  <span
-                    style={{
-                      position: "absolute",
-                      right: 10,
-                      bottom: 10,
-                      fontSize: 12,
-                      fontWeight: 600,
-                      padding: "4px 10px",
-                      borderRadius: 10,
-                      border: "1px solid rgba(255,255,255,0.18)",
-                      background: "rgba(255,255,255,0.04)",
-                    }}
-                  >
-                    {item.scale ?? "-"}
-                  </span>
+                  <span style={scaleBadgeStyle}>{item.scale ?? "-"}</span>
                 </div>
-              </a>
+              </Link>
             ))}
           </div>
         )}
 
-        {/* EMPTY */}
-        {!loading && filteredItems.length === 0 && (
+        {!loading && items.length === 0 && (
+          <div
+            style={{
+              marginTop: 30,
+              opacity: 0.6,
+              fontSize: 16,
+              textAlign: "center",
+            }}
+          >
+            Your garage is empty.
+          </div>
+        )}
+
+        {!loading && items.length > 0 && filteredItems.length === 0 && (
           <div
             style={{
               marginTop: 30,
@@ -528,64 +483,51 @@ const totalPages = Math.ceil(filteredItems.length / itemsPerPage)
             No results found.
           </div>
         )}
-{totalPages > 1 && (
-  <div
-    style={{
-      display: "flex",
-      justifyContent: "center",
-      gap: 10,
-      marginTop: 20,
-    }}
-  >
-    <button
-      onClick={() => setPage((p) => Math.max(p - 1, 1))}
-      disabled={page === 1}
-      style={{
-        padding: "6px 12px",
-        borderRadius: 6,
-        border: "1px solid #333",
-        background: "#111",
-        color: "white",
-        opacity: page === 1 ? 0.4 : 1,
-        cursor: "pointer",
-      }}
-    >
-      ⬅️
-    </button>
 
-    <span style={{ alignSelf: "center", fontSize: 14 }}>
-      {page} / {totalPages}
-    </span>
-
-    <button
-      onClick={() =>
-        setPage((p) => Math.min(p + 1, totalPages))
-      }
-      disabled={page === totalPages}
-      style={{
-        padding: "6px 12px",
-        borderRadius: 6,
-        border: "1px solid #333",
-        background: "#111",
-        color: "white",
-        opacity: page === totalPages ? 0.4 : 1,
-        cursor: "pointer",
-      }}
-    >
-      ➡️
-    </button>
-  </div>
-)}
-
-        {!loading && items.length === 0 && (
+        {!loading && totalPages > 1 && (
           <div
             style={{
-              marginTop: 30,
-              opacity: 0.6,
-              fontSize: 16,
+              display: "flex",
+              justifyContent: "center",
+              gap: 10,
+              marginTop: 20,
             }}
           >
-            Your garage is empty.
+            <button
+              onClick={() => setPage((p) => Math.max(p - 1, 1))}
+              disabled={page === 1}
+              style={{
+                padding: "6px 12px",
+                borderRadius: 6,
+                border: "1px solid #333",
+                background: "#111",
+                color: "white",
+                opacity: page === 1 ? 0.4 : 1,
+                cursor: page === 1 ? "not-allowed" : "pointer",
+              }}
+            >
+              ⬅️
+            </button>
+
+            <span style={{ alignSelf: "center", fontSize: 14 }}>
+              {page} / {totalPages}
+            </span>
+
+            <button
+              onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
+              disabled={page === totalPages}
+              style={{
+                padding: "6px 12px",
+                borderRadius: 6,
+                border: "1px solid #333",
+                background: "#111",
+                color: "white",
+                opacity: page === totalPages ? 0.4 : 1,
+                cursor: page === totalPages ? "not-allowed" : "pointer",
+              }}
+            >
+              ➡️
+            </button>
           </div>
         )}
       </div>
