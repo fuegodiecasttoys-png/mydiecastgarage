@@ -80,7 +80,8 @@ export default function SignupPage() {
   return;
 }
 
-      alert("Check your email to finish creating your account.");
+      alert("Account created successfully. You can now sign in.");
+
     } finally {
       setLoading(false);
     }
