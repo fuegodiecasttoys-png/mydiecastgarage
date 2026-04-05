@@ -72,9 +72,13 @@ export default function SignupPage() {
       });
 
       if (error) {
-        alert(error.message);
-        return;
-      }
+  if (error.message.includes("already registered")) {
+    alert("This email is already registered.");
+  } else {
+    alert(error.message);
+  }
+  return;
+}
 
       alert("Check your email to finish creating your account.");
     } finally {
