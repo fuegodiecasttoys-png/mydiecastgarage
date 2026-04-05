@@ -149,7 +149,7 @@ export default function SignupPage() {
               letterSpacing: "-0.04em",
             }}
           >
-            Create account tesr 99999999
+            Create account
           </h1>
 
           <p
@@ -191,7 +191,6 @@ export default function SignupPage() {
             <input
               id="username"
               type="text"
-              placeholder="yourusername"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               style={inputStyle}
@@ -205,7 +204,6 @@ export default function SignupPage() {
             <input
               id="name"
               type="text"
-              placeholder="John"
               value={name}
               onChange={(e) => setName(e.target.value)}
               style={inputStyle}
@@ -219,7 +217,6 @@ export default function SignupPage() {
             <input
               id="lastName"
               type="text"
-              placeholder="Doe"
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
               style={inputStyle}
@@ -233,7 +230,6 @@ export default function SignupPage() {
             <input
               id="password"
               type={showPassword ? "text" : "password"}
-              placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               style={inputStyle}
@@ -247,7 +243,6 @@ export default function SignupPage() {
             <input
               id="confirmPassword"
               type={showConfirmPassword ? "text" : "password"}
-              placeholder="Confirm password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               style={inputStyle}
