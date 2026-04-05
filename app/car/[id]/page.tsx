@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, type CSSProperties } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { supabase } from "../../lib/supabaseClient"
 
@@ -23,37 +23,146 @@ type Item = {
   qty: number | null
 }
 
+const pageStyle: CSSProperties = {
+  minHeight: "100vh",
+  background: "#0f0f0f",
+  color: "#fff",
+  padding: 20,
+  fontFamily: 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
+}
+
+const containerStyle: CSSProperties = {
+  width: "100%",
+  maxWidth: 420,
+  margin: "0 auto",
+}
+
+const topBarStyle: CSSProperties = {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  marginBottom: 20,
+}
+
+const ghostButtonStyle: CSSProperties = {
+  background: "none",
+  border: "none",
+  color: "#fff",
+  padding: 0,
+  cursor: "pointer",
+  fontSize: 16,
+}
+
+const rowStyle: CSSProperties = {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  gap: 12,
+  marginBottom: 12,
+  width: "100%",
+}
+
+const labelStyle: CSSProperties = {
+  opacity: 0.6,
+  minWidth: 88,
+}
+
+const valueStyle: CSSProperties = {
+  textAlign: "right",
+  flex: 1,
+  wordBreak: "break-word",
+}
+
+const inputStyle: CSSProperties = {
+  flex: 1,
+  minWidth: 0,
+  maxWidth: 170,
+  background: "#111",
+  color: "#fff",
+  border: "1px solid #444",
+  borderRadius: 10,
+  padding: "8px 10px",
+  outline: "none",
+  textAlign: "right",
+}
+
+const notesInputStyle: CSSProperties = {
+  width: "100%",
+  background: "#111",
+  color: "#fff",
+  border: "1px solid #444",
+  borderRadius: 10,
+  padding: "10px 12px",
+  outline: "none",
+  minHeight: 90,
+  resize: "vertical",
+  fontFamily: "system-ui",
+  boxSizing: "border-box",
+}
+
 export default function CarDetail() {
-  const [isEditing, setIsEditing] = useState(false)
   const { id } = useParams()
   const router = useRouter()
-  const [showImageModal, setShowImageModal] = useState(false)
 
   const [item, setItem] = useState<Item | null>(null)
   const [editItem, setEditItem] = useState<Item | null>(null)
+  const [isEditing, setIsEditing] = useState(false)
+  const [showImageModal, setShowImageModal] = useState(false)
+  const [loading, setLoading] = useState(true)
 
-  const handleSave = async () => {
+  useEffect(() => {
+    async function loadItem() {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+
+      if (!user) {
+        router.replace("/login")
+        return
+      }
+
+      const { data, error } = await supabase
+        .from("items")
+        .select("*")
+        .eq("id", id)
+        .eq("user_id", user.id)
+        .single()
+
+      if (error) {
+        console.error(error)
+        router.replace("/mygarage")
+        return
+      }
+
+      setItem(data)
+      setLoading(false)
+    }
+
+    loadItem()
+  }, [id, router])
+
+  async function handleSave() {
     if (!editItem) return
 
     const qtyValue =
-      editItem.qty === null || editItem.qty === undefined || editItem.qty === ("" as any)
+      editItem.qty === null || editItem.qty === undefined || editItem.qty === ("" as never)
         ? null
         : Number(editItem.qty)
 
     const { data, error } = await supabase
       .from("items")
       .update({
-        brand: editItem.brand,
-        name: editItem.name,
-        color: editItem.color,
-        scale: editItem.scale,
+        brand: editItem.brand?.trim() || null,
+        name: editItem.name?.trim() || null,
+        color: editItem.color?.trim() || null,
+        scale: editItem.scale?.trim() || null,
         qty: Number.isNaN(qtyValue) ? null : qtyValue,
-        main_number: editItem.main_number,
-        sub_number: editItem.sub_number,
-        series: editItem.series,
-        year: editItem.year,
-        location: editItem.location,
-        notes: editItem.notes,
+        main_number: editItem.main_number?.trim() || null,
+        sub_number: editItem.sub_number?.trim() || null,
+        series: editItem.series?.trim() || null,
+        year: editItem.year?.trim() || null,
+        location: editItem.location?.trim() || null,
+        notes: editItem.notes?.trim() || null,
       })
       .eq("id", editItem.id)
       .select()
@@ -69,155 +178,55 @@ export default function CarDetail() {
     setIsEditing(false)
   }
 
-  useEffect(() => {
-    const loadItem = async () => {
-      const { data, error } = await supabase
-        .from("items")
-        .select("*")
-        .eq("id", id)
-        .single()
-
-      if (error) {
-        console.error(error)
-        return
-      }
-
-      setItem(data)
-    }
-
-    loadItem()
-  }, [id])
-
+  if (loading) return null
   if (!item) return null
 
-  const rowStyle: React.CSSProperties = {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    gap: 12,
-    marginBottom: 10,
-    width: "100%",
-  }
-
-  const labelStyle: React.CSSProperties = {
-    opacity: 0.6,
-    minWidth: 88,
-  }
-
-  const valueStyle: React.CSSProperties = {
-    textAlign: "right",
-    flex: 1,
-  }
-
-  const inputStyle: React.CSSProperties = {
-    flex: 1,
-    minWidth: 0,
-    maxWidth: 150,
-    background: "#111",
-    color: "#fff",
-    border: "1px solid #444",
-    borderRadius: 8,
-    padding: "8px 10px",
-    outline: "none",
-    textAlign: "right",
-  }
-
-  const notesInputStyle: React.CSSProperties = {
-    width: "100%",
-    background: "#111",
-    color: "#fff",
-    border: "1px solid #444",
-    borderRadius: 8,
-    padding: "10px 12px",
-    outline: "none",
-    minHeight: 90,
-    resize: "vertical",
-    fontFamily: "system-ui",
-  }
-
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: "#0f0f0f",
-        color: "#fff",
-        padding: 20,
-        fontFamily: "system-ui",
-      }}
-    >
-      <div
-        style={{
-          width: "100%",
-          maxWidth: 200,
-          margin: "0 auto",
-        }}
-      >
-        <div style={{ display: "flex", gap: 10, marginBottom: 20, justifyContent: "flex-start" }}>
+    <div style={pageStyle}>
+      <div style={containerStyle}>
+        <div style={topBarStyle}>
           <button
-            onClick={() => {
-              if (!isEditing) {
-                setEditItem({ ...item })
-                setIsEditing(true)
-              } else {
-                setEditItem(null)
-                setIsEditing(false)
-              }
-            }}
-            style={{
-              background: "none",
-              border: "none",
-              color: "#fff",
-              padding: 0,
-              cursor: "pointer",
-              fontSize: 16,
-            }}
+            onClick={() => router.push("/mygarage")}
+            style={{ ...ghostButtonStyle, color: "#aaa" }}
           >
-            {isEditing ? "Cancel" : "Edit"}
+            ← Back
           </button>
 
-          {isEditing && (
+          <div style={{ display: "flex", gap: 14 }}>
             <button
-              onClick={handleSave}
-              style={{
-                background: "none",
-                border: "none",
-                color: "#fff",
-                padding: 0,
-                cursor: "pointer",
-                fontSize: 16,
+              onClick={() => {
+                if (!isEditing) {
+                  setEditItem({ ...item })
+                  setIsEditing(true)
+                } else {
+                  setEditItem(null)
+                  setIsEditing(false)
+                }
               }}
+              style={ghostButtonStyle}
             >
-              Save
+              {isEditing ? "Cancel" : "Edit"}
             </button>
-          )}
+
+            {isEditing && (
+              <button onClick={handleSave} style={ghostButtonStyle}>
+                Save
+              </button>
+            )}
+          </div>
         </div>
 
-        {/* BACK */}
-        <button
-          onClick={() => router.push("/mygarage")}
-          style={{
-            marginBottom: 20,
-            background: "none",
-            border: "none",
-            color: "#aaa",
-            cursor: "pointer",
-            padding: 0,
-            fontSize: 16,
-          }}
-        >
-          ← Back
-        </button>
-
-        {/* IMAGE */}
         <div
           style={{
             width: "100%",
-            maxWidth: 200,
+            maxWidth: 240,
             aspectRatio: "1",
-            borderRadius: 16,
+            borderRadius: 18,
             overflow: "hidden",
             background: "#222",
             margin: "0 auto 20px",
+            boxShadow: "0 10px 30px rgba(0,0,0,0.4)",
+            border: "1px solid rgba(255,255,255,0.08)",
           }}
         >
           {item.photo_url && (
@@ -225,17 +234,105 @@ export default function CarDetail() {
               src={item.photo_url}
               alt={item.name || "Diecast"}
               onClick={() => setShowImageModal(true)}
-style={{
-  width: "100%",
-  height: "100%",
-  objectFit: "cover",
-  cursor: "pointer"
-}}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                cursor: "pointer",
+                display: "block",
+              }}
             />
           )}
+        </div>
+
+        <div style={{ marginBottom: 16, textAlign: "center" }}>
+          <div
+            style={{
+              fontSize: 24,
+              fontWeight: 800,
+              lineHeight: 1.1,
+              marginBottom: 6,
+              letterSpacing: "-0.03em",
+            }}
+          >
+            {item.name ?? "Unnamed model"}
           </div>
 
-        <div style={{ marginBottom: 12, width: "100%" }}>
+          <div
+            style={{
+              opacity: 0.72,
+              fontSize: 14,
+              fontWeight: 600,
+            }}
+          >
+            {item.brand ?? "Unknown brand"}
+          </div>
+        </div>
+
+        <div
+          style={{
+            display: "flex",
+            gap: 8,
+            flexWrap: "wrap",
+            justifyContent: "center",
+            marginBottom: 20,
+          }}
+        >
+          {item.sth && (
+            <span
+              style={{
+                background: "#f59e0b",
+                color: "#000",
+                padding: "4px 10px",
+                borderRadius: 999,
+                fontSize: 12,
+                fontWeight: 700,
+              }}
+            >
+              🔥 STH
+            </span>
+          )}
+
+          {item.th && (
+            <span
+              style={{
+                background: "#22c55e",
+                color: "#000",
+                padding: "4px 10px",
+                borderRadius: 999,
+                fontSize: 12,
+                fontWeight: 700,
+              }}
+            >
+              TH
+            </span>
+          )}
+
+          {item.chase && (
+            <span
+              style={{
+                background: "#e11d48",
+                color: "#fff",
+                padding: "4px 10px",
+                borderRadius: 999,
+                fontSize: 12,
+                fontWeight: 700,
+              }}
+            >
+              Chase
+            </span>
+          )}
+        </div>
+
+        <div
+          style={{
+            background: "linear-gradient(180deg, #171717 0%, #101010 100%)",
+            border: "1px solid rgba(255,255,255,0.08)",
+            borderRadius: 18,
+            padding: 16,
+            marginBottom: 16,
+          }}
+        >
           <div style={rowStyle}>
             <span style={labelStyle}>Brand</span>
             {isEditing ? (
@@ -248,7 +345,7 @@ style={{
                 style={inputStyle}
               />
             ) : (
-              <span style={valueStyle}>{item.brand}</span>
+              <span style={valueStyle}>{item.brand ?? "-"}</span>
             )}
           </div>
 
@@ -264,7 +361,7 @@ style={{
                 style={inputStyle}
               />
             ) : (
-              <span style={valueStyle}>{item.name}</span>
+              <span style={valueStyle}>{item.name ?? "-"}</span>
             )}
           </div>
 
@@ -280,7 +377,7 @@ style={{
                 style={inputStyle}
               />
             ) : (
-              <span style={valueStyle}>{item.color}</span>
+              <span style={valueStyle}>{item.color ?? "-"}</span>
             )}
           </div>
 
@@ -296,7 +393,7 @@ style={{
                 style={inputStyle}
               />
             ) : (
-              <span style={valueStyle}>{item.scale}</span>
+              <span style={valueStyle}>{item.scale ?? "-"}</span>
             )}
           </div>
 
@@ -324,17 +421,17 @@ style={{
           </div>
         </div>
 
-        {/* RAREZA */}
-        <div style={{ marginBottom: 14 }}>
-          {item.sth && <span style={{ color: "gold", marginRight: 10 }}>⭐ STH</span>}
-          {item.th && <span style={{ color: "silver", marginRight: 10 }}>⭐ TH</span>}
-          {item.chase && <span style={{ color: "orange" }}>⭐ Chase</span>}
-        </div>
-
-        {/* MODEL INFO */}
-        <div style={{ marginBottom: 14 }}>
+        <div
+          style={{
+            background: "linear-gradient(180deg, #171717 0%, #101010 100%)",
+            border: "1px solid rgba(255,255,255,0.08)",
+            borderRadius: 18,
+            padding: 16,
+            marginBottom: 16,
+          }}
+        >
           <div style={rowStyle}>
-            <span style={labelStyle}>Number:</span>
+            <span style={labelStyle}>Number</span>
             {isEditing ? (
               <input
                 type="text"
@@ -345,12 +442,12 @@ style={{
                 style={inputStyle}
               />
             ) : (
-              <span style={valueStyle}>{item.main_number}</span>
+              <span style={valueStyle}>{item.main_number ?? "-"}</span>
             )}
           </div>
 
           <div style={rowStyle}>
-            <span style={labelStyle}>Subnumber:</span>
+            <span style={labelStyle}>Subnumber</span>
             {isEditing ? (
               <input
                 type="text"
@@ -361,12 +458,12 @@ style={{
                 style={inputStyle}
               />
             ) : (
-              <span style={valueStyle}>{item.sub_number}</span>
+              <span style={valueStyle}>{item.sub_number ?? "-"}</span>
             )}
           </div>
 
           <div style={rowStyle}>
-            <span style={labelStyle}>Series:</span>
+            <span style={labelStyle}>Series</span>
             {isEditing ? (
               <input
                 type="text"
@@ -377,12 +474,12 @@ style={{
                 style={inputStyle}
               />
             ) : (
-              <span style={valueStyle}>{item.series}</span>
+              <span style={valueStyle}>{item.series ?? "-"}</span>
             )}
           </div>
 
           <div style={rowStyle}>
-            <span style={labelStyle}>Year:</span>
+            <span style={labelStyle}>Year</span>
             {isEditing ? (
               <input
                 type="text"
@@ -393,15 +490,12 @@ style={{
                 style={inputStyle}
               />
             ) : (
-              <span style={valueStyle}>{item.year}</span>
+              <span style={valueStyle}>{item.year ?? "-"}</span>
             )}
           </div>
-        </div>
 
-        {/* EXTRA */}
-        <div style={{ marginBottom: 14 }}>
-          <div style={rowStyle}>
-            <span style={labelStyle}>Location:</span>
+          <div style={{ ...rowStyle, marginBottom: 0 }}>
+            <span style={labelStyle}>Location</span>
             {isEditing ? (
               <input
                 type="text"
@@ -412,15 +506,23 @@ style={{
                 style={inputStyle}
               />
             ) : (
-              <span style={valueStyle}>{item.location}</span>
+              <span style={valueStyle}>{item.location ?? "-"}</span>
             )}
           </div>
         </div>
 
-        {/* NOTES */}
         {(isEditing || item.notes) && (
-          <div style={{ marginBottom: 10 }}>
-            <div style={{ opacity: 0.6, marginBottom: 6 }}>Notes</div>
+          <div
+            style={{
+              background: "linear-gradient(180deg, #171717 0%, #101010 100%)",
+              border: "1px solid rgba(255,255,255,0.08)",
+              borderRadius: 18,
+              padding: 16,
+            }}
+          >
+            <div style={{ opacity: 0.6, marginBottom: 8, fontSize: 14 }}>
+              Notes
+            </div>
 
             {isEditing ? (
               <textarea
@@ -431,37 +533,38 @@ style={{
                 style={notesInputStyle}
               />
             ) : (
-              <div>{item.notes}</div>
+              <div style={{ lineHeight: 1.5, wordBreak: "break-word" }}>
+                {item.notes}
+              </div>
             )}
           </div>
         )}
-        {showImageModal && (
-  <div
-    onClick={() => setShowImageModal(false)}
-    style={{
-      position: "fixed",
-      top: 0,
-      left: 0,
-      width: "100vw",
-      height: "100vh",
-      background: "rgba(0,0,0,0.9)",
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      zIndex: 999
-    }}
-  >
-    <img
-      src={item?.photo_url || ""}
-      style={{
-        maxWidth: "90%",
-        maxHeight: "90%",
-        borderRadius: 12
-      }}
-    />
-  </div>
-)}
 
+        {showImageModal && (
+          <div
+            onClick={() => setShowImageModal(false)}
+            style={{
+              position: "fixed",
+              inset: 0,
+              background: "rgba(0,0,0,0.9)",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              zIndex: 999,
+              padding: 20,
+            }}
+          >
+            <img
+              src={item.photo_url || ""}
+              alt={item.name || "Diecast"}
+              style={{
+                maxWidth: "90%",
+                maxHeight: "90%",
+                borderRadius: 12,
+              }}
+            />
+          </div>
+        )}
       </div>
     </div>
   )
