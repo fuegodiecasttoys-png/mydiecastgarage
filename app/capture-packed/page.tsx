@@ -9,6 +9,9 @@ import {
   type CSSProperties,
 } from "react"
 import { supabase } from "../lib/supabaseClient"
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+
 
 const FREE_LIMIT = 20
 
@@ -92,6 +95,7 @@ async function compressImage(file: File) {
 }
 
 export default function CapturePage() {
+  const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement | null>(null)
 
   const [file, setFile] = useState<File | null>(null)
@@ -195,6 +199,7 @@ export default function CapturePage() {
     setBrand("")
     setColor("")
     setScale("1:64")
+    setCustomScale("")
     setQty(1)
 
     setSth(false)
@@ -298,7 +303,7 @@ export default function CapturePage() {
         name: name.trim(),
         brand: brand.trim(),
         color: color.trim() || null,
-        scale: scale.trim() || null,
+        scale: (scale === "Other" ? customScale : scale).trim() || null,
         qty,
 
         sth,
@@ -351,7 +356,7 @@ export default function CapturePage() {
             }}
           />
         </div>
-<a
+<Link
   href="/"
   style={{
     position: "fixed",
@@ -364,7 +369,8 @@ export default function CapturePage() {
   }}
 >
   🏠
-</a>
+</Link>
+
         <div
           style={{
             borderTop: "1px solid rgba(255,255,255,0.08)",
