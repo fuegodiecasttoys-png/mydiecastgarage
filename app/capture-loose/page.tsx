@@ -10,8 +10,10 @@ import {
 } from "react";
 
 import { supabase } from "../lib/supabaseClient";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
-const FREE_LIMIT = 20
+const FREE_LIMIT = 50
 
 const SCALE_OPTIONS = [
   "1:64",
@@ -96,8 +98,8 @@ async function compressImage(file: File) {
   });
 }
 export default function CapturePage() {
+  const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement | null>(null)
-  const [user, setUser] = useState<any>(null);
   const [file, setFile] = useState<File | null>(null)
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
 
@@ -135,15 +137,7 @@ export default function CapturePage() {
   useEffect(() => {
     void fetchMonthlyCount()
   }, [])
-  useEffect(() => {
-  async function loadUser() {
-    const { data: { user } } = await supabase.auth.getUser();
-    console.log("USER:", user)
-    setUser(user);
-  }
-
-  loadUser();
-}, []);
+  
   useEffect(() => {
     return () => {
       if (previewUrl && previewUrl.startsWith("blob:")) {
@@ -206,6 +200,7 @@ export default function CapturePage() {
     setBrand("")
     setColor("")
     setScale("1:64")
+    setCustomScale("")
     setQty(1)
 
     setSth(false)
@@ -309,7 +304,7 @@ export default function CapturePage() {
         name: name.trim(),
         brand: brand.trim(),
         color: color.trim() || null,
-        scale: scale.trim() || null,
+        scale: (scale === "Other" ? customScale : scale).trim() || null,
         qty,
 
         sth,
@@ -334,6 +329,7 @@ export default function CapturePage() {
       await fetchMonthlyCount()
       setMessage("Diecast saved successfully ✅")
       resetForm()
+      router.push("/mygarage")
     } catch (err) {
       console.error(err)
       setErrorMessage("Unexpected error.")
@@ -362,7 +358,7 @@ export default function CapturePage() {
             }}
           />
         </div>
-         <a
+         <Link
   href="/"
   style={{
     position: "fixed",
@@ -375,7 +371,7 @@ export default function CapturePage() {
   }}
 >
   🏠
-</a>
+</Link>
         <div
           style={{
             borderTop: "1px solid rgba(255,255,255,0.08)",
