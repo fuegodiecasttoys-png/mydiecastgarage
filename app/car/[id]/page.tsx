@@ -215,17 +215,18 @@ export default function CarDetail() {
   type="button"
   onClick={handleDelete}
   style={{
-    width: "100%",
-    marginBottom: 16,
-    padding: "12px 14px",
-    borderRadius: 12,
-    border: "1px solid rgba(239,68,68,0.35)",
-    background: "rgba(127,29,29,0.35)",
-    color: "#fecaca",
-    fontSize: 15,
-    fontWeight: 700,
-    cursor: "pointer",
-  }}
+  width: "100%",
+  marginTop: 16,
+  marginBottom: 12,
+  padding: "10px 12px",
+  borderRadius: 10,
+  border: "1px solid rgba(239,68,68,0.25)",
+  background: "rgba(239,68,68,0.08)",
+  color: "#f87171",
+  fontSize: 14,
+  fontWeight: 600,
+  cursor: "pointer",
+}}
 >
   Delete diecast
 </button>
