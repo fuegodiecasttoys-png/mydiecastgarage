@@ -17,11 +17,16 @@ export default function SignupPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   async function handleSignup() {
+    const cleanEmail = email.trim().toLowerCase();
+    const cleanUsername = username.trim().toLowerCase();
+    const cleanName = name.trim();
+    const cleanLastName = lastName.trim();
+
     if (
-      !email ||
-      !username ||
-      !name ||
-      !lastName ||
+      !cleanEmail ||
+      !cleanUsername ||
+      !cleanName ||
+      !cleanLastName ||
       !password ||
       !confirmPassword
     ) {
@@ -34,49 +39,47 @@ export default function SignupPage() {
       return;
     }
 
-    const cleanUsername = username.trim().toLowerCase();
-
     setLoading(true);
 
-    const { data: existingUser, error: usernameError } = await supabase
-      .from("profiles")
-      .select("id")
-      .eq("username", cleanUsername)
-      .maybeSingle();
+    try {
+      const { data: existingUser, error: usernameError } = await supabase
+        .from("profiles")
+        .select("id")
+        .eq("username", cleanUsername)
+        .maybeSingle();
 
-    if (usernameError) {
-      setLoading(false);
-      alert(usernameError.message);
-      return;
-    }
+      if (usernameError) {
+        alert(usernameError.message);
+        return;
+      }
 
-    if (existingUser) {
-      setLoading(false);
-      alert("That username is already taken.");
-      return;
-    }
+      if (existingUser) {
+        alert("That username is already taken.");
+        return;
+      }
 
-    const { error } = await supabase.auth.signUp({
-      email: email.trim().toLowerCase(),
-      password,
-      options: {
-        emailRedirectTo: "https://www.mydiecastgarage.app/auth/callback",
-        data: {
-          username: cleanUsername,
-          name: name.trim(),
-          last_name: lastName.trim(),
+      const { error } = await supabase.auth.signUp({
+        email: cleanEmail,
+        password,
+        options: {
+          emailRedirectTo: "https://www.mydiecastgarage.app/auth/callback",
+          data: {
+            username: cleanUsername,
+            name: cleanName,
+            last_name: cleanLastName,
+          },
         },
-      },
-    });
+      });
 
-    setLoading(false);
+      if (error) {
+        alert(error.message);
+        return;
+      }
 
-    if (error) {
-      alert(error.message);
-      return;
+      alert("Check your email to finish creating your account.");
+    } finally {
+      setLoading(false);
     }
-
-    alert("Check your email to finish creating your account.");
   }
 
   return (
@@ -268,7 +271,7 @@ export default function SignupPage() {
             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
             style={toggleButtonStyle}
           >
-            {showConfirmPassword ? "Hide confirm" : "Show confirm"}
+            {showConfirmPassword ? "Hide confirm password" : "Show confirm password"}
           </button>
         </div>
 
