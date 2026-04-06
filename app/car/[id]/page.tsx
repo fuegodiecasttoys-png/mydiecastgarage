@@ -215,15 +215,15 @@ export default function CarDetail() {
   type="button"
   onClick={handleDelete}
   style={{
-  width: "100%",
-  marginTop: 16,
-  marginBottom: 12,
-  padding: "10px 12px",
-  borderRadius: 10,
+  alignSelf: "center",
+  marginTop: 10,
+  marginBottom: 10,
+  padding: "6px 12px",
+  borderRadius: 999,
   border: "1px solid rgba(239,68,68,0.25)",
-  background: "rgba(239,68,68,0.08)",
+  background: "rgba(239,68,68,0.06)",
   color: "#f87171",
-  fontSize: 14,
+  fontSize: 12,
   fontWeight: 600,
   cursor: "pointer",
 }}
