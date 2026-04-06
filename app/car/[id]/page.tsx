@@ -207,7 +207,10 @@ export default function CarDetail() {
         <div style={topBarStyle}>
           <button
             onClick={() => router.push("/mygarage")}
-            style={{ ...ghostButtonStyle, color: "#aaa" }}
+            style={{ ...ghostButtonStyle, color: "#aaa", 
+            alignSelf: "flex-start",
+          }}
+
           >
             ← Back
           </button>
@@ -236,6 +239,7 @@ export default function CarDetail() {
     display: "grid",
     gridTemplateColumns: "1fr auto 1fr",
     alignItems: "center",
+    justifyItems: "center",
     marginBottom: 20,
   }}
 >
