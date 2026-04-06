@@ -228,7 +228,7 @@ export default function CarDetail() {
   cursor: "pointer",
 }}
 >
-  Delete diecast
+  Delete
 </button>
           <div style={{ display: "flex", gap: 14 }}>
             <button
