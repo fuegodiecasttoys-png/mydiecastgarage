@@ -8,12 +8,10 @@ import {
   type ChangeEvent,
   type CSSProperties,
 } from "react"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { supabase } from "../lib/supabaseClient"
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-
-
-const FREE_LIMIT = 20
+import { BRANDS, FREE_ITEMS_LIMIT } from "../lib/constants"
 
 const SCALE_OPTIONS = [
   "1:64",
@@ -47,6 +45,7 @@ const inputStyle: CSSProperties = {
   color: "#fff",
   fontSize: 15,
   outline: "none",
+  boxSizing: "border-box",
 }
 
 const buttonStyle: CSSProperties = {
@@ -66,72 +65,72 @@ const disabledButtonStyle: CSSProperties = {
   background: "rgba(255,255,255,0.08)",
   cursor: "not-allowed",
 }
+
 async function compressImage(file: File) {
   return new Promise<File>((resolve) => {
-    const img = new Image();
-    const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d")!;
+    const img = new Image()
+    const canvas = document.createElement("canvas")
+    const ctx = canvas.getContext("2d")!
 
     img.onload = () => {
-      const maxWidth = 800;
-      const scale = Math.min(1, maxWidth / img.width);
+      const maxWidth = 800
+      const scale = Math.min(1, maxWidth / img.width)
 
-      canvas.width = Math.round(img.width * scale);
-      canvas.height = Math.round(img.height * scale);
+      canvas.width = Math.round(img.width * scale)
+      canvas.height = Math.round(img.height * scale)
 
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
 
       canvas.toBlob(
         (blob) => {
-          resolve(new File([blob!], file.name.replace(/\.\w+$/, ".jpg"), { type: "image/jpeg" }));
+          resolve(
+            new File([blob!], file.name.replace(/\.\w+$/, ".jpg"), {
+              type: "image/jpeg",
+            })
+          )
         },
         "image/jpeg",
         0.7
-      );
-    };
+      )
+    }
 
-    img.src = URL.createObjectURL(file);
-  });
+    img.src = URL.createObjectURL(file)
+  })
 }
 
 export default function CapturePage() {
-  const router = useRouter();
+  const router = useRouter()
   const fileInputRef = useRef<HTMLInputElement | null>(null)
 
   const [file, setFile] = useState<File | null>(null)
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
-
   const [name, setName] = useState("")
   const [brand, setBrand] = useState("")
   const [color, setColor] = useState("")
   const [scale, setScale] = useState("1:64")
   const [customScale, setCustomScale] = useState("")
-
   const [qty, setQty] = useState(1)
-
   const [sth, setSth] = useState(false)
   const [th, setTh] = useState(false)
   const [chase, setChase] = useState(false)
-
   const [mainNumber, setMainNumber] = useState("")
   const [subNumber, setSubNumber] = useState("")
   const [series, setSeries] = useState("")
   const [year, setYear] = useState("")
   const [location, setLocation] = useState("")
   const [notes, setNotes] = useState("")
-  const [value, setValue] = useState('')
-  
+
   const [loading, setLoading] = useState(false)
   const [monthlyCount, setMonthlyCount] = useState(0)
   const [message, setMessage] = useState<string | null>(null)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
   const remaining = useMemo(
-    () => Math.max(0, FREE_LIMIT - monthlyCount),
+    () => Math.max(0, FREE_ITEMS_LIMIT - monthlyCount),
     [monthlyCount]
   )
 
-  const locked = monthlyCount >= FREE_LIMIT
+  const locked = monthlyCount >= FREE_ITEMS_LIMIT
 
   useEffect(() => {
     void fetchMonthlyCount()
@@ -169,17 +168,14 @@ export default function CapturePage() {
 
   function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
     const selectedFile = event.target.files?.[0] ?? null
-
     setMessage(null)
     setErrorMessage(null)
 
     if (!selectedFile) {
       setFile(null)
-
       if (previewUrl && previewUrl.startsWith("blob:")) {
         URL.revokeObjectURL(previewUrl)
       }
-
       setPreviewUrl(null)
       return
     }
@@ -201,18 +197,15 @@ export default function CapturePage() {
     setScale("1:64")
     setCustomScale("")
     setQty(1)
-
     setSth(false)
     setTh(false)
     setChase(false)
-
     setMainNumber("")
     setSubNumber("")
     setSeries("")
     setYear("")
     setLocation("")
     setNotes("")
-
     setFile(null)
 
     if (previewUrl && previewUrl.startsWith("blob:")) {
@@ -241,8 +234,8 @@ export default function CapturePage() {
         return
       }
 
-      if (monthlyCount >= FREE_LIMIT) {
-        setErrorMessage("Free limit reached (20/month). Upgrade to Pro.")
+      if (monthlyCount >= FREE_ITEMS_LIMIT) {
+        setErrorMessage(`Free limit reached (${FREE_ITEMS_LIMIT}/month). Upgrade to Pro.`)
         return
       }
 
@@ -269,6 +262,7 @@ export default function CapturePage() {
       const fileExt = file.name.split(".").pop() || "jpg"
       const fileName = `${user.id}/${Date.now()}.${fileExt}`
       const compressedFile = await compressImage(file)
+
       const { error: uploadError } = await supabase.storage
         .from("captures")
         .upload(fileName, compressedFile)
@@ -296,26 +290,26 @@ export default function CapturePage() {
         return
       }
 
+      const finalScale =
+        scale === "Other" ? customScale.trim() || null : scale.trim() || null
+
       const { error: itemError } = await supabase.from("items").insert({
         user_id: user.id,
         photo_url: publicUrl,
-
         name: name.trim(),
         brand: brand.trim(),
         color: color.trim() || null,
-        scale: (scale === "Other" ? customScale : scale).trim() || null,
+        scale: finalScale,
         qty,
-
         sth,
         th,
         chase,
-
         main_number: mainNumber.trim() || null,
         sub_number: subNumber.trim() || null,
         series: series.trim() || null,
         year: year.trim() || null,
         location: location.trim() || null,
-        type: 'packed',
+        type: "packed",
         notes: notes.trim() || null,
       })
 
@@ -356,20 +350,21 @@ export default function CapturePage() {
             }}
           />
         </div>
-<Link
-  href="/"
-  style={{
-    position: "fixed",
-    top: 20,
-    left: 20,
-    fontSize: 20,
-    textDecoration: "none",
-    color: "white",
-    zIndex: 999,
-  }}
->
-  🏠
-</Link>
+
+        <Link
+          href="/"
+          style={{
+            position: "fixed",
+            top: 20,
+            left: 20,
+            fontSize: 20,
+            textDecoration: "none",
+            color: "white",
+            zIndex: 999,
+          }}
+        >
+          🏠
+        </Link>
 
         <div
           style={{
@@ -382,7 +377,7 @@ export default function CapturePage() {
           </h1>
 
           <p style={{ margin: 0, marginBottom: 6, opacity: 0.9 }}>
-            Captures this month: <strong>{monthlyCount}</strong> / {FREE_LIMIT}
+            Captures this month: <strong>{monthlyCount}</strong> / {FREE_ITEMS_LIMIT}
           </p>
 
           <p style={{ marginTop: 0, marginBottom: 22, opacity: 0.8 }}>
@@ -520,23 +515,27 @@ export default function CapturePage() {
 
           <div style={{ display: "grid", gap: 12 }}>
             <input
-            type="text"
+              list="brands-list"
+              type="text"
               placeholder="Brand"
               value={brand}
               onChange={(e) => setBrand(e.target.value)}
               disabled={loading || locked}
               style={inputStyle}
-             
             />
+            <datalist id="brands-list">
+              {BRANDS.map((brandOption) => (
+                <option key={brandOption} value={brandOption} />
+              ))}
+            </datalist>
 
             <input
-             type="text"
+              type="text"
               placeholder="Model"
               value={name}
               onChange={(e) => setName(e.target.value)}
               disabled={loading || locked}
               style={inputStyle}
-              
             />
 
             <input
@@ -564,17 +563,17 @@ export default function CapturePage() {
                 </option>
               ))}
             </select>
-            {scale === "Other" && (
-  <input
-    type="text"
-    placeholder="Enter custom scale"
-    value={customScale}
-    onChange={(e) => setCustomScale(e.target.value)}
-    disabled={loading || locked}
-    style={inputStyle}
-  />
-)}
 
+            {scale === "Other" && (
+              <input
+                type="text"
+                placeholder="Enter custom scale"
+                value={customScale}
+                onChange={(e) => setCustomScale(e.target.value)}
+                disabled={loading || locked}
+                style={inputStyle}
+              />
+            )}
 
             <input
               type="number"
@@ -733,7 +732,7 @@ export default function CapturePage() {
                   color: "#fff",
                   cursor: "pointer",
                 }}
-                onClick={() => alert("Upgrade screen later 😊")}
+                onClick={() => router.push("/pro")}
               >
                 Upgrade to Pro
               </button>
