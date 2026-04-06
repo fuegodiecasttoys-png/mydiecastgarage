@@ -37,7 +37,7 @@ const containerStyle: CSSProperties = {
   margin: "0 auto",
 }
 
-const topBarStyle: React.CSSProperties = {
+const topBarStyle: CSSProperties = {
   display: "grid",
   gridTemplateColumns: "1fr auto 1fr",
   alignItems: "center",
@@ -140,26 +140,26 @@ export default function CarDetail() {
 
     loadItem()
   }, [id, router])
+
   async function handleDelete() {
-  if (!item) return
+    if (!item) return
 
-  const confirmed = confirm("Delete this diecast? This cannot be undone.")
+    const confirmed = confirm("Delete this diecast? This cannot be undone.")
+    if (!confirmed) return
 
-  if (!confirmed) return
+    const { error } = await supabase
+      .from("items")
+      .delete()
+      .eq("id", item.id)
 
-  const { error } = await supabase
-    .from("items")
-    .delete()
-    .eq("id", item.id)
+    if (error) {
+      console.error(error)
+      alert("Error deleting item")
+      return
+    }
 
-  if (error) {
-    console.error(error)
-    alert("Error deleting item")
-    return
+    router.push("/mygarage")
   }
-
-  router.push("/mygarage")
-}
 
   async function handleSave() {
     if (!editItem) return
@@ -207,42 +207,39 @@ export default function CarDetail() {
         <div style={topBarStyle}>
           <button
             onClick={() => router.push("/mygarage")}
-            style={{ ...ghostButtonStyle, color: "#aaa", 
-            alignSelf: "flex-start",
-          }}
-
+            style={{
+              ...ghostButtonStyle,
+              justifySelf: "start",
+            }}
           >
             ← Back
           </button>
+
           <button
-  type="button"
-  onClick={handleDelete}
-  style={{
-  alignSelf: "center",
-  marginTop: 10,
-  marginBottom: 10,
-  padding: "7px 14px",
-  borderRadius: 999,
-  border: "1px solid rgba(239,68,68,0.25)",
-  background: "rgba(239,68,68,0.06)",
-  color: "#f87171",
-  fontSize: 14,
-  fontWeight: 600,
-  cursor: "pointer",
-  justifySelf: "center",
-}}
->
-  Delete
-</button>
+            onClick={handleDelete}
+            style={{
+              padding: "7px 14px",
+              borderRadius: 999,
+              border: "1px solid rgba(239,68,68,0.25)",
+              background: "rgba(239,68,68,0.06)",
+              color: "#f87171",
+              fontSize: 14,
+              fontWeight: 600,
+              cursor: "pointer",
+              justifySelf: "center",
+            }}
+          >
+            Delete
+          </button>
+
           <div
-  style={{
-    display: "grid",
-    gridTemplateColumns: "1fr auto 1fr",
-    alignItems: "center",
-    justifyItems: "center",
-    marginBottom: 20,
-  }}
->
+            style={{
+              justifySelf: "end",
+              display: "flex",
+              gap: 12,
+              alignItems: "center",
+            }}
+          >
             <button
               onClick={() => {
                 if (!isEditing) {
@@ -253,8 +250,7 @@ export default function CarDetail() {
                   setIsEditing(false)
                 }
               }}
-              style={{ ...ghostButtonStyle, justifySelf: "end" }}
-
+              style={ghostButtonStyle}
             >
               {isEditing ? "Cancel" : "Edit"}
             </button>
@@ -265,8 +261,6 @@ export default function CarDetail() {
               </button>
             )}
           </div>
-          
-
         </div>
 
         <div
@@ -450,7 +444,7 @@ export default function CarDetail() {
             )}
           </div>
 
-          <div style={rowStyle}>
+          <div style={{ ...rowStyle, marginBottom: 0 }}>
             <span style={labelStyle}>Qty</span>
             {isEditing ? (
               <input
