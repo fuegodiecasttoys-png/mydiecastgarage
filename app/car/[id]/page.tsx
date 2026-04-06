@@ -182,7 +182,7 @@ export default function CarDetail() {
       }
 
       if (!item.favorite && count !== null && count >= 3) {
-        alert("Upgrade to Pro to add more favorites 💎")
+        router.push("/pro")
         return
       }
 
