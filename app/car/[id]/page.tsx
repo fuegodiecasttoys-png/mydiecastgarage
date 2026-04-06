@@ -108,6 +108,7 @@ export default function CarDetail() {
   const [editItem, setEditItem] = useState<Item | null>(null)
   const [isEditing, setIsEditing] = useState(false)
   const [showImageModal, setShowImageModal] = useState(false)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -144,8 +145,7 @@ export default function CarDetail() {
   async function handleDelete() {
     if (!item) return
 
-    const confirmed = confirm("Delete this diecast? This cannot be undone.")
-    if (!confirmed) return
+  
 
     const { error } = await supabase
       .from("items")
@@ -216,7 +216,7 @@ export default function CarDetail() {
           </button>
 
           <button
-            onClick={handleDelete}
+            onClick={() => setShowDeleteModal(true)}
             style={{
               padding: "7px 14px",
               borderRadius: 999,
@@ -228,6 +228,7 @@ export default function CarDetail() {
               cursor: "pointer",
               justifySelf: "center",
             }}
+
           >
             Delete
           </button>
@@ -602,17 +603,77 @@ export default function CarDetail() {
             }}
           >
             <img
-              src={item.photo_url || ""}
-              alt={item.name || "Diecast"}
-              style={{
-                maxWidth: "90%",
-                maxHeight: "90%",
-                borderRadius: 12,
-              }}
-            />
-          </div>
-        )}
+  src={item.photo_url || ""}
+  alt={item.name || "Diecast"}
+  style={{
+    maxWidth: "90%",
+    maxHeight: "90%",
+    borderRadius: 12,
+  }}
+/>
+</div>
+)}
+
+{showDeleteModal && (
+  <div
+    style={{
+      position: "fixed",
+      inset: 0,
+      background: "rgba(0,0,0,0.8)",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      zIndex: 1000,
+    }}
+  >
+    <div
+      style={{
+        background: "#111",
+        padding: 20,
+        borderRadius: 16,
+        border: "1px solid rgba(255,255,255,0.1)",
+        textAlign: "center",
+        maxWidth: 300,
+      }}
+    >
+      <p style={{ marginBottom: 20 }}>
+        Delete this diecast?
+      </p>
+
+      <div style={{ display: "flex", gap: 10 }}>
+        <button
+          onClick={() => setShowDeleteModal(false)}
+          style={{
+            flex: 1,
+            padding: "10px",
+            borderRadius: 8,
+            background: "#222",
+            color: "#fff",
+            border: "none",
+          }}
+        >
+          Cancel
+        </button>
+
+        <button
+          onClick={handleDelete}
+          style={{
+            flex: 1,
+            padding: "10px",
+            borderRadius: 8,
+            background: "#ef4444",
+            color: "#fff",
+            border: "none",
+          }}
+        >
+          Delete
+        </button>
       </div>
     </div>
-  )
+  </div>
+)}
+
+</div>
+</div>
+)
 }
