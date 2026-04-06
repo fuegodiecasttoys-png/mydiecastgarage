@@ -163,19 +163,45 @@ export default function CarDetail() {
   async function handleToggleFavorite() {
     if (!item) return
 
-    const newValue = !item.favorite
+    try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
 
-    const { error } = await supabase
-      .from("items")
-      .update({ favorite: newValue })
-      .eq("id", item.id)
+      if (!user) return
 
-    if (error) {
-      console.error(error)
-      return
+      const { count, error: countError } = await supabase
+        .from("items")
+        .select("*", { count: "exact", head: true })
+        .eq("user_id", user.id)
+        .eq("favorite", true)
+
+      if (countError) {
+        console.error(countError)
+        return
+      }
+
+      if (!item.favorite && count !== null && count >= 3) {
+        alert("Upgrade to Pro to add more favorites 💎")
+        return
+      }
+
+      const newValue = !item.favorite
+
+      const { error } = await supabase
+        .from("items")
+        .update({ favorite: newValue })
+        .eq("id", item.id)
+
+      if (error) {
+        console.error(error)
+        return
+      }
+
+      setItem((prev) => (prev ? { ...prev, favorite: newValue } : prev))
+    } catch (err) {
+      console.error(err)
     }
-
-    setItem((prev) => (prev ? { ...prev, favorite: newValue } : prev))
   }
 
   async function handleSave() {
