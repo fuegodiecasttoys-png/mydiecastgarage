@@ -3,6 +3,8 @@
 import Link from "next/link"
 import { useEffect, useMemo, useState } from "react"
 import { supabase } from "../lib/supabaseClient"
+import { useRouter } from "next/navigation"
+
 
 type Item = {
   id: number
@@ -134,7 +136,7 @@ export default function MyGarage() {
   const [search, setSearch] = useState("")
   const [sort, setSort] = useState("newest")
   const [page, setPage] = useState(1)
-
+  const router = useRouter()
   const itemsPerPage = 20
 
   useEffect(() => {
@@ -268,6 +270,21 @@ export default function MyGarage() {
             >
               Export to Excel 🔒
             </button>
+            <button
+  onClick={() => router.push("/favorites")}
+  style={{
+    padding: "8px 14px",
+    borderRadius: 999,
+    border: "1px solid rgba(250,204,21,0.3)",
+    background: "rgba(250,204,21,0.08)",
+    color: "#facc15",
+    fontWeight: 700,
+    cursor: "pointer",
+  }}
+>
+  ⭐ Favorites
+</button>
+
           </div>
 
           <div
