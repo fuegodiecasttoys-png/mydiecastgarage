@@ -3,6 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "../lib/supabaseClient";
+import Link from "next/link";
+
 
 type WishlistItem = {
   id: number;
@@ -33,21 +35,31 @@ export default function WishlistPage() {
 
   useEffect(() => {
     const fetchWishlist = async () => {
-      setLoading(true);
+  setLoading(true);
 
-      const { data, error } = await supabase
-        .from("wishlist")
-        .select("*")
-        .order("created_at", { ascending: false });
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-      if (error) {
-        console.error(error);
-      } else if (data) {
-        setItems(data as WishlistItem[]);
-      }
+  if (!user) {
+    setLoading(false);
+    return;
+  }
 
-      setLoading(false);
-    };
+  const { data, error } = await supabase
+    .from("wishlist")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error(error);
+  } else if (data) {
+    setItems(data as WishlistItem[]);
+  }
+
+  setLoading(false);
+};
 
     fetchWishlist();
   }, []);
@@ -161,22 +173,20 @@ export default function WishlistPage() {
         fontFamily: 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
       }}
     >
-      <button
-        onClick={() => router.push("/")}
-        style={{
-          position: "absolute",
-          top: 20,
-          left: 20,
-          background: "transparent",
-          border: "none",
-          color: "white",
-          fontSize: 20,
-          cursor: "pointer",
-          zIndex: 10,
-        }}
-      >
-        🏠
-      </button>
+      <Link
+  href="/"
+  style={{
+    position: "absolute",
+    top: 20,
+    left: 20,
+    textDecoration: "none",
+    color: "white",
+    fontSize: 20,
+    zIndex: 10,
+  }}
+>
+  🏠
+</Link>
 
       <div
         style={{
@@ -342,14 +352,14 @@ export default function WishlistPage() {
                 const badge = priorityBadge(item.priority);
 
                 return (
-                  <a
-                    key={item.id}
-                    href={`/wishlist/${item.id}`}
-                    style={{
-                      textDecoration: "none",
-                      color: "inherit",
-                    }}
-                  >
+                  <Link
+  key={item.id}
+  href={`/wishlist/${item.id}`}
+  style={{
+    textDecoration: "none",
+    color: "inherit",
+  }}
+>
                     <div
                       style={{
                         display: "flex",
@@ -456,7 +466,7 @@ export default function WishlistPage() {
                         {badge.label}
                       </span>
                     </div>
-                  </a>
+                  </Link>
                 );
               })}
             </div>

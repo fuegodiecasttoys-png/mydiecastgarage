@@ -9,7 +9,7 @@ import {
 } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "../../lib/supabaseClient";
-
+import Link from "next/link";
 const SCALE_OPTIONS = [
   "1:64",
   "1:43",
@@ -239,7 +239,7 @@ export default function AddWishlistPage() {
         {
           user_id: user.id,
           photo_url,
-          name: model.trim(),
+          model: model.trim(),
           brand: brand.trim() || null,
           color: color.trim() || null,
           scale: finalScale,
@@ -293,20 +293,21 @@ export default function AddWishlistPage() {
           />
         </div>
 
-        <a
-          href="/wishlist"
-          style={{
-            position: "fixed",
-            top: 20,
-            left: 20,
-            fontSize: 20,
-            textDecoration: "none",
-            color: "white",
-            zIndex: 999,
-          }}
-        >
-          ← Back
-        </a>
+        <Link href="/wishlist">
+  <span
+    style={{
+      position: "fixed",
+      top: 20,
+      left: 20,
+      fontSize: 20,
+      color: "white",
+      zIndex: 999,
+      cursor: "pointer",
+    }}
+  >
+    Back
+  </span>
+</Link>
 
         <div
           style={{
