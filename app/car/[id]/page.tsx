@@ -212,7 +212,7 @@ export default function CarDetail() {
               justifySelf: "start",
             }}
           >
-            ← Back
+            Back
           </button>
 
           <button
