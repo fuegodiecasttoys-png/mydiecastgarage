@@ -21,6 +21,7 @@ type Item = {
   th: boolean | null
   chase: boolean | null
   qty: number | null
+  favorite: boolean | null
 }
 
 const pageStyle: CSSProperties = {
@@ -145,8 +146,6 @@ export default function CarDetail() {
   async function handleDelete() {
     if (!item) return
 
-  
-
     const { error } = await supabase
       .from("items")
       .delete()
@@ -159,6 +158,24 @@ export default function CarDetail() {
     }
 
     router.push("/mygarage")
+  }
+
+  async function handleToggleFavorite() {
+    if (!item) return
+
+    const newValue = !item.favorite
+
+    const { error } = await supabase
+      .from("items")
+      .update({ favorite: newValue })
+      .eq("id", item.id)
+
+    if (error) {
+      console.error(error)
+      return
+    }
+
+    setItem((prev) => (prev ? { ...prev, favorite: newValue } : prev))
   }
 
   async function handleSave() {
@@ -228,7 +245,6 @@ export default function CarDetail() {
               cursor: "pointer",
               justifySelf: "center",
             }}
-
           >
             Delete
           </button>
@@ -241,6 +257,10 @@ export default function CarDetail() {
               alignItems: "center",
             }}
           >
+            <button onClick={handleToggleFavorite} style={ghostButtonStyle}>
+              {item.favorite ? "⭐ Favorited" : "☆ Favorite"}
+            </button>
+
             <button
               onClick={() => {
                 if (!isEditing) {
@@ -603,77 +623,81 @@ export default function CarDetail() {
             }}
           >
             <img
-  src={item.photo_url || ""}
-  alt={item.name || "Diecast"}
-  style={{
-    maxWidth: "90%",
-    maxHeight: "90%",
-    borderRadius: 12,
-  }}
-/>
-</div>
-)}
+              src={item.photo_url || ""}
+              alt={item.name || "Diecast"}
+              style={{
+                maxWidth: "90%",
+                maxHeight: "90%",
+                borderRadius: 12,
+              }}
+            />
+          </div>
+        )}
 
-{showDeleteModal && (
-  <div
-    style={{
-      position: "fixed",
-      inset: 0,
-      background: "rgba(0,0,0,0.8)",
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      zIndex: 1000,
-    }}
-  >
-    <div
-      style={{
-        background: "#111",
-        padding: 20,
-        borderRadius: 16,
-        border: "1px solid rgba(255,255,255,0.1)",
-        textAlign: "center",
-        maxWidth: 300,
-      }}
-    >
-      <p style={{ marginBottom: 20 }}>
-        Delete this diecast?
-      </p>
+        {showDeleteModal && (
+          <div
+            onClick={() => setShowDeleteModal(false)}
+            style={{
+              position: "fixed",
+              inset: 0,
+              background: "rgba(0,0,0,0.8)",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              zIndex: 1000,
+            }}
+          >
+            <div
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                background: "#111",
+                padding: 20,
+                borderRadius: 16,
+                border: "1px solid rgba(255,255,255,0.1)",
+                textAlign: "center",
+                maxWidth: 300,
+                width: "100%",
+              }}
+            >
+              <p style={{ marginBottom: 20 }}>
+                Delete this diecast?
+              </p>
 
-      <div style={{ display: "flex", gap: 10 }}>
-        <button
-          onClick={() => setShowDeleteModal(false)}
-          style={{
-            flex: 1,
-            padding: "10px",
-            borderRadius: 8,
-            background: "#222",
-            color: "#fff",
-            border: "none",
-          }}
-        >
-          Cancel
-        </button>
+              <div style={{ display: "flex", gap: 10 }}>
+                <button
+                  onClick={() => setShowDeleteModal(false)}
+                  style={{
+                    flex: 1,
+                    padding: "10px",
+                    borderRadius: 8,
+                    background: "#222",
+                    color: "#fff",
+                    border: "none",
+                    cursor: "pointer",
+                  }}
+                >
+                  Cancel
+                </button>
 
-        <button
-          onClick={handleDelete}
-          style={{
-            flex: 1,
-            padding: "10px",
-            borderRadius: 8,
-            background: "#ef4444",
-            color: "#fff",
-            border: "none",
-          }}
-        >
-          Delete
-        </button>
+                <button
+                  onClick={handleDelete}
+                  style={{
+                    flex: 1,
+                    padding: "10px",
+                    borderRadius: 8,
+                    background: "#ef4444",
+                    color: "#fff",
+                    border: "none",
+                    cursor: "pointer",
+                  }}
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
-  </div>
-)}
-
-</div>
-</div>
-)
+  )
 }
