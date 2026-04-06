@@ -315,13 +315,29 @@ export default function AddWishlistPage() {
             paddingTop: 24,
           }}
         >
-          <h1 style={{ margin: 0, marginBottom: 8, fontSize: 30 }}>
-            Add Wishlist Item
-          </h1>
+          <div style={{ textAlign: "center", marginBottom: 22 }}>
+  <h1
+    style={{
+      margin: 0,
+      marginBottom: 8,
+      fontSize: 30,
+      fontWeight: 800,
+    }}
+  >
+    Add Wishlist Item
+  </h1>
 
-          <p style={{ marginTop: 0, marginBottom: 22, opacity: 0.8 }}>
-            Save a diecast you want to find later.
-          </p>
+  <p
+    style={{
+      marginTop: 0,
+      marginBottom: 0,
+      opacity: 0.8,
+      fontSize: 15,
+    }}
+  >
+    Save a diecast you want to find later.
+  </p>
+</div>
 
           <div
             style={{
