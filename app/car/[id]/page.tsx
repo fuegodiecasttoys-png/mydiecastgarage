@@ -37,9 +37,9 @@ const containerStyle: CSSProperties = {
   margin: "0 auto",
 }
 
-const topBarStyle: CSSProperties = {
-  display: "flex",
-  justifyContent: "space-between",
+const topBarStyle: React.CSSProperties = {
+  display: "grid",
+  gridTemplateColumns: "1fr auto 1fr",
   alignItems: "center",
   marginBottom: 20,
 }
@@ -226,6 +226,7 @@ export default function CarDetail() {
   fontSize: 14,
   fontWeight: 600,
   cursor: "pointer",
+  justifySelf: "center",
 }}
 >
   Delete
