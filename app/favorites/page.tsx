@@ -80,12 +80,26 @@ export default function FavoritesPage() {
     loadFavorites()
   }, [router])
 
+  async function handleRemoveFavorite(id: number) {
+    const { error } = await supabase
+      .from("items")
+      .update({ favorite: false })
+      .eq("id", id)
+
+    if (error) {
+      console.error(error)
+      return
+    }
+
+    setItems((prev) => prev.filter((item) => item.id !== id))
+  }
+
   return (
     <div style={pageStyle}>
       <div style={containerStyle}>
         <div style={topBarStyle}>
           <button
-            onClick={() => router.push("/")}
+            onClick={() => router.push("/mygarage")}
             style={{ ...ghostButtonStyle, justifySelf: "start" }}
           >
             Back
@@ -184,7 +198,19 @@ export default function FavoritesPage() {
                       {item.name ?? "Unnamed model"}
                     </div>
 
-                    <div style={{ fontSize: 18, flexShrink: 0 }}>⭐</div>
+                    <div
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        handleRemoveFavorite(item.id)
+                      }}
+                      style={{
+                        fontSize: 18,
+                        flexShrink: 0,
+                        cursor: "pointer",
+                      }}
+                    >
+                      ⭐
+                    </div>
                   </div>
 
                   <div
