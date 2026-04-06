@@ -248,7 +248,8 @@ export default function CarDetail() {
                   setIsEditing(false)
                 }
               }}
-              style={ghostButtonStyle}
+              style={{ ...ghostButtonStyle, justifySelf: "end" }}
+
             >
               {isEditing ? "Cancel" : "Edit"}
             </button>
