@@ -230,7 +230,14 @@ export default function CarDetail() {
 >
   Delete
 </button>
-          <div style={{ display: "flex", gap: 14 }}>
+          <div
+  style={{
+    display: "grid",
+    gridTemplateColumns: "1fr auto 1fr",
+    alignItems: "center",
+    marginBottom: 20,
+  }}
+>
             <button
               onClick={() => {
                 if (!isEditing) {
