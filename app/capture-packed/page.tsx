@@ -12,6 +12,8 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { supabase } from "../lib/supabaseClient"
 import { BRANDS, FREE_ITEMS_LIMIT } from "../lib/constants"
+import { COLORS } from "../lib/constants"
+
 
 const SCALE_OPTIONS = [
   "1:64",
@@ -539,13 +541,19 @@ export default function CapturePage() {
             />
 
             <input
-              type="text"
-              placeholder="Color"
-              value={color}
-              onChange={(e) => setColor(e.target.value)}
-              disabled={loading || locked}
-              style={inputStyle}
-            />
+  list="colors-list"
+  type="text"
+  placeholder="Color (type 2 letters...)"
+  value={color}
+  onChange={(e) => setColor(e.target.value)}
+  style={inputStyle}
+/>
+
+<datalist id="colors-list">
+  {COLORS.map((c) => (
+    <option key={c} value={c} />
+  ))}
+</datalist>
 
             <select
               value={scale}

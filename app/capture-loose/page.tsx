@@ -12,7 +12,7 @@ import {
 import { supabase } from "../lib/supabaseClient";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-
+import { COLORS } from "../lib/constants"
 const FREE_LIMIT = 50
 
 const SCALE_OPTIONS = [
@@ -540,13 +540,19 @@ export default function CapturePage() {
             />
 
             <input
-              type="text"
-              placeholder="Color"
-              value={color}
-              onChange={(e) => setColor(e.target.value)}
-              disabled={loading || locked}
-              style={inputStyle}
-            />
+  list="colors-list"
+  type="text"
+  placeholder="Color (type 2 letters...)"
+  value={color}
+  onChange={(e) => setColor(e.target.value)}
+  style={inputStyle}
+/>
+
+<datalist id="colors-list">
+  {COLORS.map((c) => (
+    <option key={c} value={c} />
+  ))}
+</datalist>
 
             <select
               value={scale}
