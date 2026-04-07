@@ -493,18 +493,17 @@ export default function CapturePage() {
             </button>
           </div>
 
-          {IS_PRO && (
-            <div style={{ marginBottom: 18 }}>
-              <button
-                type="button"
-                onClick={handleAnalyze}
-                disabled={!file || loading}
-                style={!file || loading ? disabledButtonStyle : buttonStyle}
-              >
-                🤖 Analyze model
-              </button>
-            </div>
-          )}
+          <div style={{ marginBottom: 18 }}>
+  <button
+    type="button"
+    onClick={handleAnalyze}
+    disabled={!file || loading}
+    style={!file || loading ? disabledButtonStyle : buttonStyle}
+  >
+    🤖 Analyze model
+  </button>
+</div>
+
 
           <input
             ref={fileInputRef}
