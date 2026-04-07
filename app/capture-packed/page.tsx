@@ -226,13 +226,22 @@ export default function CapturePage() {
       fileInputRef.current.value = ""
     }
   }
+  async function handleAnalyze() {
+  if (!file) {
+    alert("Upload an image first")
+    return
+  }
+
+  console.log("Analyzing image...")
+}
 
   async function handleSave() {
     try {
       setLoading(true)
       setMessage(null)
       setErrorMessage(null)
-
+  
+  
       const {
         data: { user },
       } = await supabase.auth.getUser()
@@ -459,7 +468,16 @@ export default function CapturePage() {
             >
               Take pic
             </button>
-
+             {IS_PRO && (
+  <button
+    type="button"
+    onClick={handleAnalyze}
+    disabled={!file || loading}
+    style={buttonStyle}
+  >
+    🤖 Analyze model
+  </button>
+)}
             <input
               ref={fileInputRef}
               type="file"
