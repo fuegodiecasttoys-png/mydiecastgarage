@@ -106,6 +106,12 @@ export default function CapturePage() {
   const [name, setName] = useState("")
   const [brand, setBrand] = useState("")
   const [color, setColor] = useState("")
+  const filteredColors = COLORS.filter((c) =>
+  c
+    .toLowerCase()
+    .split(" ")
+    .some((word) => word.startsWith(color.toLowerCase().trim()))
+)
   const [scale, setScale] = useState("1:64")
   const [customScale, setCustomScale] = useState("")
 
@@ -539,14 +545,47 @@ export default function CapturePage() {
               style={inputStyle}
             />
 
-            <input
-  list="colors-list"
-  type="text"
-  placeholder="Color (type 2 letters...)"
-  value={color}
-  onChange={(e) => setColor(e.target.value)}
-  style={inputStyle}
-/>
+            <div style={{ position: "relative" }}>
+  <input
+    type="text"
+    placeholder="Color (type 2 letters...)"
+    value={color}
+    onChange={(e) => setColor(e.target.value)}
+    disabled={loading || locked}
+    style={inputStyle}
+    autoComplete="off"
+  />
+
+  {color.trim().length >= 1 && filteredColors.length > 0 && !locked && (
+    <div
+      style={{
+        position: "absolute",
+        top: "calc(100% + 6px)",
+        left: 0,
+        right: 0,
+        background: "#111",
+        border: "1px solid rgba(255,255,255,0.1)",
+        borderRadius: 10,
+        maxHeight: 180,
+        overflowY: "auto",
+        zIndex: 20,
+      }}
+    >
+      {filteredColors.slice(0, 12).map((c) => (
+        <div
+          key={c}
+          onClick={() => setColor(c)}
+          style={{
+            padding: "10px 12px",
+            cursor: "pointer",
+          }}
+        >
+          {c}
+        </div>
+      ))}
+    </div>
+  )}
+</div>
 
 <datalist id="colors-list">
   {COLORS.map((c) => (
