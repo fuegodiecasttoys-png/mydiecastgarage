@@ -11,9 +11,7 @@ import {
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { supabase } from "../lib/supabaseClient"
-import { BRANDS, FREE_ITEMS_LIMIT } from "../lib/constants"
-import { COLORS, IS_PRO } from "../lib/constants"
-
+import { BRANDS, COLORS, FREE_ITEMS_LIMIT, IS_PRO } from "../lib/constants"
 
 const SCALE_OPTIONS = [
   "1:64",
@@ -109,12 +107,6 @@ export default function CapturePage() {
   const [name, setName] = useState("")
   const [brand, setBrand] = useState("")
   const [color, setColor] = useState("")
-  const filteredColors = COLORS.filter((c) =>
-  c
-    .toLowerCase()
-    .split(" ")
-    .some((word) => word.startsWith(color.toLowerCase().trim()))
-)
   const [scale, setScale] = useState("1:64")
   const [customScale, setCustomScale] = useState("")
   const [qty, setQty] = useState(1)
@@ -127,11 +119,17 @@ export default function CapturePage() {
   const [year, setYear] = useState("")
   const [location, setLocation] = useState("")
   const [notes, setNotes] = useState("")
-
   const [loading, setLoading] = useState(false)
   const [monthlyCount, setMonthlyCount] = useState(0)
   const [message, setMessage] = useState<string | null>(null)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
+
+  const filteredColors = COLORS.filter((c) =>
+    c
+      .toLowerCase()
+      .split(" ")
+      .some((word) => word.startsWith(color.toLowerCase().trim()))
+  )
 
   const remaining = useMemo(
     () => Math.max(0, FREE_ITEMS_LIMIT - monthlyCount),
@@ -226,22 +224,47 @@ export default function CapturePage() {
       fileInputRef.current.value = ""
     }
   }
-  async function handleAnalyze() {
-  if (!file) {
-    alert("Upload an image first")
-    return
-  }
 
-  console.log("Analyzing image...")
-}
+  async function handleAnalyze() {
+    if (!file) {
+      alert("Upload an image first")
+      return
+    }
+
+    try {
+      setLoading(true)
+
+      const formData = new FormData()
+      formData.append("file", file)
+
+      const res = await fetch("/api/analyze-model", {
+        method: "POST",
+        body: formData,
+      })
+
+      if (!res.ok) {
+        throw new Error("Analyze request failed")
+      }
+
+      const data = await res.json()
+
+      if (data.model) {
+        setName(data.model)
+      }
+    } catch (err) {
+      console.error(err)
+      alert("Failed to analyze image")
+    } finally {
+      setLoading(false)
+    }
+  }
 
   async function handleSave() {
     try {
       setLoading(true)
       setMessage(null)
       setErrorMessage(null)
-  
-  
+
       const {
         data: { user },
       } = await supabase.auth.getUser()
@@ -414,7 +437,7 @@ export default function CapturePage() {
               display: "grid",
               gridTemplateColumns: "1fr 1fr",
               gap: 10,
-              marginBottom: 18,
+              marginBottom: 12,
             }}
           >
             <button
@@ -468,25 +491,29 @@ export default function CapturePage() {
             >
               Take pic
             </button>
-             {IS_PRO && (
-  <button
-    type="button"
-    onClick={handleAnalyze}
-    disabled={!file || loading}
-    style={buttonStyle}
-  >
-    🤖 Analyze model
-  </button>
-)}
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              onChange={handleFileChange}
-              disabled={locked || loading}
-              style={{ display: "none" }}
-            />
           </div>
+
+          {IS_PRO && (
+            <div style={{ marginBottom: 18 }}>
+              <button
+                type="button"
+                onClick={handleAnalyze}
+                disabled={!file || loading}
+                style={!file || loading ? disabledButtonStyle : buttonStyle}
+              >
+                🤖 Analyze model
+              </button>
+            </div>
+          )}
+
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            disabled={locked || loading}
+            style={{ display: "none" }}
+          />
 
           {loading && (
             <p style={{ marginTop: 0, marginBottom: 18, opacity: 0.85 }}>
@@ -564,87 +591,47 @@ export default function CapturePage() {
               style={inputStyle}
             />
 
-            <div style={{ position: "relative" }}>
-  <div style={{ position: "relative" }}>
-  <input
-    type="text"
-    placeholder={IS_PRO ? "Color (type 2 letters...)" : "Color"}
-    value={color}
-    onChange={(e) => setColor(e.target.value)}
-    disabled={loading || locked}
-    style={inputStyle}
-    autoComplete="off"
-  />
+            <div style={{ position: "relative", width: "100%" }}>
+              <input
+                type="text"
+                placeholder={IS_PRO ? "Color (type 2 letters...)" : "Color"}
+                value={color}
+                onChange={(e) => setColor(e.target.value)}
+                disabled={loading || locked}
+                style={inputStyle}
+                autoComplete="off"
+              />
 
-  {IS_PRO && color.trim().length >= 1 && filteredColors.length > 0 && !locked && (
-    <div
-      style={{
-        position: "absolute",
-        top: "calc(100% + 6px)",
-        left: 0,
-        right: 0,
-        background: "#111",
-        border: "1px solid rgba(255,255,255,0.1)",
-        borderRadius: 10,
-        maxHeight: 180,
-        overflowY: "auto",
-        zIndex: 20,
-      }}
-    >
-      {filteredColors.slice(0, 12).map((c) => (
-        <div
-          key={c}
-          onClick={() => setColor(c)}
-          style={{
-            padding: "10px 12px",
-            cursor: "pointer",
-          }}
-        >
-          {c}
-        </div>
-      ))}
-    </div>
-  )}
-</div>
-
-  {IS_PRO && color.trim().length >= 1 && filteredColors.length > 0 && !locked && (
-
-    <div
-      style={{
-        position: "absolute",
-        top: "calc(100% + 6px)",
-        left: 0,
-        right: 0,
-        background: "#111",
-        border: "1px solid rgba(255,255,255,0.1)",
-        borderRadius: 10,
-        maxHeight: 180,
-        overflowY: "auto",
-        zIndex: 20,
-      }}
-    >
-      {filteredColors.slice(0, 12).map((c) => (
-        <div
-          key={c}
-          onClick={() => setColor(c)}
-          style={{
-            padding: "10px 12px",
-            cursor: "pointer",
-          }}
-        >
-          {c}
-        </div>
-      ))}
-    </div>
-  )}
-</div>
-
-
-<datalist id="colors-list">
-  {COLORS.map((c) => (
-    <option key={c} value={c} />
-  ))}
-</datalist>
+              {IS_PRO && color.trim().length >= 1 && filteredColors.length > 0 && !locked && (
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "calc(100% + 6px)",
+                    left: 0,
+                    right: 0,
+                    background: "#111",
+                    border: "1px solid rgba(255,255,255,0.1)",
+                    borderRadius: 10,
+                    maxHeight: 180,
+                    overflowY: "auto",
+                    zIndex: 20,
+                  }}
+                >
+                  {filteredColors.slice(0, 12).map((c) => (
+                    <div
+                      key={c}
+                      onClick={() => setColor(c)}
+                      style={{
+                        padding: "10px 12px",
+                        cursor: "pointer",
+                      }}
+                    >
+                      {c}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
 
             <select
               value={scale}
