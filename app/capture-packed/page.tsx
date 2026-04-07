@@ -12,7 +12,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { supabase } from "../lib/supabaseClient"
 import { BRANDS, FREE_ITEMS_LIMIT } from "../lib/constants"
-import { COLORS } from "../lib/constants"
+import { COLORS, IS_PRO } from "../lib/constants"
 
 
 const SCALE_OPTIONS = [
@@ -547,9 +547,10 @@ export default function CapturePage() {
             />
 
             <div style={{ position: "relative" }}>
+  <div style={{ position: "relative" }}>
   <input
     type="text"
-    placeholder="Color (type 2 letters...)"
+    placeholder={IS_PRO ? "Color (type 2 letters...)" : "Color"}
     value={color}
     onChange={(e) => setColor(e.target.value)}
     disabled={loading || locked}
@@ -557,7 +558,39 @@ export default function CapturePage() {
     autoComplete="off"
   />
 
-  {color.trim().length >= 1 && filteredColors.length > 0 && !locked && (
+  {IS_PRO && color.trim().length >= 1 && filteredColors.length > 0 && !locked && (
+    <div
+      style={{
+        position: "absolute",
+        top: "calc(100% + 6px)",
+        left: 0,
+        right: 0,
+        background: "#111",
+        border: "1px solid rgba(255,255,255,0.1)",
+        borderRadius: 10,
+        maxHeight: 180,
+        overflowY: "auto",
+        zIndex: 20,
+      }}
+    >
+      {filteredColors.slice(0, 12).map((c) => (
+        <div
+          key={c}
+          onClick={() => setColor(c)}
+          style={{
+            padding: "10px 12px",
+            cursor: "pointer",
+          }}
+        >
+          {c}
+        </div>
+      ))}
+    </div>
+  )}
+</div>
+
+  {IS_PRO && color.trim().length >= 1 && filteredColors.length > 0 && !locked && (
+
     <div
       style={{
         position: "absolute",

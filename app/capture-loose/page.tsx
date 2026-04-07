@@ -12,7 +12,7 @@ import {
 import { supabase } from "../lib/supabaseClient";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { COLORS } from "../lib/constants"
+import { COLORS, IS_PRO } from "../lib/constants"
 const FREE_LIMIT = 50
 
 const SCALE_OPTIONS = [
@@ -546,15 +546,47 @@ export default function CapturePage() {
             />
 
             <div style={{ position: "relative" }}>
+  <div style={{ position: "relative" }}>
   <input
     type="text"
-    placeholder="Color (type 2 letters...)"
+    placeholder={IS_PRO ? "Color (type 2 letters...)" : "Color"}
     value={color}
     onChange={(e) => setColor(e.target.value)}
     disabled={loading || locked}
     style={inputStyle}
     autoComplete="off"
   />
+
+  {IS_PRO && color.trim().length >= 1 && filteredColors.length > 0 && !locked && (
+    <div
+      style={{
+        position: "absolute",
+        top: "calc(100% + 6px)",
+        left: 0,
+        right: 0,
+        background: "#111",
+        border: "1px solid rgba(255,255,255,0.1)",
+        borderRadius: 10,
+        maxHeight: 180,
+        overflowY: "auto",
+        zIndex: 20,
+      }}
+    >
+      {filteredColors.slice(0, 12).map((c) => (
+        <div
+          key={c}
+          onClick={() => setColor(c)}
+          style={{
+            padding: "10px 12px",
+            cursor: "pointer",
+          }}
+        >
+          {c}
+        </div>
+      ))}
+    </div>
+  )}
+</div>
 
   {color.trim().length >= 1 && filteredColors.length > 0 && !locked && (
     <div
