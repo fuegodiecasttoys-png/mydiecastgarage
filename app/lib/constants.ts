@@ -147,4 +147,4 @@ export const COLORS = [
   "Yellow",
   "Zamac",
 ]
-export const IS_PRO = false
+export const IS_PRO = true
