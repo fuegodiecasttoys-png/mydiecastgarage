@@ -104,6 +104,7 @@ export default function CapturePage() {
 
   const [file, setFile] = useState<File | null>(null)
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
+
   const [name, setName] = useState("")
   const [brand, setBrand] = useState("")
   const [color, setColor] = useState("")
@@ -119,6 +120,7 @@ export default function CapturePage() {
   const [year, setYear] = useState("")
   const [location, setLocation] = useState("")
   const [notes, setNotes] = useState("")
+
   const [loading, setLoading] = useState(false)
   const [monthlyCount, setMonthlyCount] = useState(0)
   const [message, setMessage] = useState<string | null>(null)
@@ -174,14 +176,17 @@ export default function CapturePage() {
 
   function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
     const selectedFile = event.target.files?.[0] ?? null
+
     setMessage(null)
     setErrorMessage(null)
 
     if (!selectedFile) {
       setFile(null)
+
       if (previewUrl && previewUrl.startsWith("blob:")) {
         URL.revokeObjectURL(previewUrl)
       }
+
       setPreviewUrl(null)
       return
     }
@@ -233,6 +238,8 @@ export default function CapturePage() {
 
     try {
       setLoading(true)
+      setMessage(null)
+      setErrorMessage(null)
 
       const formData = new FormData()
       formData.append("file", file)
@@ -248,9 +255,9 @@ export default function CapturePage() {
 
       const data = await res.json()
 
-      if (data.model) {
-        setName(data.model)
-      }
+      if (data.brand) setBrand(data.brand)
+      if (data.model) setName(data.model)
+      if (data.color) setColor(data.color)
     } catch (err) {
       console.error(err)
       alert("Failed to analyze image")
@@ -301,6 +308,7 @@ export default function CapturePage() {
 
       const fileExt = file.name.split(".").pop() || "jpg"
       const fileName = `${user.id}/${Date.now()}.${fileExt}`
+
       const compressedFile = await compressImage(file)
 
       const { error: uploadError } = await supabase.storage
@@ -493,7 +501,30 @@ export default function CapturePage() {
             </button>
           </div>
 
-          
+          {IS_PRO && (
+            <button
+              type="button"
+              onClick={handleAnalyze}
+              disabled={loading || !file || locked}
+              style={
+                loading || !file || locked
+                  ? {
+                      ...disabledButtonStyle,
+                      marginBottom: 12,
+                      padding: "12px 14px",
+                      fontSize: 15,
+                    }
+                  : {
+                      ...buttonStyle,
+                      marginBottom: 12,
+                      padding: "12px 14px",
+                      fontSize: 15,
+                    }
+              }
+            >
+              🤖 Analyze model
+            </button>
+          )}
 
           <input
             ref={fileInputRef}
@@ -506,7 +537,7 @@ export default function CapturePage() {
 
           {loading && (
             <p style={{ marginTop: 0, marginBottom: 18, opacity: 0.85 }}>
-              Saving diecast...
+              Working...
             </p>
           )}
 
@@ -565,6 +596,7 @@ export default function CapturePage() {
               disabled={loading || locked}
               style={inputStyle}
             />
+
             <datalist id="brands-list">
               {BRANDS.map((brandOption) => (
                 <option key={brandOption} value={brandOption} />
