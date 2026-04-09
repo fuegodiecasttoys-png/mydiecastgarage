@@ -65,6 +65,7 @@ function extractJson(text: string): AnalyzeResult {
 
 export async function POST(req: Request) {
   try {
+     const openai = getOpenAI()
     if (!IS_PRO) {
       return NextResponse.json(
         { error: "Analyze model is a PRO feature" },
@@ -72,7 +73,7 @@ export async function POST(req: Request) {
       )
     }
 
-    const openai = getOpenAI()
+   
 
     const formData = await req.formData()
     const file = formData.get("file")
