@@ -3,9 +3,15 @@ import OpenAI from "openai"
 import { Buffer } from "buffer"
 import { BRANDS, COLORS, IS_PRO } from "../../lib/constants"
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-})
+function getOpenAI() {
+  const apiKey = process.env.OPENAI_API_KEY
+
+  if (!apiKey) {
+    throw new Error("Missing OPENAI_API_KEY")
+  }
+
+  return new OpenAI({ apiKey })
+}
 
 export const runtime = "nodejs"
 
@@ -66,12 +72,7 @@ export async function POST(req: Request) {
       )
     }
 
-    if (!process.env.OPENAI_API_KEY) {
-      return NextResponse.json(
-        { error: "Missing OPENAI_API_KEY" },
-        { status: 500 }
-      )
-    }
+    const openai = getOpenAI()
 
     const formData = await req.formData()
     const file = formData.get("file")
@@ -105,7 +106,7 @@ export async function POST(req: Request) {
         {
           role: "system",
           content:
-            "You analyze diecast package photos. Reply with ONLY valid JSON. Use this exact shape: {\"brand\":\"\",\"model\":\"\",\"color\":\"\"}. Keep values short.",
+            "You analyze diecast package photos. Reply with ONLY valid JSON. Use this exact shape: {\"brand\":\"\",\"model\":\"\",\"color\":\"\"}. Keep values short. Prioritize visible package text. Do not invent a different model if the package text is readable. Brand is the toy brand on the package. Model is the exact vehicle name shown on the package. Color is the main visible color of the diecast car itself, not the card background.",
         },
         {
           role: "user",
@@ -113,12 +114,11 @@ export async function POST(req: Request) {
             {
               type: "text",
               text:
-                `Identify the diecast car in this package photo.\n` +
-                `Return JSON only with:\n` +
-                `brand\nmodel\ncolor\n\n` +
+                `Read this diecast package image.\n` +
+                `Return only JSON with brand, model, and color.\n` +
+                `Use package text first.\n` +
                 `Known brands: ${BRANDS.join(", ")}\n` +
-                `Known colors: ${COLORS.join(", ")}\n\n` +
-                `Pick the main visible color of the car, not the card background.`,
+                `Known colors: ${COLORS.join(", ")}`,
             },
             {
               type: "image_url",
