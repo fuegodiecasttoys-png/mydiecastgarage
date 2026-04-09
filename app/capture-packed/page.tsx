@@ -125,6 +125,7 @@ export default function CapturePage() {
   const [monthlyCount, setMonthlyCount] = useState(0)
   const [message, setMessage] = useState<string | null>(null)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [showColorSuggestions, setShowColorSuggestions] = useState(false)
 
   const filteredColors = COLORS.filter((c) =>
     c
@@ -614,16 +615,29 @@ export default function CapturePage() {
 
             <div style={{ position: "relative", width: "100%" }}>
               <input
-                type="text"
-                placeholder={IS_PRO ? "Color (type 2 letters...)" : "Color"}
-                value={color}
-                onChange={(e) => setColor(e.target.value)}
-                disabled={loading || locked}
-                style={inputStyle}
-                autoComplete="off"
-              />
+  type="text"
+  placeholder={IS_PRO ? "Color (type 2 letters...)" : "Color"}
+  value={color}
+  onChange={(e) => {
+    setColor(e.target.value)
+    setShowColorSuggestions(true)
+  }}
+  onFocus={() => setShowColorSuggestions(true)}
+  onBlur={() => {
+    setTimeout(() => setShowColorSuggestions(false), 150)
+  }}
+  disabled={loading || locked}
+  style={inputStyle}
+  autoComplete="off"
+/>
 
-              {IS_PRO && color.trim().length >= 1 && filteredColors.length > 0 && !locked && (
+
+              {IS_PRO &&
+  showColorSuggestions &&
+  color.trim().length >= 1 &&
+  filteredColors.length > 0 &&
+  !locked && (
+
                 <div
                   style={{
                     position: "absolute",
@@ -641,7 +655,10 @@ export default function CapturePage() {
                   {filteredColors.slice(0, 12).map((c) => (
                     <div
                       key={c}
-                      onClick={() => setColor(c)}
+                      onClick={() => {
+  setColor(c)
+  setShowColorSuggestions(false)
+}}
                       style={{
                         padding: "10px 12px",
                         cursor: "pointer",
