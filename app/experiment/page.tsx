@@ -328,7 +328,19 @@ export default function ExperimentPage() {
             aria-hidden
           />
           <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 14 }}>
-            <img src="/logo.png" alt="" width={56} height={56} style={{ display: "block" }} />
+            <img
+              src="/logo.png"
+              alt=""
+              width={56}
+              height={56}
+              style={{
+                display: "block",
+                filter:
+                  "grayscale(1) brightness(1.24) contrast(1.1) " +
+                  "drop-shadow(0 0 10px rgba(255,106,0,0.22)) " +
+                  "drop-shadow(0 0 20px rgba(255,106,0,0.1))",
+              }}
+            />
             <div>
               <h1
                 style={{
