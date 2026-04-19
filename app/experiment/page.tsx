@@ -328,17 +328,15 @@ export default function ExperimentPage() {
           >
             <img
               src="/logo.png"
-              alt="Diecast Vault"
+              alt="My Diecast Garage"
               width={128}
               style={{
                 display: "block",
                 width: 128,
                 maxWidth: "min(128px, 100%)",
                 height: "auto",
-                boxShadow: "0 0 20px rgba(255,106,0,0.15)",
-                filter:
-                  "brightness(1.08) sepia(0.5) saturate(1.16) hue-rotate(350deg) contrast(1.12) " +
-                  "drop-shadow(0 0 1px rgba(255,255,255,0.25))",
+                boxShadow: "0 0 20px rgba(255,106,0,0.12)",
+                filter: "drop-shadow(0 2px 10px rgba(0,0,0,0.35))",
               }}
             />
           </div>
