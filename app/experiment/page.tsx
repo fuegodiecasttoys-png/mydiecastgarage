@@ -458,44 +458,81 @@ export default function ExperimentPage() {
             e.currentTarget.style.boxShadow = HERO_SHADOW;
           }}
         >
-          <div style={{ display: "flex", alignItems: "flex-start", gap: 16 }}>
-            <IconFrame variant="accent">
-              <IconGarage />
-            </IconFrame>
-            <div style={{ flex: 1, minWidth: 0 }}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "stretch",
+              gap: 0,
+            }}
+          >
+            <div
+              style={{
+                flexShrink: 0,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "flex-start",
+              }}
+            >
+              <IconFrame variant="accent">
+                <IconGarage />
+              </IconFrame>
+            </div>
+            <div
+              style={{
+                flex: 1,
+                minWidth: 0,
+                marginLeft: 28,
+                paddingLeft: 20,
+                paddingRight: 4,
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "stretch",
+              }}
+            >
               <div
                 style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 8,
-                  padding: "6px 12px",
-                  borderRadius: 999,
-                  marginBottom: 12,
-                  background: `linear-gradient(90deg, rgba(255,106,0,0.2), rgba(255,129,36,0.12))`,
-                  border: `1px solid rgba(255,106,0,0.35)`,
-                  fontSize: 12,
-                  fontWeight: 600,
-                  letterSpacing: "0.02em",
-                  color: t.orange300,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "flex-start",
+                  gap: 10,
                 }}
               >
-                {pieceLabel(garageCount)}
+                <div
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 8,
+                    padding: "6px 12px",
+                    borderRadius: 999,
+                    background: `linear-gradient(90deg, rgba(255,106,0,0.2), rgba(255,129,36,0.12))`,
+                    border: `1px solid rgba(255,106,0,0.35)`,
+                    fontSize: 12,
+                    fontWeight: 600,
+                    letterSpacing: "0.02em",
+                    color: t.orange300,
+                  }}
+                >
+                  {pieceLabel(garageCount)}
+                </div>
+                <h2
+                  style={{
+                    margin: 0,
+                    fontFamily: displayFont,
+                    fontSize: 22,
+                    fontWeight: 700,
+                    letterSpacing: "-0.02em",
+                    color: t.textPrimary,
+                    lineHeight: 1.15,
+                  }}
+                >
+                  My Garage
+                </h2>
               </div>
-              <h2
-                style={{
-                  margin: 0,
-                  fontFamily: displayFont,
-                  fontSize: 22,
-                  fontWeight: 700,
-                  letterSpacing: "-0.02em",
-                  color: t.textPrimary,
-                }}
-              >
-                My Garage
-              </h2>
               <p
                 style={{
-                  margin: "8px 0 16px",
+                  margin: "10px 0 0",
                   fontSize: 14,
                   fontWeight: 500,
                   lineHeight: 1.5,
@@ -509,6 +546,7 @@ export default function ExperimentPage() {
                   display: "inline-flex",
                   alignItems: "center",
                   gap: 8,
+                  marginTop: 16,
                   fontSize: 13,
                   fontWeight: 600,
                   color: t.orange400,
