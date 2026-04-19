@@ -331,16 +331,6 @@ export default function MyGarage() {
 </button>
 
           </div>
-
-          <div
-            style={{
-              opacity: 0.72,
-              fontSize: 16,
-              fontWeight: 600,
-            }}
-          >
-            {items.length} diecasts in your garage 🚗🔥
-          </div>
         </div>
 
         {loading && (

@@ -29,9 +29,16 @@ const cardStyle: CSSProperties = {
   overflow: "hidden",
 };
 
+function garageCountLabel(count: number) {
+  if (count === 0) return "No cars yet";
+  if (count === 1) return "1 car";
+  return `${count} cars`;
+}
+
 export default function Home() {
   const router = useRouter();
   const [checkingAuth, setCheckingAuth] = useState(true);
+  const [garageCount, setGarageCount] = useState(0);
   // 🔒 Logout
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
@@ -45,21 +52,31 @@ export default function Home() {
     router.replace("/login");
   };
 
-  // 🔒 Check user logged in
+  // 🔒 Check user logged in + load garage total (same source as My Garage list)
   useEffect(() => {
     async function checkUser() {
-  const { data } = await supabase.auth.getUser();
+      const { data } = await supabase.auth.getUser();
 
-  if (!data.user) {
-    router.push("/login");
-    return;
-  }
+      if (!data.user) {
+        router.push("/login");
+        return;
+      }
 
-  setCheckingAuth(false);
-}
+      const { count, error } = await supabase
+        .from("items")
+        .select("*", { count: "exact", head: true })
+        .eq("user_id", data.user.id);
 
+      if (!error && count !== null) {
+        setGarageCount(count);
+      } else {
+        setGarageCount(0);
+      }
 
-    checkUser();
+      setCheckingAuth(false);
+    }
+
+    void checkUser();
   }, [router]);
   if (checkingAuth) {
     return <FullPageLoading label="Loading your garage..." />;
@@ -151,8 +168,19 @@ export default function Home() {
           marginBottom: 16,
         }}
       >
-        <div style={{ fontSize: 20, fontWeight: 800, marginBottom: 6 }}>
+        <div style={{ fontSize: 20, fontWeight: 800, marginBottom: 4 }}>
           My Garage
+        </div>
+        <div
+          style={{
+            fontSize: 12,
+            fontWeight: 600,
+            color: "rgba(255,255,255,0.52)",
+            marginBottom: 6,
+            letterSpacing: "0.01em",
+          }}
+        >
+          {garageCountLabel(garageCount)}
         </div>
         <div
           style={{
