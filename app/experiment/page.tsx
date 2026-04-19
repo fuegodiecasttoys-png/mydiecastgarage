@@ -315,34 +315,30 @@ export default function ExperimentPage() {
           </span>
         </div>
 
-        <header style={{ marginBottom: t.spaceSection }}>
-          <div
-            style={{
-              width: 44,
-              height: 3,
-              borderRadius: 2,
-              margin: "0 auto 20px",
-              background: `linear-gradient(90deg, ${t.orange500}, ${t.orange300})`,
-              boxShadow: `0 0 18px ${t.orangeGlow}`,
-            }}
-            aria-hidden
-          />
+        <header
+          style={{
+            marginBottom: t.spaceSection,
+            marginTop: 0,
+            paddingTop: 6,
+            paddingBottom: 22,
+          }}
+        >
           <div
             style={{
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
-              paddingTop: 12,
-              paddingBottom: 16,
             }}
           >
             <img
               src="/logo.png"
               alt="Diecast Vault"
-              width={64}
-              height={64}
+              width={128}
               style={{
                 display: "block",
+                width: 128,
+                maxWidth: "min(128px, 100%)",
+                height: "auto",
                 filter:
                   "grayscale(88%) brightness(1.14) contrast(1.22) " +
                   "drop-shadow(0 0 10px rgba(255,106,0,0.22)) " +
