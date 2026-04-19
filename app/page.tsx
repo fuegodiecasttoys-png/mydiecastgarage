@@ -1,18 +1,9 @@
 "use client";
 
-import {
-  useEffect,
-  useState,
-  type CSSProperties,
-  type ReactNode,
-} from "react";
+import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "./lib/supabaseClient";
 import { FullPageLoading } from "./components/FullPageLoading";
-
-const RADIUS = 18;
-const TRANSITION =
-  "transform 0.16s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.22s ease";
 
 function garageCountLabel(count: number) {
   if (count === 0) return "No models yet";
@@ -20,69 +11,28 @@ function garageCountLabel(count: number) {
   return `${count} models`;
 }
 
-function cardSurfaceFixed(accent: "neutral" | "cyan" | "purple" | "orange"): CSSProperties {
-  const borderColor =
-    accent === "cyan"
-      ? "rgba(56,189,248,0.42)"
-      : accent === "purple"
-        ? "rgba(192,132,252,0.32)"
-        : accent === "orange"
-          ? "rgba(251,146,60,0.32)"
-          : "rgba(255,255,255,0.1)";
-
-  const fill =
-    accent === "cyan"
-      ? "linear-gradient(165deg, rgba(32,44,62,0.98) 0%, rgba(18,24,40,0.99) 42%, rgba(10,14,26,1) 100%)"
-      : accent === "purple"
-        ? "linear-gradient(165deg, rgba(40,32,54,0.97) 0%, rgba(22,18,34,1) 100%)"
-        : accent === "orange"
-          ? "linear-gradient(165deg, rgba(48,34,26,0.97) 0%, rgba(26,18,14,1) 100%)"
-          : "linear-gradient(165deg, rgba(40,42,50,0.97) 0%, rgba(22,23,30,1) 100%)";
-
-  const outerGlow =
-    accent === "cyan"
-      ? "0 16px 48px rgba(0,0,0,0.52), 0 0 64px rgba(14,165,233,0.26), 0 0 0 1px rgba(56,189,248,0.14)"
-      : accent === "purple"
-        ? "0 14px 40px rgba(0,0,0,0.5), 0 0 48px rgba(168,85,247,0.14)"
-        : accent === "orange"
-          ? "0 14px 40px rgba(0,0,0,0.5), 0 0 48px rgba(249,115,22,0.12)"
-          : "0 14px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04)";
-
-  return {
-    background: fill,
-    border: `1px solid ${borderColor}`,
-    boxShadow: `${outerGlow}, inset 0 1px 0 rgba(255,255,255,0.11), inset 0 -18px 36px rgba(0,0,0,0.32)`,
-  };
-}
-
 function IconCircle({
   children,
   bg,
   border,
-  innerGlow,
-  size = 48,
 }: {
   children: ReactNode;
   bg: string;
   border: string;
-  innerGlow?: string;
-  size?: number;
 }) {
   return (
     <div
       style={{
-        width: size,
-        height: size,
+        width: 46,
+        height: 46,
         borderRadius: "50%",
         background: bg,
         border: `1px solid ${border}`,
         display: "grid",
         placeItems: "center",
-        fontSize: Math.round(size * 0.46),
+        fontSize: 22,
         flexShrink: 0,
-        boxShadow: innerGlow
-          ? `${innerGlow}, 0 6px 18px rgba(0,0,0,0.45)`
-          : "0 6px 18px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.15)",
+        boxShadow: "0 4px 14px rgba(0,0,0,0.35)",
       }}
     >
       {children}
@@ -90,75 +40,35 @@ function IconCircle({
   );
 }
 
-const subtitle: CSSProperties = {
-  fontSize: 12,
-  fontWeight: 550,
-  color: "rgba(255,255,255,0.64)",
-  lineHeight: 1.4,
-  letterSpacing: "0.01em",
+const chevronStyle: CSSProperties = {
+  fontSize: 20,
+  fontWeight: 300,
+  opacity: 0.85,
+  marginLeft: 8,
+  flexShrink: 0,
 };
 
-function PressableSurface({
-  children,
-  onClick,
-  style,
-  disabled,
-}: {
-  children: ReactNode;
-  onClick?: () => void;
-  style: CSSProperties;
-  disabled?: boolean;
-}) {
-  const [pressed, setPressed] = useState(false);
-  const [hover, setHover] = useState(false);
-
-  const scale =
-    disabled ? 1 : pressed ? 0.972 : hover ? 1.028 : 1;
-
-  return (
-    <button
-      type="button"
-      disabled={disabled}
-      onClick={disabled ? undefined : onClick}
-      onPointerEnter={() => !disabled && setHover(true)}
-      onPointerLeave={() => {
-        setHover(false);
-        setPressed(false);
-      }}
-      onPointerDown={() => !disabled && setPressed(true)}
-      onPointerUp={() => setPressed(false)}
-      onPointerCancel={() => setPressed(false)}
-      style={{
-        ...style,
-        transform: `scale(${scale})`,
-        transition: TRANSITION,
-        willChange: "transform",
-        WebkitTapHighlightColor: "transparent",
-        cursor: disabled ? "default" : "pointer",
-      }}
-    >
-      {children}
-    </button>
-  );
-}
-
-const chevron = (color: string): CSSProperties => ({
-  fontSize: 22,
-  fontWeight: 200,
-  lineHeight: 1,
-  color,
-  opacity: 0.92,
-  marginLeft: 6,
-  flexShrink: 0,
-  textShadow: `0 0 20px ${color}55`,
-});
+const rowCardBase: CSSProperties = {
+  width: "100%",
+  display: "flex",
+  alignItems: "center",
+  gap: 14,
+  padding: "16px 16px",
+  borderRadius: 16,
+  border: "1px solid rgba(255,255,255,0.08)",
+  background:
+    "linear-gradient(165deg, rgba(28,28,32,0.98) 0%, rgba(16,16,20,0.99) 100%)",
+  boxShadow: "0 8px 28px rgba(0,0,0,0.38), inset 0 1px 0 rgba(255,255,255,0.04)",
+  cursor: "pointer",
+  textAlign: "left",
+  color: "#fff",
+  WebkitTapHighlightColor: "transparent",
+};
 
 export default function Home() {
   const router = useRouter();
   const [checkingAuth, setCheckingAuth] = useState(true);
   const [garageCount, setGarageCount] = useState(0);
-  const [logoutPress, setLogoutPress] = useState(false);
-  const [logoutHover, setLogoutHover] = useState(false);
 
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
@@ -202,21 +112,14 @@ export default function Home() {
     return <FullPageLoading label="Loading your garage..." />;
   }
 
-  const logoutScale = logoutPress ? 0.94 : logoutHover ? 1.04 : 1;
-
   return (
     <div
       style={{
         minHeight: "100vh",
         width: "100%",
-        background: `
-          radial-gradient(ellipse 130% 90% at 50% -18%, rgba(56,189,248,0.28) 0%, rgba(14,165,233,0.1) 32%, transparent 58%),
-          radial-gradient(ellipse 90% 70% at 100% 0%, rgba(99,102,241,0.12) 0%, transparent 42%),
-          radial-gradient(ellipse 70% 60% at 0% 40%, rgba(14,165,233,0.08) 0%, transparent 48%),
-          radial-gradient(ellipse 100% 80% at 50% 120%, rgba(15,23,42,0.9) 0%, transparent 55%),
-          linear-gradient(180deg, #090b12 0%, #06070e 38%, #03040a 100%)
-        `,
-        padding: "24px 20px 40px",
+        background:
+          "radial-gradient(ellipse 120% 70% at 50% -8%, rgba(55,184,255,0.16) 0%, transparent 52%), radial-gradient(ellipse 90% 50% at 50% 100%, rgba(21,131,255,0.06) 0%, transparent 45%), linear-gradient(180deg, #07080c 0%, #05060a 40%, #040508 100%)",
+        padding: "20px 18px 32px",
         fontFamily:
           'system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
         boxSizing: "border-box",
@@ -225,60 +128,45 @@ export default function Home() {
       <div
         style={{
           position: "relative",
-          maxWidth: 392,
+          maxWidth: 400,
           margin: "0 auto",
         }}
       >
         <button
           type="button"
           onClick={handleLogout}
-          onPointerEnter={() => setLogoutHover(true)}
-          onPointerLeave={() => {
-            setLogoutHover(false);
-            setLogoutPress(false);
-          }}
-          onPointerDown={() => setLogoutPress(true)}
-          onPointerUp={() => setLogoutPress(false)}
           style={{
             position: "absolute",
-            top: 2,
+            top: 0,
             right: 0,
             zIndex: 2,
-            transform: `scale(${logoutScale})`,
-            transition: TRANSITION,
-            background:
-              "linear-gradient(180deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.03) 100%)",
-            border: "1px solid rgba(255,255,255,0.16)",
-            color: "rgba(255,255,255,0.92)",
-            padding: "8px 16px",
+            background: "rgba(255,255,255,0.04)",
+            border: "1px solid rgba(255,255,255,0.14)",
+            color: "rgba(255,255,255,0.88)",
+            padding: "7px 14px",
             borderRadius: 999,
             cursor: "pointer",
-            fontSize: 11,
-            fontWeight: 700,
-            letterSpacing: "0.08em",
-            textTransform: "uppercase",
-            boxShadow:
-              "0 4px 16px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.12)",
-            WebkitTapHighlightColor: "transparent",
+            fontSize: 12,
+            fontWeight: 600,
+            letterSpacing: "0.02em",
           }}
         >
           Logout
         </button>
 
         {/* Branding */}
-        <div style={{ textAlign: "center", paddingTop: 8, marginBottom: 32 }}>
+        <div style={{ textAlign: "center", paddingTop: 4, marginBottom: 26 }}>
           <div
             style={{
-              marginBottom: 18,
-              filter:
-                "drop-shadow(0 0 28px rgba(56,189,248,0.45)) drop-shadow(0 12px 32px rgba(0,0,0,0.55))",
+              marginBottom: 14,
+              filter: "drop-shadow(0 0 20px rgba(55,184,255,0.35)) drop-shadow(0 6px 24px rgba(0,0,0,0.45))",
             }}
           >
             <img
               src="/logo.png"
               alt="My Diecast Garage"
               style={{
-                width: 92,
+                width: 88,
                 height: "auto",
                 display: "block",
                 margin: "0 auto",
@@ -288,21 +176,21 @@ export default function Home() {
           <h1
             style={{
               margin: 0,
-              fontSize: 12.5,
+              fontSize: 13,
               fontWeight: 800,
-              letterSpacing: "0.22em",
+              letterSpacing: "0.16em",
               textTransform: "uppercase",
-              lineHeight: 1.55,
-              color: "#bae6fd",
+              lineHeight: 1.45,
+              color: "#7dd3fc",
               textShadow:
-                "0 0 36px rgba(56,189,248,0.55), 0 0 1px rgba(125,211,252,0.9), 0 2px 8px rgba(0,0,0,0.5)",
+                "0 0 28px rgba(56,189,248,0.4), 0 1px 0 rgba(0,0,0,0.35)",
             }}
           >
-            <span aria-hidden style={{ opacity: 0.35, letterSpacing: "0.14em" }}>
+            <span aria-hidden style={{ opacity: 0.4, letterSpacing: "0.08em" }}>
               —
             </span>{" "}
             MY DIECAST GARAGE{" "}
-            <span aria-hidden style={{ opacity: 0.35, letterSpacing: "0.14em" }}>
+            <span aria-hidden style={{ opacity: 0.4, letterSpacing: "0.08em" }}>
               —
             </span>
           </h1>
@@ -313,32 +201,26 @@ export default function Home() {
           style={{
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
-            gap: 14,
-            marginBottom: 20,
+            gap: 12,
+            marginBottom: 14,
           }}
         >
-          <PressableSurface
+          <button
+            type="button"
             onClick={() => router.push("/capture-packed")}
             style={{
-              width: "100%",
-              display: "flex",
+              ...rowCardBase,
               flexDirection: "column",
               alignItems: "stretch",
-              padding: "18px 12px 16px",
-              gap: 12,
-              minHeight: 128,
-              borderRadius: RADIUS,
-              textAlign: "left",
-              color: "#fff",
-              border: "none",
-              ...cardSurfaceFixed("neutral"),
+              padding: "16px 12px 14px",
+              gap: 10,
+              minHeight: 118,
             }}
           >
             <div style={{ display: "flex", justifyContent: "center" }}>
               <IconCircle
-                bg="linear-gradient(145deg, rgba(96,165,250,0.35) 0%, rgba(37,99,235,0.25) 100%)"
-                border="rgba(147,197,253,0.55)"
-                innerGlow="inset 0 1px 0 rgba(255,255,255,0.25)"
+                bg="rgba(59,130,246,0.22)"
+                border="rgba(96,165,250,0.45)"
               >
                 📦
               </IconCircle>
@@ -348,38 +230,41 @@ export default function Home() {
                 style={{
                   fontSize: 15,
                   fontWeight: 800,
-                  marginBottom: 6,
-                  letterSpacing: "-0.03em",
+                  marginBottom: 4,
+                  letterSpacing: "-0.02em",
                 }}
               >
                 Add Packed
               </div>
-              <div style={subtitle}>Boxed models</div>
+              <div
+                style={{
+                  fontSize: 12,
+                  fontWeight: 500,
+                  color: "rgba(255,255,255,0.52)",
+                  lineHeight: 1.35,
+                }}
+              >
+                Boxed models
+              </div>
             </div>
-          </PressableSurface>
+          </button>
 
-          <PressableSurface
+          <button
+            type="button"
             onClick={() => router.push("/capture-loose")}
             style={{
-              width: "100%",
-              display: "flex",
+              ...rowCardBase,
               flexDirection: "column",
               alignItems: "stretch",
-              padding: "18px 12px 16px",
-              gap: 12,
-              minHeight: 128,
-              borderRadius: RADIUS,
-              textAlign: "left",
-              color: "#fff",
-              border: "none",
-              ...cardSurfaceFixed("neutral"),
+              padding: "16px 12px 14px",
+              gap: 10,
+              minHeight: 118,
             }}
           >
             <div style={{ display: "flex", justifyContent: "center" }}>
               <IconCircle
-                bg="linear-gradient(145deg, rgba(96,165,250,0.35) 0%, rgba(37,99,235,0.25) 100%)"
-                border="rgba(147,197,253,0.55)"
-                innerGlow="inset 0 1px 0 rgba(255,255,255,0.25)"
+                bg="rgba(59,130,246,0.22)"
+                border="rgba(96,165,250,0.45)"
               >
                 🚗
               </IconCircle>
@@ -389,53 +274,55 @@ export default function Home() {
                 style={{
                   fontSize: 15,
                   fontWeight: 800,
-                  marginBottom: 6,
-                  letterSpacing: "-0.03em",
+                  marginBottom: 4,
+                  letterSpacing: "-0.02em",
                 }}
               >
                 Add Loose
               </div>
-              <div style={subtitle}>Loose models</div>
+              <div
+                style={{
+                  fontSize: 12,
+                  fontWeight: 500,
+                  color: "rgba(255,255,255,0.52)",
+                  lineHeight: 1.35,
+                }}
+              >
+                Loose models
+              </div>
             </div>
-          </PressableSurface>
+          </button>
         </div>
 
-        {/* My Garage — hero */}
-        <PressableSurface
+        {/* My Garage — primary */}
+        <button
+          type="button"
           onClick={() => router.push("/mygarage")}
           style={{
-            width: "100%",
-            display: "flex",
-            alignItems: "center",
-            gap: 16,
-            padding: "22px 18px",
-            marginBottom: 20,
-            minHeight: 132,
-            borderRadius: RADIUS,
-            textAlign: "left",
-            color: "#fff",
-            border: "none",
-            ...cardSurfaceFixed("cyan"),
+            ...rowCardBase,
+            marginBottom: 12,
+            padding: "18px 16px",
+            border: "1px solid rgba(56,189,248,0.35)",
+            background:
+              "linear-gradient(165deg, rgba(24,32,44,0.98) 0%, rgba(14,18,28,0.99) 100%)",
             boxShadow:
-              "0 18px 52px rgba(0,0,0,0.55), 0 0 72px rgba(14,165,233,0.32), 0 0 0 1px rgba(56,189,248,0.18), inset 0 1px 0 rgba(255,255,255,0.12), inset 0 -18px 36px rgba(0,0,0,0.32)",
+              "0 0 0 1px rgba(14,165,233,0.08), 0 12px 40px rgba(0,0,0,0.45), 0 0 48px rgba(14,165,233,0.12), inset 0 1px 0 rgba(255,255,255,0.06)",
+            minHeight: 120,
           }}
         >
           <IconCircle
-            size={52}
-            bg="linear-gradient(145deg, rgba(56,189,248,0.45) 0%, rgba(2,132,199,0.35) 100%)"
-            border="rgba(186,230,253,0.65)"
-            innerGlow="inset 0 1px 0 rgba(255,255,255,0.35)"
+            bg="rgba(14,165,233,0.28)"
+            border="rgba(56,189,248,0.5)"
           >
             🏠
           </IconCircle>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div
               style={{
-                fontSize: 18,
+                fontSize: 17,
                 fontWeight: 800,
-                letterSpacing: "-0.04em",
-                marginBottom: 10,
-                textShadow: "0 1px 0 rgba(0,0,0,0.35)",
+                letterSpacing: "-0.02em",
+                marginBottom: 8,
               }}
             >
               My Garage
@@ -444,138 +331,134 @@ export default function Home() {
               style={{
                 display: "inline-flex",
                 alignItems: "center",
-                gap: 6,
-                padding: "5px 12px",
+                gap: 5,
+                padding: "4px 11px",
                 borderRadius: 999,
-                fontSize: 12,
+                fontSize: 11,
                 fontWeight: 700,
                 letterSpacing: "0.02em",
-                color: "#ecfeff",
-                background:
-                  "linear-gradient(180deg, rgba(34,211,238,0.38) 0%, rgba(8,145,178,0.48) 100%)",
-                border: "1px solid rgba(103,232,249,0.55)",
-                marginBottom: 10,
-                boxShadow:
-                  "0 0 28px rgba(34,211,238,0.4), 0 4px 14px rgba(0,0,0,0.38), inset 0 1px 0 rgba(255,255,255,0.28)",
-                textShadow: "0 1px 2px rgba(0,0,0,0.5)",
+                color: "rgba(224,242,254,0.95)",
+                background: "rgba(14,165,233,0.22)",
+                border: "1px solid rgba(56,189,248,0.35)",
+                marginBottom: 8,
+                boxShadow: "0 2px 10px rgba(14,165,233,0.15)",
               }}
             >
               {garageCount > 0 ? (
-                <span
-                  style={{ fontSize: 12, filter: "drop-shadow(0 0 6px rgba(255,255,255,0.45))" }}
-                  aria-hidden
-                >
+                <span style={{ fontSize: 11, opacity: 0.95 }} aria-hidden>
                   📦
                 </span>
               ) : null}
               {garageCountLabel(garageCount)}
             </div>
-            <div style={{ ...subtitle, fontSize: 13, color: "rgba(255,255,255,0.62)" }}>
+            <div
+              style={{
+                fontSize: 13,
+                fontWeight: 500,
+                color: "rgba(255,255,255,0.55)",
+                lineHeight: 1.35,
+              }}
+            >
               View your collection
             </div>
           </div>
-          <span style={chevron("#67e8f9")} aria-hidden>
+          <span style={{ ...chevronStyle, color: "#38bdf8" }} aria-hidden>
             ›
           </span>
-        </PressableSurface>
+        </button>
 
         {/* Wishlist */}
-        <PressableSurface
+        <button
+          type="button"
           onClick={() => router.push("/wishlist")}
-          style={{
-            width: "100%",
-            display: "flex",
-            alignItems: "center",
-            gap: 16,
-            padding: "18px 18px",
-            marginBottom: 20,
-            borderRadius: RADIUS,
-            textAlign: "left",
-            color: "#fff",
-            border: "none",
-            ...cardSurfaceFixed("purple"),
-          }}
+          style={{ ...rowCardBase, marginBottom: 12 }}
         >
           <IconCircle
-            bg="linear-gradient(145deg, rgba(192,132,252,0.4) 0%, rgba(126,34,206,0.3) 100%)"
-            border="rgba(216,180,254,0.5)"
-            innerGlow="inset 0 1px 0 rgba(255,255,255,0.2)"
+            bg="rgba(168,85,247,0.2)"
+            border="rgba(192,132,252,0.45)"
           >
             💜
           </IconCircle>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div
               style={{
-                fontSize: 17,
+                fontSize: 16,
                 fontWeight: 800,
-                marginBottom: 6,
-                letterSpacing: "-0.03em",
+                marginBottom: 4,
+                letterSpacing: "-0.02em",
               }}
             >
               Wishlist
             </div>
-            <div style={subtitle}>Models you want next</div>
+            <div
+              style={{
+                fontSize: 12,
+                fontWeight: 500,
+                color: "rgba(255,255,255,0.52)",
+                lineHeight: 1.35,
+              }}
+            >
+              Models you want next
+            </div>
           </div>
-          <span style={chevron("#d8b4fe")} aria-hidden>
+          <span style={{ ...chevronStyle, color: "#c084fc" }} aria-hidden>
             ›
           </span>
-        </PressableSurface>
+        </button>
 
-        {/* Add Friends */}
+        {/* Add Friends — coming soon */}
         <div
           role="group"
           aria-label="Add friends, coming soon"
           style={{
-            width: "100%",
-            display: "flex",
-            alignItems: "center",
-            gap: 16,
-            padding: "18px 18px",
-            marginBottom: 20,
-            borderRadius: RADIUS,
-            textAlign: "left",
-            color: "#fff",
-            opacity: 0.5,
-            filter: "saturate(0.72)",
+            ...rowCardBase,
+            marginBottom: 12,
+            opacity: 0.62,
             cursor: "default",
             pointerEvents: "none",
-            ...cardSurfaceFixed("neutral"),
           }}
         >
           <IconCircle
-            bg="linear-gradient(145deg, rgba(74,222,128,0.22) 0%, rgba(22,101,52,0.2) 100%)"
-            border="rgba(134,239,172,0.35)"
+            bg="rgba(34,197,94,0.16)"
+            border="rgba(74,222,128,0.35)"
           >
             👥
           </IconCircle>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div
               style={{
-                fontSize: 17,
+                fontSize: 16,
                 fontWeight: 800,
-                marginBottom: 6,
-                letterSpacing: "-0.03em",
+                marginBottom: 4,
+                letterSpacing: "-0.02em",
+                color: "rgba(255,255,255,0.92)",
               }}
             >
               Add Friends
             </div>
-            <div style={{ ...subtitle, color: "rgba(255,255,255,0.5)" }}>
+            <div
+              style={{
+                fontSize: 12,
+                fontWeight: 500,
+                color: "rgba(255,255,255,0.45)",
+                lineHeight: 1.35,
+              }}
+            >
               Connect with collectors
             </div>
           </div>
           <span
             style={{
-              fontSize: 9.5,
-              fontWeight: 800,
-              letterSpacing: "0.1em",
+              fontSize: 10,
+              fontWeight: 700,
+              letterSpacing: "0.06em",
               textTransform: "uppercase",
-              padding: "7px 11px",
+              padding: "6px 10px",
               borderRadius: 999,
-              border: "1px solid rgba(134,239,172,0.35)",
-              color: "rgba(220,252,231,0.88)",
-              background: "rgba(20,83,45,0.45)",
+              border: "1px solid rgba(74,222,128,0.45)",
+              color: "rgba(187,247,208,0.95)",
+              background: "rgba(22,101,52,0.35)",
               flexShrink: 0,
-              boxShadow: "inset 0 1px 0 rgba(255,255,255,0.08)",
             }}
           >
             Coming soon
@@ -583,46 +466,43 @@ export default function Home() {
         </div>
 
         {/* How To */}
-        <PressableSurface
+        <button
+          type="button"
           onClick={() => router.push("/howto")}
-          style={{
-            width: "100%",
-            display: "flex",
-            alignItems: "center",
-            gap: 16,
-            padding: "18px 18px",
-            marginBottom: 0,
-            borderRadius: RADIUS,
-            textAlign: "left",
-            color: "#fff",
-            border: "none",
-            ...cardSurfaceFixed("orange"),
-          }}
+          style={{ ...rowCardBase, marginBottom: 0 }}
         >
           <IconCircle
-            bg="linear-gradient(145deg, rgba(251,146,60,0.42) 0%, rgba(194,65,12,0.32) 100%)"
-            border="rgba(253,186,116,0.55)"
-            innerGlow="inset 0 1px 0 rgba(255,255,255,0.22)"
+            bg="rgba(249,115,22,0.18)"
+            border="rgba(251,146,60,0.45)"
           >
             📖
           </IconCircle>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div
               style={{
-                fontSize: 17,
+                fontSize: 16,
                 fontWeight: 800,
-                marginBottom: 6,
-                letterSpacing: "-0.03em",
+                marginBottom: 4,
+                letterSpacing: "-0.02em",
               }}
             >
               How To
             </div>
-            <div style={subtitle}>Tips for great photos</div>
+            <div
+              style={{
+                fontSize: 12,
+                fontWeight: 500,
+                color: "rgba(255,255,255,0.52)",
+                lineHeight: 1.35,
+              }}
+            >
+              Tips for great photos
+            </div>
           </div>
-          <span style={chevron("#fdba74")} aria-hidden>
+          <span style={{ ...chevronStyle, color: "#fb923c" }} aria-hidden>
             ›
           </span>
-        </PressableSurface>
+        </button>
       </div>
     </div>
   );
