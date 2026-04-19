@@ -3,6 +3,7 @@
 import { useEffect, useState, type CSSProperties } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "./lib/supabaseClient";
+import { FullPageLoading } from "./components/FullPageLoading";
 
 const buttonStyle: CSSProperties = {
   minHeight: 92,
@@ -61,8 +62,8 @@ export default function Home() {
     checkUser();
   }, [router]);
   if (checkingAuth) {
-  return null;
-}
+    return <FullPageLoading label="Loading your garage..." />;
+  }
 
  return (
   <div

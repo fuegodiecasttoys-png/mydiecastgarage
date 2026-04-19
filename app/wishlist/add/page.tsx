@@ -10,6 +10,7 @@ import {
 import { useRouter } from "next/navigation";
 import { supabase } from "../../lib/supabaseClient";
 import Link from "next/link";
+import { FullPageLoading } from "../../components/FullPageLoading";
 const SCALE_OPTIONS = [
   "1:64",
   "1:43",
@@ -109,6 +110,7 @@ async function compressImage(file: File) {
 export default function AddWishlistPage() {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [sessionChecked, setSessionChecked] = useState(false);
 
   const [model, setModel] = useState("");
   const [brand, setBrand] = useState("");
@@ -135,6 +137,20 @@ export default function AddWishlistPage() {
       }
     };
   }, [previewUrl]);
+
+  useEffect(() => {
+    async function requireSession() {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) {
+        router.replace("/login");
+        return;
+      }
+      setSessionChecked(true);
+    }
+    void requireSession();
+  }, [router]);
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] || null;
@@ -271,6 +287,10 @@ export default function AddWishlistPage() {
       setSaving(false);
     }
   };
+
+  if (!sessionChecked) {
+    return <FullPageLoading label="Loading..." />;
+  }
 
   return (
     <div style={pageStyle}>

@@ -3,6 +3,7 @@
 import { useEffect, useState, type CSSProperties } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { supabase } from "../../lib/supabaseClient"
+import { FullPageLoading } from "../../components/FullPageLoading"
 
 type Item = {
   id: number
@@ -170,22 +171,6 @@ export default function CarDetail() {
 
       if (!user) return
 
-      const { count, error: countError } = await supabase
-        .from("items")
-        .select("*", { count: "exact", head: true })
-        .eq("user_id", user.id)
-        .eq("favorite", true)
-
-      if (countError) {
-        console.error(countError)
-        return
-      }
-
-      if (!item.favorite && count !== null && count >= 3) {
-        router.push("/pro")
-        return
-      }
-
       const newValue = !item.favorite
 
       const { error } = await supabase
@@ -241,8 +226,13 @@ export default function CarDetail() {
     setIsEditing(false)
   }
 
-  if (loading) return null
-  if (!item) return null
+  if (loading) {
+    return <FullPageLoading label="Loading diecast..." />
+  }
+
+  if (!item) {
+    return null
+  }
 
   return (
     <div style={pageStyle}>

@@ -41,23 +41,13 @@ export default function HowToPage() {
         </ul>
         <div style={{ marginTop: 20 }}>
   <div style={{ fontSize: 16, fontWeight: 600, marginBottom: 6 }}>
-    📊 Export to Excel
+    📊 Export CSV
   </div>
 
   <div style={{ opacity: 0.8, fontSize: 14, lineHeight: 1.5 }}>
-    You can export your collection to Excel anytime.
+    From <strong>My Garage</strong>, use <strong>Export CSV</strong> to download your collection.
     <br /><br />
-    This creates a file you can open in Excel or Google Sheets to:
-    <br />
-    - Track your cars
-    <br />
-    - Share your collection
-    <br />
-    - Keep a backup
-    <br /><br />
-    Works just like a normal spreadsheet.
-    <br /><br />
-    <span style={{ opacity: 0.6 }}>(Available in PRO)</span>
+    Open the file in Excel or Google Sheets to track your cars, share your list, or keep a backup.
   </div>
 </div>
         <h3 style={{ marginTop: 20 }}>🚀 Coming Soon</h3>

@@ -1,5 +1,3 @@
-export const FREE_ITEMS_LIMIT = 50
-export const FREE_FAVORITES_LIMIT = 3
 export const BRANDS = [
   "Hot Wheels",
   "Matchbox",
@@ -147,4 +145,3 @@ export const COLORS = [
   "Yellow",
   "Zamac",
 ]
-export const IS_PRO = true

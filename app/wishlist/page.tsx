@@ -35,34 +35,34 @@ export default function WishlistPage() {
 
   useEffect(() => {
     const fetchWishlist = async () => {
-  setLoading(true);
+      setLoading(true);
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
 
-  if (!user) {
-    setLoading(false);
-    return;
-  }
+      if (!user) {
+        router.replace("/login");
+        return;
+      }
 
-  const { data, error } = await supabase
-    .from("wishlist")
-    .select("*")
-    .eq("user_id", user.id)
-    .order("created_at", { ascending: false });
+      const { data, error } = await supabase
+        .from("wishlist")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false });
 
-  if (error) {
-    console.error(error);
-  } else if (data) {
-    setItems(data as WishlistItem[]);
-  }
+      if (error) {
+        console.error(error);
+      } else if (data) {
+        setItems(data as WishlistItem[]);
+      }
 
-  setLoading(false);
-};
+      setLoading(false);
+    };
 
-    fetchWishlist();
-  }, []);
+    void fetchWishlist();
+  }, [router]);
 
   const filteredItems = useMemo(() => {
     const text = search.trim().toLowerCase();

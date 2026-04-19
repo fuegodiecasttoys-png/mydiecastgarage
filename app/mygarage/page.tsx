@@ -88,7 +88,6 @@ const exportButtonStyle = {
   color: "white",
   fontSize: 13,
   cursor: "pointer",
-  opacity: 0.6,
 } as const
 
 const cardStyle = {
@@ -118,6 +117,45 @@ const imageWrapStyle = {
   boxShadow: "0 6px 18px rgba(0,0,0,0.5)",
 } as const
 
+function escapeCsvCell(value: string | number | boolean | null | undefined) {
+  if (value === null || value === undefined) return ""
+  const s = String(value)
+  if (/[",\n\r]/.test(s)) return `"${s.replace(/"/g, '""')}"`
+  return s
+}
+
+function downloadGarageCsv(rows: Item[]) {
+  const cols: (keyof Item)[] = [
+    "id",
+    "name",
+    "brand",
+    "color",
+    "scale",
+    "type",
+    "main_number",
+    "sub_number",
+    "series",
+    "year",
+    "location",
+    "qty",
+    "sth",
+    "th",
+    "chase",
+  ]
+  const header = cols.join(",")
+  const body = rows.map((row) =>
+    cols.map((c) => escapeCsvCell(row[c] as string | number | boolean | null)).join(",")
+  )
+  const csv = [header, ...body].join("\r\n")
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8" })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement("a")
+  a.href = url
+  a.download = `my-garage-${new Date().toISOString().slice(0, 10)}.csv`
+  a.click()
+  URL.revokeObjectURL(url)
+}
+
 const scaleBadgeStyle = {
   position: "absolute" as const,
   right: 10,
@@ -146,7 +184,7 @@ export default function MyGarage() {
       } = await supabase.auth.getUser()
 
       if (!user) {
-        setLoading(false)
+        router.replace("/login")
         return
       }
 
@@ -164,7 +202,7 @@ export default function MyGarage() {
     }
 
     fetchItems()
-  }, [])
+  }, [router])
 
   const filteredItems = useMemo(() => {
     const text = search.toLowerCase().trim()
@@ -265,10 +303,17 @@ export default function MyGarage() {
 
           <div style={{ marginTop: 10, marginBottom: 10 }}>
             <button
-              onClick={() => alert("Pro feature 💎")}
+              type="button"
+              onClick={() => {
+                if (sortedItems.length === 0) {
+                  alert("No items to export.")
+                  return
+                }
+                downloadGarageCsv(sortedItems)
+              }}
               style={exportButtonStyle}
             >
-              Export to Excel 🔒
+              Export CSV
             </button>
             <button
   onClick={() => router.push("/favorites")}

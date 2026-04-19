@@ -27,7 +27,7 @@ export default function AuthCallbackClient() {
           return;
         }
 
-        router.replace("/app");
+        router.replace("/");
         return;
       }
 

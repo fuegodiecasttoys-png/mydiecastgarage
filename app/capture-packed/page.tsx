@@ -2,7 +2,6 @@
 
 import {
   useEffect,
-  useMemo,
   useRef,
   useState,
   type ChangeEvent,
@@ -11,7 +10,8 @@ import {
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { supabase } from "../lib/supabaseClient"
-import { BRANDS, COLORS, FREE_ITEMS_LIMIT, IS_PRO } from "../lib/constants"
+import { BRANDS, COLORS } from "../lib/constants"
+import { FullPageLoading } from "../components/FullPageLoading"
 
 const SCALE_OPTIONS = [
   "1:64",
@@ -122,7 +122,6 @@ export default function CapturePage() {
   const [notes, setNotes] = useState("")
 
   const [loading, setLoading] = useState(false)
-  const [monthlyCount, setMonthlyCount] = useState(0)
   const [message, setMessage] = useState<string | null>(null)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [showColorSuggestions, setShowColorSuggestions] = useState(false)
@@ -134,16 +133,24 @@ export default function CapturePage() {
       .some((word) => word.startsWith(color.toLowerCase().trim()))
   )
 
-  const remaining = useMemo(
-    () => Math.max(0, FREE_ITEMS_LIMIT - monthlyCount),
-    [monthlyCount]
-  )
-
-  const locked = monthlyCount >= FREE_ITEMS_LIMIT
+  const [sessionChecked, setSessionChecked] = useState(false)
 
   useEffect(() => {
-    void fetchMonthlyCount()
-  }, [])
+    async function init() {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+
+      if (!user) {
+        router.replace("/login")
+        return
+      }
+
+      setSessionChecked(true)
+    }
+
+    void init()
+  }, [router])
 
   useEffect(() => {
     return () => {
@@ -152,28 +159,6 @@ export default function CapturePage() {
       }
     }
   }, [previewUrl])
-
-  async function fetchMonthlyCount() {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
-
-    if (!user) return
-
-    const startOfMonth = new Date()
-    startOfMonth.setDate(1)
-    startOfMonth.setHours(0, 0, 0, 0)
-
-    const { count, error } = await supabase
-      .from("captures")
-      .select("*", { count: "exact", head: true })
-      .eq("user_id", user.id)
-      .gte("created_at", startOfMonth.toISOString())
-
-    if (!error && count != null) {
-      setMonthlyCount(count)
-    }
-  }
 
   function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
     const selectedFile = event.target.files?.[0] ?? null
@@ -282,11 +267,6 @@ export default function CapturePage() {
         return
       }
 
-      if (monthlyCount >= FREE_ITEMS_LIMIT) {
-        setErrorMessage(`Free limit reached (${FREE_ITEMS_LIMIT}/month). Upgrade to Pro.`)
-        return
-      }
-
       if (!file) {
         setErrorMessage("Please select a photo first.")
         return
@@ -368,7 +348,6 @@ export default function CapturePage() {
         return
       }
 
-      await fetchMonthlyCount()
       setMessage("Diecast saved successfully ✅")
       resetForm()
     } catch (err) {
@@ -377,6 +356,10 @@ export default function CapturePage() {
     } finally {
       setLoading(false)
     }
+  }
+
+  if (!sessionChecked) {
+    return <FullPageLoading label="Loading..." />
   }
 
   return (
@@ -425,20 +408,8 @@ export default function CapturePage() {
             Upload Diecast Photo
           </h1>
 
-          <p style={{ margin: 0, marginBottom: 6, opacity: 0.9 }}>
-            Captures this month: <strong>{monthlyCount}</strong> / {FREE_ITEMS_LIMIT}
-          </p>
-
-          <p style={{ marginTop: 0, marginBottom: 22, opacity: 0.8 }}>
-            {locked ? (
-              <span style={{ color: "#ffb020" }}>
-                Limit reached. Upgrade to Pro to keep capturing 💎
-              </span>
-            ) : (
-              <span>
-                Remaining this month: <strong>{remaining}</strong>
-              </span>
-            )}
+          <p style={{ margin: 0, marginBottom: 22, opacity: 0.8, lineHeight: 1.45 }}>
+            Add a photo of the packaged diecast, then fill in or adjust the details below.
           </p>
 
           <div
@@ -457,9 +428,9 @@ export default function CapturePage() {
                   fileInputRef.current.click()
                 }
               }}
-              disabled={locked || loading}
+              disabled={loading}
               style={
-                locked || loading
+                loading
                   ? {
                       ...disabledButtonStyle,
                       padding: "12px 14px",
@@ -483,9 +454,9 @@ export default function CapturePage() {
                   fileInputRef.current.click()
                 }
               }}
-              disabled={locked || loading}
+              disabled={loading}
               style={
-                locked || loading
+                loading
                   ? {
                       ...disabledButtonStyle,
                       padding: "12px 14px",
@@ -502,37 +473,35 @@ export default function CapturePage() {
             </button>
           </div>
 
-          {IS_PRO && (
-            <button
-              type="button"
-              onClick={handleAnalyze}
-              disabled={loading || !file || locked}
-              style={
-                loading || !file || locked
-                  ? {
-                      ...disabledButtonStyle,
-                      marginBottom: 12,
-                      padding: "12px 14px",
-                      fontSize: 15,
-                    }
-                  : {
-                      ...buttonStyle,
-                      marginBottom: 12,
-                      padding: "12px 14px",
-                      fontSize: 15,
-                    }
-              }
-            >
-              🤖 Analyze model
-            </button>
-          )}
+          <button
+            type="button"
+            onClick={handleAnalyze}
+            disabled={loading || !file}
+            style={
+              loading || !file
+                ? {
+                    ...disabledButtonStyle,
+                    marginBottom: 12,
+                    padding: "12px 14px",
+                    fontSize: 15,
+                  }
+                : {
+                    ...buttonStyle,
+                    marginBottom: 12,
+                    padding: "12px 14px",
+                    fontSize: 15,
+                  }
+            }
+          >
+            🤖 Analyze model
+          </button>
 
           <input
             ref={fileInputRef}
             type="file"
             accept="image/*"
             onChange={handleFileChange}
-            disabled={locked || loading}
+            disabled={loading}
             style={{ display: "none" }}
           />
 
@@ -594,7 +563,7 @@ export default function CapturePage() {
               placeholder="Brand"
               value={brand}
               onChange={(e) => setBrand(e.target.value)}
-              disabled={loading || locked}
+              disabled={loading}
               style={inputStyle}
             />
 
@@ -609,14 +578,14 @@ export default function CapturePage() {
               placeholder="Model"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              disabled={loading || locked}
+              disabled={loading}
               style={inputStyle}
             />
 
             <div style={{ position: "relative", width: "100%" }}>
               <input
   type="text"
-  placeholder={IS_PRO ? "Color (type 2 letters...)" : "Color"}
+  placeholder="Color (type 2 letters for suggestions)"
   value={color}
   onChange={(e) => {
     setColor(e.target.value)
@@ -626,18 +595,15 @@ export default function CapturePage() {
   onBlur={() => {
     setTimeout(() => setShowColorSuggestions(false), 150)
   }}
-  disabled={loading || locked}
+  disabled={loading}
   style={inputStyle}
   autoComplete="off"
 />
 
 
-              {IS_PRO &&
-  showColorSuggestions &&
-  color.trim().length >= 1 &&
-  filteredColors.length > 0 &&
-  !locked && (
-
+              {showColorSuggestions &&
+                color.trim().length >= 1 &&
+                filteredColors.length > 0 && (
                 <div
                   style={{
                     position: "absolute",
@@ -674,7 +640,7 @@ export default function CapturePage() {
             <select
               value={scale}
               onChange={(e) => setScale(e.target.value)}
-              disabled={loading || locked}
+              disabled={loading}
               style={inputStyle}
             >
               {SCALE_OPTIONS.map((option) => (
@@ -694,7 +660,7 @@ export default function CapturePage() {
                 placeholder="Enter custom scale"
                 value={customScale}
                 onChange={(e) => setCustomScale(e.target.value)}
-                disabled={loading || locked}
+                disabled={loading}
                 style={inputStyle}
               />
             )}
@@ -705,7 +671,7 @@ export default function CapturePage() {
               placeholder="Qty"
               value={qty}
               onChange={(e) => setQty(Number(e.target.value) || 1)}
-              disabled={loading || locked}
+              disabled={loading}
               style={inputStyle}
             />
 
@@ -732,7 +698,7 @@ export default function CapturePage() {
                   type="checkbox"
                   checked={sth}
                   onChange={(e) => setSth(e.target.checked)}
-                  disabled={loading || locked}
+                  disabled={loading}
                 />
                 STH
               </label>
@@ -752,7 +718,7 @@ export default function CapturePage() {
                   type="checkbox"
                   checked={th}
                   onChange={(e) => setTh(e.target.checked)}
-                  disabled={loading || locked}
+                  disabled={loading}
                 />
                 TH
               </label>
@@ -772,7 +738,7 @@ export default function CapturePage() {
                   type="checkbox"
                   checked={chase}
                   onChange={(e) => setChase(e.target.checked)}
-                  disabled={loading || locked}
+                  disabled={loading}
                 />
                 Chase
               </label>
@@ -783,7 +749,7 @@ export default function CapturePage() {
               placeholder="Main number"
               value={mainNumber}
               onChange={(e) => setMainNumber(e.target.value)}
-              disabled={loading || locked}
+              disabled={loading}
               style={inputStyle}
             />
 
@@ -792,7 +758,7 @@ export default function CapturePage() {
               placeholder="Sub number"
               value={subNumber}
               onChange={(e) => setSubNumber(e.target.value)}
-              disabled={loading || locked}
+              disabled={loading}
               style={inputStyle}
             />
 
@@ -801,7 +767,7 @@ export default function CapturePage() {
               placeholder="Series"
               value={series}
               onChange={(e) => setSeries(e.target.value)}
-              disabled={loading || locked}
+              disabled={loading}
               style={inputStyle}
             />
 
@@ -810,7 +776,7 @@ export default function CapturePage() {
               placeholder="Year"
               value={year}
               onChange={(e) => setYear(e.target.value)}
-              disabled={loading || locked}
+              disabled={loading}
               style={inputStyle}
             />
 
@@ -819,7 +785,7 @@ export default function CapturePage() {
               placeholder="Location"
               value={location}
               onChange={(e) => setLocation(e.target.value)}
-              disabled={loading || locked}
+              disabled={loading}
               style={inputStyle}
             />
 
@@ -828,7 +794,7 @@ export default function CapturePage() {
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               maxLength={500}
-              disabled={loading || locked}
+              disabled={loading}
               style={{
                 ...inputStyle,
                 minHeight: 110,
@@ -838,30 +804,12 @@ export default function CapturePage() {
 
             <button
               onClick={handleSave}
-              disabled={loading || locked}
-              style={loading || locked ? disabledButtonStyle : buttonStyle}
+              disabled={loading}
+              style={loading ? disabledButtonStyle : buttonStyle}
             >
               {loading ? "Saving..." : "Save Diecast"}
             </button>
           </div>
-
-          {locked && (
-            <div style={{ marginTop: 20 }}>
-              <button
-                style={{
-                  padding: "10px 14px",
-                  borderRadius: 10,
-                  border: "1px solid rgba(255,255,255,0.15)",
-                  background: "rgba(59,130,246,0.35)",
-                  color: "#fff",
-                  cursor: "pointer",
-                }}
-                onClick={() => router.push("/pro")}
-              >
-                Upgrade to Pro
-              </button>
-            </div>
-          )}
         </div>
       </div>
     </div>
