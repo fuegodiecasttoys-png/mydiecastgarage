@@ -321,53 +321,34 @@ export default function ExperimentPage() {
               width: 44,
               height: 3,
               borderRadius: 2,
-              marginBottom: 18,
+              margin: "0 auto 20px",
               background: `linear-gradient(90deg, ${t.orange500}, ${t.orange300})`,
               boxShadow: `0 0 18px ${t.orangeGlow}`,
             }}
             aria-hidden
           />
-          <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 14 }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              paddingTop: 12,
+              paddingBottom: 16,
+            }}
+          >
             <img
               src="/logo.png"
-              alt=""
-              width={56}
-              height={56}
+              alt="Diecast Vault"
+              width={64}
+              height={64}
               style={{
                 display: "block",
                 filter:
-                  "grayscale(1) brightness(1.24) contrast(1.1) " +
+                  "grayscale(88%) brightness(1.14) contrast(1.22) " +
                   "drop-shadow(0 0 10px rgba(255,106,0,0.22)) " +
                   "drop-shadow(0 0 20px rgba(255,106,0,0.1))",
               }}
             />
-            <div>
-              <h1
-                style={{
-                  margin: 0,
-                  fontFamily: displayFont,
-                  fontSize: 32,
-                  fontWeight: 700,
-                  letterSpacing: "-0.03em",
-                  lineHeight: 1.1,
-                  color: t.textPrimary,
-                }}
-              >
-                Diecast Vault
-              </h1>
-              <p
-                style={{
-                  margin: "8px 0 0",
-                  fontSize: 14,
-                  fontWeight: 500,
-                  color: t.textSecondary,
-                  lineHeight: 1.45,
-                  maxWidth: 280,
-                }}
-              >
-                Your personal garage for packed, loose, and wishlist casts.
-              </p>
-            </div>
           </div>
         </header>
 
