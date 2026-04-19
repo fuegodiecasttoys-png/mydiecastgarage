@@ -222,7 +222,7 @@ export default function ExperimentPage() {
     textDecoration: "none",
     color: t.textPrimary,
     borderRadius: t.radiusXl,
-    padding: "24px 20px 22px",
+    padding: "14px 20px 12px",
     background: t.surfaceElevated,
     border: `1px solid ${t.borderMedium}`,
     boxShadow: HERO_SHADOW,
@@ -462,7 +462,7 @@ export default function ExperimentPage() {
             style={{
               display: "flex",
               flexDirection: "row",
-              alignItems: "stretch",
+              alignItems: "flex-start",
               gap: 0,
             }}
           >
@@ -470,7 +470,7 @@ export default function ExperimentPage() {
               style={{
                 flexShrink: 0,
                 display: "flex",
-                alignItems: "center",
+                alignItems: "flex-start",
                 justifyContent: "flex-start",
               }}
             >
@@ -487,7 +487,7 @@ export default function ExperimentPage() {
                 paddingRight: 4,
                 display: "flex",
                 flexDirection: "column",
-                justifyContent: "center",
+                justifyContent: "flex-start",
                 alignItems: "stretch",
               }}
             >
@@ -496,7 +496,7 @@ export default function ExperimentPage() {
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "flex-start",
-                  gap: 10,
+                  gap: 5,
                 }}
               >
                 <div
@@ -504,7 +504,7 @@ export default function ExperimentPage() {
                     display: "inline-flex",
                     alignItems: "center",
                     gap: 8,
-                    padding: "6px 12px",
+                    padding: "4px 10px",
                     borderRadius: 999,
                     background: `linear-gradient(90deg, rgba(255,106,0,0.2), rgba(255,129,36,0.12))`,
                     border: `1px solid rgba(255,106,0,0.35)`,
@@ -512,6 +512,7 @@ export default function ExperimentPage() {
                     fontWeight: 600,
                     letterSpacing: "0.02em",
                     color: t.orange300,
+                    lineHeight: 1.2,
                   }}
                 >
                   {pieceLabel(garageCount)}
@@ -524,7 +525,7 @@ export default function ExperimentPage() {
                     fontWeight: 700,
                     letterSpacing: "-0.02em",
                     color: t.textPrimary,
-                    lineHeight: 1.15,
+                    lineHeight: 1.05,
                   }}
                 >
                   My Garage
@@ -532,10 +533,10 @@ export default function ExperimentPage() {
               </div>
               <p
                 style={{
-                  margin: "10px 0 0",
+                  margin: "5px 0 0",
                   fontSize: 14,
                   fontWeight: 500,
-                  lineHeight: 1.5,
+                  lineHeight: 1.32,
                   color: t.textSecondary,
                 }}
               >
@@ -546,10 +547,11 @@ export default function ExperimentPage() {
                   display: "inline-flex",
                   alignItems: "center",
                   gap: 8,
-                  marginTop: 16,
+                  marginTop: 9,
                   fontSize: 13,
                   fontWeight: 600,
                   color: t.orange400,
+                  lineHeight: 1.2,
                 }}
               >
                 Open collection
