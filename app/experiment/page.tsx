@@ -1,91 +1,89 @@
 "use client";
 
 import Link from "next/link";
+import { Inter, Inter_Tight } from "next/font/google";
 import type { CSSProperties, ReactNode } from "react";
+import { t } from "./tokens";
 
-/** Sandbox visual only — mock count for layout evaluation */
-const MOCK_PIECE_COUNT = 12;
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--exp-font-body",
+  display: "swap",
+});
+
+const interTight = Inter_Tight({
+  subsets: ["latin"],
+  variable: "--exp-font-display",
+  display: "swap",
+});
+
+const MOCK_GARAGE_COUNT = 12;
+const MOCK_WISHLIST_COUNT = 5;
 
 function pieceLabel(count: number) {
   if (count === 0) return "No pieces yet";
-  if (count === 1) return "1 piece";
-  return `${count} pieces`;
+  if (count === 1) return "1 model";
+  return `${count} models`;
 }
 
-const pageShell: CSSProperties = {
-  minHeight: "100vh",
-  width: "100%",
-  boxSizing: "border-box",
-  padding: "22px 18px 36px",
-  fontFamily:
-    'system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
-  color: "#f4f4f5",
-  background: `
-    radial-gradient(ellipse 100% 70% at 100% -10%, rgba(249,115,22,0.14) 0%, transparent 45%),
-    radial-gradient(ellipse 80% 55% at 0% 30%, rgba(59,130,246,0.06) 0%, transparent 42%),
-    radial-gradient(ellipse 90% 60% at 50% 110%, rgba(0,0,0,0.55) 0%, transparent 50%),
-    linear-gradient(175deg, #0a0a0c 0%, #111113 35%, #0d0d10 100%)
-  `,
+function wishlistLabel(count: number) {
+  if (count === 0) return "Nothing listed";
+  if (count === 1) return "1 item";
+  return `${count} items`;
+}
+
+const fontVars: CSSProperties = {
+  fontFamily: `var(--exp-font-body), system-ui, sans-serif`,
+  color: t.textPrimary,
 };
 
-const accentLine: CSSProperties = {
-  height: 2,
-  width: 56,
-  margin: "0 auto 18px",
-  borderRadius: 2,
-  background:
-    "linear-gradient(90deg, transparent, rgba(249,115,22,0.85), rgba(251,191,36,0.6), transparent)",
-  boxShadow: "0 0 16px rgba(249,115,22,0.35)",
-};
+const displayFont = `var(--exp-font-display), var(--exp-font-body), system-ui, sans-serif`;
 
-function EmberIcon({
+function IconFrame({
   children,
-  ring,
+  variant,
 }: {
   children: ReactNode;
-  ring: "ember" | "steel" | "violet" | "sage" | "flame";
+  variant: "accent" | "neutral" | "muted" | "blueHint";
 }) {
-  const rings = {
-    ember: {
-      bg: "linear-gradient(145deg, rgba(249,115,22,0.35) 0%, rgba(185,28,28,0.22) 100%)",
-      border: "rgba(251,146,60,0.55)",
-      glow: "0 0 20px rgba(249,115,22,0.2)",
-    },
-    steel: {
-      bg: "linear-gradient(145deg, rgba(82,82,91,0.55) 0%, rgba(39,39,42,0.85) 100%)",
-      border: "rgba(161,161,170,0.35)",
-      glow: "0 0 12px rgba(255,255,255,0.06)",
-    },
-    violet: {
-      bg: "linear-gradient(145deg, rgba(139,92,246,0.35) 0%, rgba(76,29,149,0.35) 100%)",
-      border: "rgba(196,181,253,0.45)",
-      glow: "0 0 18px rgba(139,92,246,0.2)",
-    },
-    sage: {
-      bg: "linear-gradient(145deg, rgba(74,222,128,0.18) 0%, rgba(22,101,52,0.25) 100%)",
-      border: "rgba(134,239,172,0.35)",
-      glow: "none",
-    },
-    flame: {
-      bg: "linear-gradient(145deg, rgba(251,146,60,0.4) 0%, rgba(234,88,12,0.3) 100%)",
-      border: "rgba(253,186,116,0.5)",
-      glow: "0 0 18px rgba(251,146,60,0.25)",
-    },
-  };
-  const r = rings[ring];
+  const ring =
+    variant === "accent"
+      ? {
+          border: `1px solid ${t.borderMedium}`,
+          bg: `linear-gradient(160deg, ${t.surfaceElevated} 0%, ${t.surface} 100%)`,
+          glow: `0 0 0 1px ${t.orangeGlow}, 0 0 20px ${t.orangeGlow}`,
+        }
+      : variant === "blueHint"
+        ? {
+            border: `1px solid ${t.borderSubtle}`,
+            bg: `linear-gradient(165deg, ${t.surfaceElevated} 0%, ${t.surface} 100%)`,
+            glow: `0 0 18px ${t.blueGlow}`,
+          }
+        : variant === "muted"
+          ? {
+              border: `1px dashed ${t.borderMedium}`,
+              bg: t.bgSecondary,
+              glow: "none",
+            }
+          : {
+              border: `1px solid ${t.borderSubtle}`,
+              bg: `linear-gradient(165deg, ${t.surfaceElevated} 0%, ${t.surface} 100%)`,
+              glow: "0 8px 22px rgba(0,0,0,0.35)",
+            };
+
   return (
     <div
+      aria-hidden
       style={{
         width: 48,
         height: 48,
-        borderRadius: "50%",
+        borderRadius: 14,
         display: "grid",
         placeItems: "center",
-        fontSize: 22,
         flexShrink: 0,
-        background: r.bg,
-        border: `1px solid ${r.border}`,
-        boxShadow: `${r.glow}, inset 0 1px 0 rgba(255,255,255,0.12), 0 6px 16px rgba(0,0,0,0.45)`,
+        background: ring.bg,
+        border: ring.border,
+        boxShadow: `${ring.glow === "none" ? "" : `${ring.glow}, `}inset 0 1px 0 rgba(255,255,255,0.06)`,
       }}
     >
       {children}
@@ -93,161 +91,202 @@ function EmberIcon({
   );
 }
 
-function Tile({
-  href,
-  title,
-  subtitle,
-  icon,
-  ring,
-  hero,
-  disabled,
-  badge,
-  chevron,
-}: {
-  href?: string;
-  title: string;
-  subtitle: string;
-  icon: ReactNode;
-  ring: "ember" | "steel" | "violet" | "sage" | "flame";
-  hero?: boolean;
-  disabled?: boolean;
-  badge?: ReactNode;
-  chevron?: boolean;
-}) {
-  const base: CSSProperties = {
-    width: "100%",
-    display: "flex",
-    alignItems: "center",
-    gap: 14,
-    padding: hero ? "20px 18px" : "16px 16px",
-    borderRadius: 18,
-    textAlign: "left",
-    border: hero
-      ? "1px solid rgba(249,115,22,0.38)"
-      : "1px solid rgba(255,255,255,0.07)",
-    background: hero
-      ? "linear-gradient(165deg, rgba(30,24,20,0.98) 0%, rgba(18,16,14,0.99) 45%, rgba(12,11,10,1) 100%)"
-      : "linear-gradient(165deg, rgba(28,28,32,0.96) 0%, rgba(18,18,22,0.99) 100%)",
-    boxShadow: hero
-      ? "0 14px 40px rgba(0,0,0,0.55), 0 0 48px rgba(249,115,22,0.12), inset 0 1px 0 rgba(255,255,255,0.06)"
-      : "0 10px 28px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.05)",
-    cursor: disabled ? "default" : "pointer",
-    opacity: disabled ? 0.52 : 1,
-    filter: disabled ? "saturate(0.75)" : "none",
-    pointerEvents: disabled ? "none" : "auto",
-    transition: "transform 0.15s ease, box-shadow 0.2s ease",
-    color: "#fafafa",
-  };
-
-  const inner = (
-    <>
-      <EmberIcon ring={ring}>{icon}</EmberIcon>
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <div
-          style={{
-            fontSize: hero ? 18 : 16,
-            fontWeight: 800,
-            letterSpacing: "-0.03em",
-            marginBottom: badge || subtitle ? 6 : 0,
-          }}
-        >
-          {title}
-        </div>
-        {badge}
-        <div
-          style={{
-            fontSize: 12,
-            fontWeight: 500,
-            color: "rgba(244,244,245,0.58)",
-            lineHeight: 1.4,
-          }}
-        >
-          {subtitle}
-        </div>
-      </div>
-      {chevron && !disabled ? (
-        <span
-          style={{
-            fontSize: 22,
-            fontWeight: 200,
-            color: hero ? "#fb923c" : "rgba(250,250,250,0.45)",
-            flexShrink: 0,
-          }}
-          aria-hidden
-        >
-          ›
-        </span>
-      ) : null}
-    </>
-  );
-
-  if (disabled || !href) {
-    return (
-      <div style={{ ...base, marginBottom: 14 }} role="group">
-        {inner}
-      </div>
-    );
-  }
-
+function IconPacked() {
   return (
-    <Link
-      href={href}
-      style={{ ...base, marginBottom: 14, textDecoration: "none" }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.transform = "scale(1.01)";
-        e.currentTarget.style.boxShadow = hero
-          ? "0 18px 48px rgba(0,0,0,0.58), 0 0 56px rgba(249,115,22,0.16), inset 0 1px 0 rgba(255,255,255,0.07)"
-          : "0 12px 32px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.07)";
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.transform = "scale(1)";
-        e.currentTarget.style.boxShadow = base.boxShadow as string;
-      }}
-    >
-      {inner}
-    </Link>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path
+        d="M4 8l8-4 8 4v8l-8 4-8-4V8z"
+        stroke={t.textSecondary}
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+      />
+      <path d="M4 8l8 4M12 12v8M12 12l8-4" stroke={t.textMuted} strokeWidth="1.5" />
+    </svg>
   );
 }
 
-export default function ExperimentPage() {
-  const count = MOCK_PIECE_COUNT;
-
-  const garageBadge = (
-    <div
-      style={{
-        display: "inline-flex",
-        alignItems: "center",
-        gap: 6,
-        padding: "4px 11px",
-        borderRadius: 999,
-        marginBottom: 6,
-        fontSize: 11,
-        fontWeight: 800,
-        letterSpacing: "0.03em",
-        color: "#fff7ed",
-        background:
-          "linear-gradient(100deg, rgba(249,115,22,0.45) 0%, rgba(234,88,12,0.5) 40%, rgba(59,130,246,0.25) 100%)",
-        border: "1px solid rgba(253,186,116,0.45)",
-        boxShadow:
-          "0 0 22px rgba(249,115,22,0.25), inset 0 1px 0 rgba(255,255,255,0.2)",
-      }}
-    >
-      <span aria-hidden style={{ fontSize: 11 }}>
-        ◆
-      </span>
-      <span style={{ fontWeight: 700 }}>{pieceLabel(count)}</span>
-    </div>
+function IconLoose() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path
+        d="M6 16l6-10 6 10"
+        stroke={t.textSecondary}
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <circle cx="12" cy="17" r="1.6" fill={t.orange400} />
+    </svg>
   );
+}
+
+function IconGarage() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path
+        d="M4 10l8-5 8 5v9H4V10z"
+        stroke={t.orange300}
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+      />
+      <path d="M9 19v-5h6v5" stroke={t.textPrimary} strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function IconWishlist() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path
+        d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"
+        stroke={t.textSecondary}
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function IconFriends() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <circle cx="9" cy="9" r="3" stroke={t.textMuted} strokeWidth="1.5" />
+      <circle cx="16" cy="10" r="2.5" stroke={t.textMuted} strokeWidth="1.5" />
+      <path
+        d="M4 19v-1a4 4 0 014-4h2M20 19v-1a3 3 0 00-3-3h-2"
+        stroke={t.textMuted}
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+function IconHowTo() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <rect
+        x="5"
+        y="7"
+        width="14"
+        height="11"
+        rx="2"
+        stroke={t.textSecondary}
+        strokeWidth="1.5"
+      />
+      <circle cx="12" cy="12.5" r="2" stroke={t.orange400} strokeWidth="1.5" />
+    </svg>
+  );
+}
+
+function shellBackground(): string {
+  return `
+    radial-gradient(120% 70% at 50% -8%, ${t.orangeGlow} 0%, transparent 45%),
+    radial-gradient(90% 55% at 100% 0%, ${t.blueGlow} 0%, transparent 42%),
+    linear-gradient(180deg, ${t.bg} 0%, ${t.bgSecondary} 55%, ${t.bg} 100%)
+  `;
+}
+
+const HERO_SHADOW =
+  `0 0 0 1px ${t.orangeGlow},` +
+  `0 20px 48px rgba(0,0,0,0.45),` +
+  `0 0 36px ${t.orangeGlow},` +
+  `inset 0 1px 0 rgba(255,255,255,0.08),` +
+  `inset 0 -1px 0 rgba(0,0,0,0.35)`;
+
+const HERO_SHADOW_HOVER =
+  `0 0 0 1px ${t.orangeGlow},` +
+  `0 24px 56px rgba(0,0,0,0.5),` +
+  `0 0 44px ${t.orangeGlow},` +
+  `inset 0 1px 0 rgba(255,255,255,0.1),` +
+  `inset 0 -1px 0 rgba(0,0,0,0.35)`;
+
+export default function ExperimentPage() {
+  const garageCount = MOCK_GARAGE_COUNT;
+  const wishlistCount = MOCK_WISHLIST_COUNT;
+
+  const quickBase: CSSProperties = {
+    borderRadius: t.radiusLg,
+    padding: "18px 14px 16px",
+    textAlign: "center",
+    textDecoration: "none",
+    color: t.textPrimary,
+    background: t.surface,
+    border: `1px solid ${t.borderSubtle}`,
+    boxShadow: "0 10px 28px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.05)",
+    transition: "border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease",
+  };
+
+  const heroCard: CSSProperties = {
+    display: "block",
+    textDecoration: "none",
+    color: t.textPrimary,
+    borderRadius: t.radiusXl,
+    padding: "24px 20px 22px",
+    background: t.surfaceElevated,
+    border: `1px solid ${t.borderMedium}`,
+    boxShadow: HERO_SHADOW,
+    marginBottom: t.spaceBlock,
+    transition: "transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease",
+  };
+
+  const secondaryCard: CSSProperties = {
+    display: "flex",
+    alignItems: "center",
+    gap: 14,
+    padding: "18px 18px",
+    borderRadius: t.radiusLg,
+    textDecoration: "none",
+    color: t.textPrimary,
+    background: t.surface,
+    border: `1px solid ${t.borderSubtle}`,
+    boxShadow: `
+      0 12px 32px rgba(0,0,0,0.38),
+      inset 0 1px 0 rgba(255,255,255,0.05)
+    `,
+    marginBottom: t.spaceTight,
+    transition: "transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease",
+  };
+
+  const tertiaryCard: CSSProperties = {
+    display: "flex",
+    alignItems: "center",
+    gap: 14,
+    padding: "16px 16px",
+    borderRadius: t.radiusLg,
+    background: t.bgSecondary,
+    border: `1px solid ${t.borderSubtle}`,
+    boxShadow: "inset 0 1px 0 rgba(255,255,255,0.04)",
+    marginBottom: t.spaceTight,
+  };
+
+  const tertiaryLink: CSSProperties = {
+    ...tertiaryCard,
+    textDecoration: "none",
+    color: t.textPrimary,
+    cursor: "pointer",
+    transition: "transform 0.15s ease, border-color 0.2s ease",
+  };
 
   return (
-    <div style={pageShell}>
+    <div
+      className={`${inter.variable} ${interTight.variable}`}
+      style={{
+        ...fontVars,
+        minHeight: "100vh",
+        width: "100%",
+        padding: "24px 20px 32px",
+        boxSizing: "border-box",
+        background: shellBackground(),
+      }}
+    >
       <div style={{ maxWidth: 400, margin: "0 auto" }}>
         <div
           style={{
             display: "flex",
             justifyContent: "space-between",
-            alignItems: "flex-start",
-            marginBottom: 8,
+            alignItems: "center",
+            marginBottom: t.spaceSection,
           }}
         >
           <Link
@@ -255,189 +294,394 @@ export default function ExperimentPage() {
             style={{
               fontSize: 12,
               fontWeight: 600,
-              color: "rgba(250,250,250,0.55)",
+              letterSpacing: "0.06em",
+              textTransform: "uppercase",
+              color: t.textSecondary,
               textDecoration: "none",
-              letterSpacing: "0.04em",
             }}
           >
             ← Home
           </Link>
           <span
             style={{
-              fontSize: 9,
-              fontWeight: 800,
+              fontSize: 10,
+              fontWeight: 700,
               letterSpacing: "0.14em",
-              color: "rgba(249,115,22,0.75)",
               textTransform: "uppercase",
+              color: t.textMuted,
             }}
           >
-            Lab
+            Preview
           </span>
         </div>
 
-        <div style={accentLine} aria-hidden />
-
-        <div style={{ textAlign: "center", marginBottom: 28 }}>
+        <header style={{ marginBottom: t.spaceSection }}>
           <div
             style={{
-              marginBottom: 14,
-              filter: "drop-shadow(0 0 18px rgba(249,115,22,0.25))",
+              width: 44,
+              height: 3,
+              borderRadius: 2,
+              marginBottom: 18,
+              background: `linear-gradient(90deg, ${t.orange500}, ${t.orange300})`,
+              boxShadow: `0 0 18px ${t.orangeGlow}`,
             }}
-          >
-            <img
-              src="/logo.png"
-              alt=""
-              style={{ width: 80, height: "auto", display: "block", margin: "0 auto" }}
-            />
+            aria-hidden
+          />
+          <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 14 }}>
+            <img src="/logo.png" alt="" width={56} height={56} style={{ display: "block" }} />
+            <div>
+              <h1
+                style={{
+                  margin: 0,
+                  fontFamily: displayFont,
+                  fontSize: 32,
+                  fontWeight: 700,
+                  letterSpacing: "-0.03em",
+                  lineHeight: 1.1,
+                  color: t.textPrimary,
+                }}
+              >
+                Diecast Vault
+              </h1>
+              <p
+                style={{
+                  margin: "8px 0 0",
+                  fontSize: 14,
+                  fontWeight: 500,
+                  color: t.textSecondary,
+                  lineHeight: 1.45,
+                  maxWidth: 280,
+                }}
+              >
+                Your personal garage for packed, loose, and wishlist casts.
+              </p>
+            </div>
           </div>
-          <h1
-            style={{
-              margin: 0,
-              fontSize: 12,
-              fontWeight: 800,
-              letterSpacing: "0.2em",
-              textTransform: "uppercase",
-              color: "#e4e4e7",
-              textShadow: "0 0 24px rgba(249,115,22,0.15), 0 2px 8px rgba(0,0,0,0.5)",
-            }}
-          >
-            <span style={{ opacity: 0.35 }}>—</span> MY DIECAST GARAGE{" "}
-            <span style={{ opacity: 0.35 }}>—</span>
-          </h1>
-          <p
-            style={{
-              margin: "10px 0 0",
-              fontSize: 12,
-              color: "rgba(228,228,231,0.5)",
-              fontWeight: 500,
-            }}
-          >
-            Racing garage · collector mode
-          </p>
-        </div>
+        </header>
+
+        <p
+          style={{
+            margin: "0 0 14px",
+            fontFamily: displayFont,
+            fontSize: 18,
+            fontWeight: 700,
+            letterSpacing: "-0.02em",
+            color: t.textPrimary,
+          }}
+        >
+          Quick add
+        </p>
 
         <div
           style={{
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
-            gap: 12,
-            marginBottom: 14,
+            gap: t.spaceTight,
+            marginBottom: t.spaceSection,
           }}
         >
           <Link
             href="/capture-packed"
-            style={{
-              borderRadius: 16,
-              padding: "16px 10px 14px",
-              textAlign: "center",
-              textDecoration: "none",
-              color: "#fafafa",
-              border: "1px solid rgba(255,255,255,0.08)",
-              background:
-                "linear-gradient(165deg, rgba(32,32,36,0.95) 0%, rgba(20,20,24,1) 100%)",
-              boxShadow: "0 8px 24px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05)",
+            style={quickBase}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = t.borderMedium;
+              e.currentTarget.style.transform = "translateY(-1px)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = t.borderSubtle;
+              e.currentTarget.style.transform = "translateY(0)";
             }}
           >
             <div style={{ display: "flex", justifyContent: "center", marginBottom: 10 }}>
-              <EmberIcon ring="steel">📦</EmberIcon>
+              <IconFrame variant="neutral">
+                <IconPacked />
+              </IconFrame>
             </div>
-            <div style={{ fontSize: 14, fontWeight: 800, marginBottom: 4 }}>Add Packed</div>
-            <div style={{ fontSize: 11, color: "rgba(228,228,231,0.55)" }}>
-              Blister & card shots
+            <div
+              style={{
+                fontFamily: displayFont,
+                fontSize: 16,
+                fontWeight: 700,
+                marginBottom: 4,
+                color: t.textPrimary,
+              }}
+            >
+              Add Packed
+            </div>
+            <div style={{ fontSize: 12, fontWeight: 500, color: t.textMuted }}>
+              Carded & blister
             </div>
           </Link>
           <Link
             href="/capture-loose"
-            style={{
-              borderRadius: 16,
-              padding: "16px 10px 14px",
-              textAlign: "center",
-              textDecoration: "none",
-              color: "#fafafa",
-              border: "1px solid rgba(255,255,255,0.08)",
-              background:
-                "linear-gradient(165deg, rgba(32,32,36,0.95) 0%, rgba(20,20,24,1) 100%)",
-              boxShadow: "0 8px 24px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05)",
+            style={quickBase}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = t.borderMedium;
+              e.currentTarget.style.transform = "translateY(-1px)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = t.borderSubtle;
+              e.currentTarget.style.transform = "translateY(0)";
             }}
           >
             <div style={{ display: "flex", justifyContent: "center", marginBottom: 10 }}>
-              <EmberIcon ring="steel">🏎️</EmberIcon>
+              <IconFrame variant="neutral">
+                <IconLoose />
+              </IconFrame>
             </div>
-            <div style={{ fontSize: 14, fontWeight: 800, marginBottom: 4 }}>Add Loose</div>
-            <div style={{ fontSize: 11, color: "rgba(228,228,231,0.55)" }}>
-              Loose runners on asphalt
+            <div
+              style={{
+                fontFamily: displayFont,
+                fontSize: 16,
+                fontWeight: 700,
+                marginBottom: 4,
+                color: t.textPrimary,
+              }}
+            >
+              Add Loose
+            </div>
+            <div style={{ fontSize: 12, fontWeight: 500, color: t.textMuted }}>
+              Runners & displays
             </div>
           </Link>
         </div>
 
-        <Tile
+        <Link
           href="/mygarage"
-          title="My Garage"
-          subtitle="Open your collection — track every piece"
-          icon={<span style={{ fontSize: 22 }}>🏁</span>}
-          ring="ember"
-          hero
-          badge={garageBadge}
-          chevron
-        />
-
-        <Tile
-          href="/wishlist"
-          title="Wishlist"
-          subtitle="Collector wishlist — grail hunts & gaps"
-          icon="🔥"
-          ring="violet"
-          chevron
-        />
-
-        <Tile
-          title="Add Friends"
-          subtitle="Pit lane with other collectors"
-          icon="👥"
-          ring="sage"
-          disabled
-          badge={
-            <span
-              style={{
-                display: "inline-block",
-                marginBottom: 6,
-                fontSize: 9,
-                fontWeight: 800,
-                letterSpacing: "0.12em",
-                textTransform: "uppercase",
-                padding: "5px 9px",
-                borderRadius: 999,
-                border: "1px solid rgba(134,239,172,0.35)",
-                color: "rgba(220,252,231,0.9)",
-                background: "rgba(22,101,52,0.35)",
-              }}
-            >
-              Coming soon
-            </span>
-          }
-        />
-
-        <Tile
-          href="/howto"
-          title="How To"
-          subtitle="Lighting & angles for display-case shots"
-          icon="📸"
-          ring="flame"
-          chevron
-        />
-
-        <p
-          style={{
-            margin: "22px 0 0",
-            fontSize: 10,
-            textAlign: "center",
-            color: "rgba(161,161,170,0.55)",
-            letterSpacing: "0.08em",
-            textTransform: "uppercase",
+          style={heroCard}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = "translateY(-2px)";
+            e.currentTarget.style.boxShadow = HERO_SHADOW_HOVER;
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = "translateY(0)";
+            e.currentTarget.style.boxShadow = HERO_SHADOW;
           }}
         >
-          Experimental UI · not the live home
-        </p>
+          <div style={{ display: "flex", alignItems: "flex-start", gap: 16 }}>
+            <IconFrame variant="accent">
+              <IconGarage />
+            </IconFrame>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 8,
+                  padding: "6px 12px",
+                  borderRadius: 999,
+                  marginBottom: 12,
+                  background: `linear-gradient(90deg, rgba(255,106,0,0.2), rgba(255,129,36,0.12))`,
+                  border: `1px solid rgba(255,106,0,0.35)`,
+                  fontSize: 12,
+                  fontWeight: 600,
+                  letterSpacing: "0.02em",
+                  color: t.orange300,
+                }}
+              >
+                {pieceLabel(garageCount)}
+              </div>
+              <h2
+                style={{
+                  margin: 0,
+                  fontFamily: displayFont,
+                  fontSize: 22,
+                  fontWeight: 700,
+                  letterSpacing: "-0.02em",
+                  color: t.textPrimary,
+                }}
+              >
+                My Garage
+              </h2>
+              <p
+                style={{
+                  margin: "8px 0 16px",
+                  fontSize: 14,
+                  fontWeight: 500,
+                  lineHeight: 1.5,
+                  color: t.textSecondary,
+                }}
+              >
+                Track every piece
+              </p>
+              <span
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 8,
+                  fontSize: 13,
+                  fontWeight: 600,
+                  color: t.orange400,
+                }}
+              >
+                Open collection
+                <span aria-hidden style={{ fontSize: 18, fontWeight: 300 }}>
+                  →
+                </span>
+              </span>
+            </div>
+          </div>
+        </Link>
+
+        <Link
+          href="/wishlist"
+          style={secondaryCard}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.borderColor = t.borderMedium;
+            e.currentTarget.style.transform = "translateY(-1px)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.borderColor = t.borderSubtle;
+            e.currentTarget.style.transform = "translateY(0)";
+          }}
+        >
+          <IconFrame variant="blueHint">
+            <IconWishlist />
+          </IconFrame>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+                flexWrap: "wrap",
+                marginBottom: 6,
+              }}
+            >
+              <h3
+                style={{
+                  margin: 0,
+                  fontFamily: displayFont,
+                  fontSize: 16,
+                  fontWeight: 700,
+                  color: t.textPrimary,
+                }}
+              >
+                Wishlist
+              </h3>
+              <span
+                style={{
+                  fontSize: 12,
+                  fontWeight: 600,
+                  letterSpacing: "0.04em",
+                  textTransform: "uppercase",
+                  color: t.textMuted,
+                }}
+              >
+                {wishlistLabel(wishlistCount)}
+              </span>
+            </div>
+            <p
+              style={{
+                margin: 0,
+                fontSize: 14,
+                fontWeight: 500,
+                lineHeight: 1.45,
+                color: t.textSecondary,
+              }}
+            >
+              Grails & missing casts
+            </p>
+          </div>
+          <span style={{ fontSize: 20, color: t.textMuted, flexShrink: 0 }} aria-hidden>
+            ›
+          </span>
+        </Link>
+
+        <div
+          style={tertiaryCard}
+          aria-disabled={true}
+          role="group"
+          aria-label="Add friends — coming soon"
+        >
+          <IconFrame variant="muted">
+            <IconFriends />
+          </IconFrame>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
+              <h3
+                style={{
+                  margin: 0,
+                  fontFamily: displayFont,
+                  fontSize: 16,
+                  fontWeight: 700,
+                  color: t.textSecondary,
+                }}
+              >
+                Add Friends
+              </h3>
+              <span
+                style={{
+                  fontSize: 11,
+                  fontWeight: 600,
+                  letterSpacing: "0.06em",
+                  textTransform: "uppercase",
+                  padding: "4px 8px",
+                  borderRadius: 999,
+                  color: t.textMuted,
+                  border: `1px solid ${t.borderSubtle}`,
+                  background: t.bg,
+                }}
+              >
+                Coming Soon
+              </span>
+            </div>
+            <p style={{ margin: 0, fontSize: 13, fontWeight: 500, color: t.textMuted }}>
+              Share shelves with trusted collectors.
+            </p>
+          </div>
+        </div>
+
+        <Link
+          href="/howto"
+          style={tertiaryLink}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.borderColor = t.borderMedium;
+            e.currentTarget.style.transform = "translateY(-1px)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.borderColor = t.borderSubtle;
+            e.currentTarget.style.transform = "translateY(0)";
+          }}
+        >
+          <IconFrame variant="neutral">
+            <IconHowTo />
+          </IconFrame>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <h3
+              style={{
+                margin: "0 0 6px",
+                fontFamily: displayFont,
+                fontSize: 16,
+                fontWeight: 700,
+                color: t.textPrimary,
+              }}
+            >
+              How To
+            </h3>
+            <p style={{ margin: 0, fontSize: 14, fontWeight: 500, color: t.textSecondary }}>
+              Lighting & angles for showcase shots
+            </p>
+          </div>
+          <span style={{ fontSize: 20, color: t.textMuted, flexShrink: 0 }} aria-hidden>
+            ›
+          </span>
+        </Link>
+
+        <footer style={{ marginTop: 28, textAlign: "center" }}>
+          <p
+            style={{
+              margin: 0,
+              fontSize: 11,
+              fontWeight: 600,
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+              color: t.textMuted,
+            }}
+          >
+            Experimental screen · not the live home
+          </p>
+        </footer>
       </div>
     </div>
   );
