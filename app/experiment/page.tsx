@@ -51,7 +51,7 @@ function IconFrame({
       ? {
           border: `1px solid ${t.borderMedium}`,
           bg: `linear-gradient(160deg, ${t.surfaceElevated} 0%, ${t.surface} 100%)`,
-          glow: `0 0 0 1px ${t.orangeGlow}, 0 0 20px ${t.orangeGlow}`,
+          glow: "0 8px 22px rgba(0,0,0,0.42)",
         }
       : variant === "blueHint"
         ? {
@@ -180,26 +180,22 @@ function IconHowTo() {
 }
 
 function shellBackground(): string {
-  return `
-    radial-gradient(120% 70% at 50% -8%, ${t.orangeGlow} 0%, transparent 45%),
-    radial-gradient(90% 55% at 100% 0%, ${t.blueGlow} 0%, transparent 42%),
-    linear-gradient(180deg, ${t.bg} 0%, ${t.bgSecondary} 55%, ${t.bg} 100%)
-  `;
+  return (
+    "linear-gradient(180deg, #0B1018 0%, #090D14 32%, #07090D 62%, #050608 100%)"
+  );
 }
 
 const HERO_SHADOW =
-  `0 0 0 1px ${t.orangeGlow},` +
-  `0 20px 48px rgba(0,0,0,0.45),` +
-  `0 0 36px ${t.orangeGlow},` +
-  `inset 0 1px 0 rgba(255,255,255,0.08),` +
-  `inset 0 -1px 0 rgba(0,0,0,0.35)`;
+  "0 14px 36px rgba(0,0,0,0.42)," +
+  "0 6px 16px rgba(0,0,0,0.28)," +
+  "inset 0 1px 0 rgba(255,255,255,0.07)," +
+  "inset 0 -1px 0 rgba(0,0,0,0.32)";
 
 const HERO_SHADOW_HOVER =
-  `0 0 0 1px ${t.orangeGlow},` +
-  `0 24px 56px rgba(0,0,0,0.5),` +
-  `0 0 44px ${t.orangeGlow},` +
-  `inset 0 1px 0 rgba(255,255,255,0.1),` +
-  `inset 0 -1px 0 rgba(0,0,0,0.35)`;
+  "0 18px 44px rgba(0,0,0,0.46)," +
+  "0 8px 20px rgba(0,0,0,0.3)," +
+  "inset 0 1px 0 rgba(255,255,255,0.09)," +
+  "inset 0 -1px 0 rgba(0,0,0,0.3)";
 
 export default function ExperimentPage() {
   const garageCount = MOCK_GARAGE_COUNT;
@@ -224,7 +220,7 @@ export default function ExperimentPage() {
     borderRadius: t.radiusXl,
     padding: "14px 20px 12px",
     background: t.surfaceElevated,
-    border: `1px solid ${t.borderMedium}`,
+    border: "1px solid rgba(255,106,0,0.4)",
     boxShadow: HERO_SHADOW,
     marginBottom: t.spaceBlock,
     transition: "transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease",
@@ -341,8 +337,8 @@ export default function ExperimentPage() {
                 height: "auto",
                 filter:
                   "grayscale(88%) brightness(1.14) contrast(1.22) " +
-                  "drop-shadow(0 0 10px rgba(255,106,0,0.22)) " +
-                  "drop-shadow(0 0 20px rgba(255,106,0,0.1))",
+                  "drop-shadow(0 0 14px rgba(255,255,255,0.07)) " +
+                  "drop-shadow(0 0 28px rgba(45,107,255,0.06))",
               }}
             />
           </div>
