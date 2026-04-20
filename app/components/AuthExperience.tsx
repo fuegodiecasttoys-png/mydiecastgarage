@@ -380,7 +380,7 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
   };
 
   return (
-    <div style={shell}>
+    <div className="auth-experience" style={shell}>
       <div style={{ maxWidth: 520, margin: "0 auto" }}>
         {/* Hero */}
         <header style={{ textAlign: "center", marginBottom: 0, width: "100%", padding: 0 }}>

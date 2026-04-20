@@ -24,3 +24,15 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* AuthExperience: WebKit autofill matches dvInput (t.surface / t.textPrimary) — Chrome mobile dark theme */
+.auth-experience input:-webkit-autofill,
+.auth-experience input:-webkit-autofill:hover,
+.auth-experience input:-webkit-autofill:focus,
+.auth-experience input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px #121722 inset !important;
+  box-shadow: 0 0 0 1000px #121722 inset !important;
+  -webkit-text-fill-color: #f5f7fa !important;
+  caret-color: #f5f7fa;
+  transition: background-color 9999s ease-in-out 0s;
+}
