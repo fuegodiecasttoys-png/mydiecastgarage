@@ -3,6 +3,10 @@ export function normalizeUsernameInput(raw: string): string {
   return raw.trim().toLowerCase();
 }
 
+/** Same rule as `isValidUsernameFormat` (for UI copy). */
+export const USERNAME_PUBLIC_RULES =
+  "3–24 characters: lowercase letters, numbers, and underscores only.";
+
 /** Public username: a–z, 0–9, underscore, 3–24 chars. */
 export function isValidUsernameFormat(normalized: string): boolean {
   if (!normalized) return false;

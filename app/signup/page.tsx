@@ -2,10 +2,21 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState, type CSSProperties } from "react";
+import { useEffect, useMemo, useState, type CSSProperties } from "react";
 import { supabase } from "../lib/supabaseClient";
-import { isValidUsernameFormat, normalizeUsernameInput } from "../lib/profileUsername";
+import {
+  isValidUsernameFormat,
+  normalizeUsernameInput,
+  USERNAME_PUBLIC_RULES,
+} from "../lib/profileUsername";
+import {
+  fetchUsernameAvailable,
+  PASSWORD_RULES_SUMMARY,
+  validateSignupPassword,
+} from "../lib/signupValidation";
 import { useRouter } from "next/navigation";
+
+const USERNAME_DEBOUNCE_MS = 450;
 
 export default function SignupPage() {
   const [email, setEmail] = useState("");
@@ -17,12 +28,52 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  /** null = not checked / error; true = username taken; false = free */
+  const [usernameInUse, setUsernameInUse] = useState<boolean | null>(null);
+  const [usernameCheckPending, setUsernameCheckPending] = useState(false);
+  const [usernameRpcError, setUsernameRpcError] = useState<string | null>(null);
   const router = useRouter();
+
+  const normalizedUsername = useMemo(() => normalizeUsernameInput(username), [username]);
+  const usernameFormatOk =
+    normalizedUsername.length === 0 ? null : isValidUsernameFormat(normalizedUsername);
+
+  const passwordCheck = useMemo(() => validateSignupPassword(password), [password]);
+
+  useEffect(() => {
+    if (!usernameFormatOk) {
+      setUsernameInUse(null);
+      setUsernameRpcError(null);
+      setUsernameCheckPending(false);
+      return;
+    }
+
+    setUsernameCheckPending(true);
+    setUsernameRpcError(null);
+    const handle = window.setTimeout(async () => {
+      const r = await fetchUsernameAvailable(supabase, normalizedUsername);
+      setUsernameCheckPending(false);
+      if (!r.ok) {
+        setUsernameInUse(null);
+        setUsernameRpcError(r.message);
+        return;
+      }
+      setUsernameRpcError(null);
+      setUsernameInUse(r.available ? false : true);
+    }, USERNAME_DEBOUNCE_MS);
+
+    return () => {
+      window.clearTimeout(handle);
+    };
+  }, [normalizedUsername, usernameFormatOk]);
+
   async function handleSignup() {
     const cleanEmail = email.trim().toLowerCase();
     const cleanUsername = normalizeUsernameInput(username);
     const cleanName = name.trim();
     const cleanLastName = lastName.trim();
+    const displayName =
+      [cleanName, cleanLastName].filter((s) => s.length > 0).join(" ").trim() || null;
 
     if (
       !cleanEmail ||
@@ -41,31 +92,40 @@ export default function SignupPage() {
       return;
     }
 
+    const pwd = validateSignupPassword(password);
+    if (!pwd.ok) {
+      alert(pwd.message);
+      return;
+    }
+
     if (!isValidUsernameFormat(cleanUsername)) {
       alert("Username unavailable");
       return;
     }
 
     setLoading(true);
-
     try {
-      const { data: existingUser, error: usernameError } = await supabase
-        .from("profiles")
-        .select("user_id")
-        .eq("username", cleanUsername)
-        .maybeSingle();
-
-      if (usernameError) {
-        alert(usernameError.message);
+      const avail = await fetchUsernameAvailable(supabase, cleanUsername);
+      if (!avail.ok) {
+        alert(avail.message);
         return;
       }
-
-      if (existingUser) {
+      if (!avail.available) {
         alert("Username already used");
         return;
       }
 
-      const { error } = await supabase.auth.signUp({
+      const availAgain = await fetchUsernameAvailable(supabase, cleanUsername);
+      if (!availAgain.ok) {
+        alert(availAgain.message);
+        return;
+      }
+      if (!availAgain.available) {
+        alert("Username already used");
+        return;
+      }
+
+      const { data: signData, error: signUpError } = await supabase.auth.signUp({
         email: cleanEmail,
         password,
         options: {
@@ -78,21 +138,83 @@ export default function SignupPage() {
         },
       });
 
-      if (error) {
-  if (error.message.includes("already registered")) {
-    alert("This email is already registered.");
-  } else {
-    alert(error.message);
-  }
-  return;
-}
+      if (signUpError) {
+        if (signUpError.message.includes("already registered")) {
+          alert("This email is already registered.");
+        } else {
+          alert(signUpError.message);
+        }
+        return;
+      }
 
-     router.push("/");
+      if (!signData.user) {
+        alert("Could not create account. Please try again.");
+        return;
+      }
 
+      if (signData.session) {
+        const { error: profErr } = await supabase.from("profiles").upsert(
+          {
+            user_id: signData.user.id,
+            username: cleanUsername,
+            name: displayName,
+          },
+          { onConflict: "user_id" }
+        );
+
+        if (profErr) {
+          const msg =
+            profErr.code === "23505"
+              ? "Username already used"
+              : profErr.message || "Could not save profile.";
+          alert(msg);
+          await supabase.auth.signOut();
+          return;
+        }
+
+        router.push("/");
+        return;
+      }
+
+      alert(
+        "Check your email to confirm your account. You can sign in after confirming."
+      );
+      router.push("/login");
     } finally {
       setLoading(false);
     }
   }
+
+  const usernameLiveMessage =
+    normalizedUsername.length === 0
+      ? null
+      : usernameFormatOk === false
+        ? "Username unavailable"
+        : usernameRpcError
+          ? usernameRpcError
+          : usernameCheckPending
+            ? "Checking username…"
+            : usernameInUse === true
+              ? "Username already used"
+              : usernameInUse === false
+                ? `Will save as: ${normalizedUsername}`
+                : null;
+
+  const usernameLiveColor =
+    normalizedUsername.length === 0
+      ? "rgba(255,255,255,0.45)"
+      : usernameFormatOk === false || usernameInUse === true || usernameRpcError
+        ? "rgba(248,113,113,0.95)"
+        : "rgba(74,222,128,0.9)";
+
+  const passwordBlocksSubmit = password.length > 0 && !passwordCheck.ok;
+
+  const usernameBlocksSubmit =
+    normalizedUsername.length > 0 &&
+    (usernameFormatOk !== true ||
+      usernameInUse === true ||
+      usernameCheckPending ||
+      !!usernameRpcError);
 
   return (
     <div
@@ -192,15 +314,24 @@ export default function SignupPage() {
 
           <div>
             <label htmlFor="username" style={labelStyle}>
-              Username
+              Username <span style={{ fontWeight: 400, opacity: 0.75 }}>(public)</span>
             </label>
             <input
               id="username"
               type="text"
+              autoComplete="username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               style={inputStyle}
             />
+            <p style={{ margin: "6px 0 0", fontSize: 11, lineHeight: 1.35, color: "rgba(255,255,255,0.45)" }}>
+              {USERNAME_PUBLIC_RULES}
+            </p>
+            {usernameLiveMessage ? (
+              <p style={{ margin: "6px 0 0", fontSize: 12, fontWeight: 600, color: usernameLiveColor }}>
+                {usernameLiveMessage}
+              </p>
+            ) : null}
           </div>
 
           <div>
@@ -210,6 +341,7 @@ export default function SignupPage() {
             <input
               id="name"
               type="text"
+              autoComplete="given-name"
               value={name}
               onChange={(e) => setName(e.target.value)}
               style={inputStyle}
@@ -223,6 +355,7 @@ export default function SignupPage() {
             <input
               id="lastName"
               type="text"
+              autoComplete="family-name"
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
               style={inputStyle}
@@ -240,6 +373,14 @@ export default function SignupPage() {
               onChange={(e) => setPassword(e.target.value)}
               style={inputStyle}
             />
+            <p style={{ margin: "6px 0 0", fontSize: 11, lineHeight: 1.35, color: "rgba(255,255,255,0.45)" }}>
+              {PASSWORD_RULES_SUMMARY}
+            </p>
+            {password.length > 0 && !passwordCheck.ok ? (
+              <p style={{ margin: "6px 0 0", fontSize: 12, fontWeight: 600, color: "rgba(248,113,113,0.95)" }}>
+                {passwordCheck.message}
+              </p>
+            ) : null}
           </div>
 
           <div>
@@ -283,8 +424,9 @@ export default function SignupPage() {
         </div>
 
         <button
-          onClick={handleSignup}
-          disabled={loading}
+          type="button"
+          onClick={() => void handleSignup()}
+          disabled={loading || usernameBlocksSubmit || passwordBlocksSubmit}
           style={{
             width: "100%",
             height: 54,
