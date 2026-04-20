@@ -50,7 +50,6 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
-  const [displayName, setDisplayName] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);
@@ -124,7 +123,6 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
     setBanner(null);
     const cleanEmail = email.trim().toLowerCase();
     const cleanUsername = normalizeUsernameInput(username);
-    const cleanDisplay = displayName.trim() || null;
 
     if (!cleanEmail || !cleanUsername || !password) {
       setBanner({ kind: "error", text: "Fill in email, username, and password." });
@@ -171,7 +169,7 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
           emailRedirectTo: "https://www.mydiecastgarage.app/auth/callback",
           data: {
             username: cleanUsername,
-            name: cleanDisplay ?? "",
+            name: cleanUsername,
             last_name: "",
           },
         },
@@ -197,7 +195,7 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
           {
             user_id: signData.user.id,
             username: cleanUsername,
-            name: cleanDisplay,
+            name: cleanUsername,
           },
           { onConflict: "user_id" }
         );
@@ -507,20 +505,6 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
                 {usernameLiveMessage ? (
                   <p style={{ margin: "6px 0 0", fontSize: 12, fontWeight: 600, color: usernameLiveColor }}>{usernameLiveMessage}</p>
                 ) : null}
-              </div>
-              <div>
-                <label htmlFor="auth-display" style={label}>
-                  Display name <span style={{ textTransform: "none", fontWeight: 500, color: t.textMuted }}>(optional)</span>
-                </label>
-                <input
-                  id="auth-display"
-                  type="text"
-                  autoComplete="name"
-                  placeholder="How you want to appear"
-                  value={displayName}
-                  onChange={(e) => setDisplayName(e.target.value)}
-                  style={inputBase}
-                />
               </div>
               <div>
                 <label htmlFor="auth-signup-password" style={label}>
