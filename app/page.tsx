@@ -321,19 +321,13 @@ export default function Home() {
           </span>
         </button>
 
-        {/* Favorites — highlights you already own (below hero garage) */}
+        {/* Favorites — same row pattern as Wishlist */}
         <button
           type="button"
           onClick={() => router.push("/favorites")}
-          style={{
-            ...rowCardBase,
-            marginBottom: 12,
-            background: t.surfaceElevated,
-            boxShadow:
-              "0 0 26px rgba(255,106,0,0.12), 0 12px 32px rgba(0,0,0,0.38), inset 0 1px 0 rgba(255,255,255,0.06)",
-          }}
+          style={{ ...rowCardBase, marginBottom: 12 }}
         >
-          <IconCircle variant="orangeQuick">⭐</IconCircle>
+          <IconCircle variant="orangeSubtle">⭐</IconCircle>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div
               style={{
@@ -356,7 +350,7 @@ export default function Home() {
               Your top picks
             </div>
           </div>
-          <span style={{ ...chevronStyle, color: t.orange300 }} aria-hidden>
+          <span style={{ ...chevronStyle, color: t.textMuted }} aria-hidden>
             ›
           </span>
         </button>
