@@ -17,7 +17,6 @@ import {
 import { t } from "../ui/dv-tokens";
 import {
   dvDisplayFont,
-  dvGhostButton,
   dvInput,
   dvPrimaryButton,
   dvPrimaryButtonDisabled,
@@ -27,6 +26,36 @@ import {
 const USERNAME_DEBOUNCE_MS = 450;
 
 type Tab = "login" | "signup";
+
+function EyeOpenIcon() {
+  return (
+    <svg width={20} height={20} viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path
+        d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"
+        stroke="currentColor"
+        strokeWidth={2}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <circle cx={12} cy={12} r={3} stroke="currentColor" strokeWidth={2} />
+    </svg>
+  );
+}
+
+function EyeClosedIcon() {
+  return (
+    <svg width={20} height={20} viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path
+        d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a21.77 21.77 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a21.5 21.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"
+        stroke="currentColor"
+        strokeWidth={2}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path d="M1 1l22 22" stroke="currentColor" strokeWidth={2} strokeLinecap="round" />
+    </svg>
+  );
+}
 
 const benefits = [
   { title: "Track every model", body: "Packed or loose — your garage stays organized." },
@@ -50,8 +79,11 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
+  const [showLoginPassword, setShowLoginPassword] = useState(false);
+  const [showSignupPassword, setShowSignupPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);
   const [banner, setBanner] = useState<{ kind: "error" | "info"; text: string } | null>(null);
 
@@ -71,6 +103,14 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
   useEffect(() => {
     setLoginError(null);
     setBanner(null);
+  }, [tab]);
+
+  useEffect(() => {
+    if (tab !== "signup") {
+      setConfirmPassword("");
+      setShowSignupPassword(false);
+      setShowConfirmPassword(false);
+    }
   }, [tab]);
 
   useEffect(() => {
@@ -137,6 +177,11 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
 
     if (!isValidUsernameFormat(cleanUsername)) {
       setBanner({ kind: "error", text: "Username unavailable" });
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setBanner({ kind: "error", text: "Passwords do not match" });
       return;
     }
 
@@ -246,15 +291,19 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
         ? "rgba(248,113,113,0.95)"
         : "rgba(74,222,128,0.9)";
 
-  const signupSubmitBlocked =
-    tab === "signup" &&
-    (normalizedUsername.length > 0 &&
-      (usernameFormatOk !== true ||
-        usernameInUse === true ||
-        usernameCheckPending ||
-        !!usernameRpcError));
+  const passwordsMismatchSignup = confirmPassword.length > 0 && password !== confirmPassword;
 
-  const passwordBlocksSignupSubmit = tab === "signup" && !passwordCheck.ok;
+  /** Used only on the Sign up tab (Create account). */
+  const signupCreateDisabled =
+    loading ||
+    !email.trim() ||
+    !normalizedUsername ||
+    usernameFormatOk !== true ||
+    usernameInUse === true ||
+    usernameCheckPending ||
+    !!usernameRpcError ||
+    !passwordCheck.ok ||
+    password !== confirmPassword;
 
   const shell: CSSProperties = {
     minHeight: "100vh",
@@ -300,6 +349,28 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
   const inputBase: CSSProperties = {
     ...dvInput,
     minHeight: 50,
+  };
+
+  const inputPasswordWithToggle: CSSProperties = {
+    ...inputBase,
+    padding: "12px 44px 12px 14px",
+  };
+
+  const passwordToggleBtn: CSSProperties = {
+    position: "absolute",
+    right: 0,
+    top: 0,
+    bottom: 0,
+    width: 44,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    border: "none",
+    background: "transparent",
+    cursor: "pointer",
+    color: t.textMuted,
+    padding: 0,
+    borderRadius: t.radiusMd,
   };
 
   return (
@@ -448,18 +519,25 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
                 <label htmlFor="auth-login-password" style={label}>
                   Password
                 </label>
-                <input
-                  id="auth-login-password"
-                  type={showPassword ? "text" : "password"}
-                  autoComplete="current-password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  style={inputBase}
-                />
+                <div style={{ position: "relative", width: "100%" }}>
+                  <input
+                    id="auth-login-password"
+                    type={showLoginPassword ? "text" : "password"}
+                    autoComplete="current-password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    style={inputPasswordWithToggle}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowLoginPassword((v) => !v)}
+                    aria-label={showLoginPassword ? "Hide password" : "Show password"}
+                    style={passwordToggleBtn}
+                  >
+                    {showLoginPassword ? <EyeClosedIcon /> : <EyeOpenIcon />}
+                  </button>
+                </div>
               </div>
-              <button type="button" onClick={() => setShowPassword(!showPassword)} style={{ ...dvGhostButton, width: "auto", justifySelf: "start", fontSize: 12 }}>
-                {showPassword ? "Hide password" : "Show password"}
-              </button>
               {loginError ? (
                 <p style={{ margin: 0, fontSize: 13, color: "rgba(248,113,113,0.95)", lineHeight: 1.4 }}>{loginError}</p>
               ) : null}
@@ -510,22 +588,57 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
                 <label htmlFor="auth-signup-password" style={label}>
                   Password
                 </label>
-                <input
-                  id="auth-signup-password"
-                  type={showPassword ? "text" : "password"}
-                  autoComplete="new-password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  style={inputBase}
-                />
+                <div style={{ position: "relative", width: "100%" }}>
+                  <input
+                    id="auth-signup-password"
+                    type={showSignupPassword ? "text" : "password"}
+                    autoComplete="new-password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    style={inputPasswordWithToggle}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowSignupPassword((v) => !v)}
+                    aria-label={showSignupPassword ? "Hide password" : "Show password"}
+                    style={passwordToggleBtn}
+                  >
+                    {showSignupPassword ? <EyeClosedIcon /> : <EyeOpenIcon />}
+                  </button>
+                </div>
                 <p style={{ margin: "6px 0 0", fontSize: 11, color: t.textMuted }}>{PASSWORD_RULES_SUMMARY}</p>
                 {password.length > 0 && !passwordCheck.ok ? (
                   <p style={{ margin: "6px 0 0", fontSize: 12, fontWeight: 600, color: "rgba(248,113,113,0.95)" }}>{passwordCheck.message}</p>
                 ) : null}
               </div>
-              <button type="button" onClick={() => setShowPassword(!showPassword)} style={{ ...dvGhostButton, width: "auto", justifySelf: "start", fontSize: 12 }}>
-                {showPassword ? "Hide password" : "Show password"}
-              </button>
+              <div>
+                <label htmlFor="auth-signup-password-confirm" style={label}>
+                  Confirm password
+                </label>
+                <div style={{ position: "relative", width: "100%" }}>
+                  <input
+                    id="auth-signup-password-confirm"
+                    type={showConfirmPassword ? "text" : "password"}
+                    autoComplete="new-password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    style={inputPasswordWithToggle}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword((v) => !v)}
+                    aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"}
+                    style={passwordToggleBtn}
+                  >
+                    {showConfirmPassword ? <EyeClosedIcon /> : <EyeOpenIcon />}
+                  </button>
+                </div>
+                {passwordsMismatchSignup ? (
+                  <p style={{ margin: "6px 0 0", fontSize: 12, fontWeight: 600, color: "rgba(248,113,113,0.95)" }}>
+                    Passwords do not match
+                  </p>
+                ) : null}
+              </div>
               {banner ? (
                 <p
                   style={{
@@ -540,13 +653,9 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
               ) : null}
               <button
                 type="button"
-                disabled={loading || signupSubmitBlocked || passwordBlocksSignupSubmit}
+                disabled={signupCreateDisabled}
                 onClick={() => void handleSignup()}
-                style={
-                  loading || signupSubmitBlocked || passwordBlocksSignupSubmit
-                    ? dvPrimaryButtonDisabled
-                    : dvPrimaryButton
-                }
+                style={signupCreateDisabled ? dvPrimaryButtonDisabled : dvPrimaryButton}
               >
                 {loading ? "Creating account…" : "Create account"}
               </button>
