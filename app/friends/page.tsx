@@ -10,6 +10,11 @@ import {
   otherParticipantId,
   type FriendRequestRow,
 } from "../lib/friendQueries";
+import {
+  isValidUsernameFormat,
+  normalizeUsernameInput,
+  publicProfileLabel,
+} from "../lib/profileUsername";
 import { t } from "../ui/dv-tokens";
 import {
   dvGhostButton,
@@ -21,26 +26,29 @@ import {
 } from "../ui/dv-visual";
 import { FullPageLoading } from "../components/FullPageLoading";
 
-type ProfileMini = { user_id: string; username: string };
+type PeerProfile = { user_id: string; username: string | null; name: string | null };
 
 export default function FriendsPage() {
   const router = useRouter();
   const [ready, setReady] = useState(false);
   const [myId, setMyId] = useState<string | null>(null);
-  const [myUsername, setMyUsername] = useState<string>("");
+  const [meProfile, setMeProfile] = useState<{ username: string | null; name: string | null }>({
+    username: null,
+    name: null,
+  });
 
   const [search, setSearch] = useState("");
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
   const [incoming, setIncoming] = useState<FriendRequestRow[]>([]);
-  const [incomingNames, setIncomingNames] = useState<Record<string, string>>({});
+  const [incomingPeers, setIncomingPeers] = useState<Record<string, PeerProfile>>({});
 
   const [outgoing, setOutgoing] = useState<FriendRequestRow[]>([]);
-  const [outgoingNames, setOutgoingNames] = useState<Record<string, string>>({});
+  const [outgoingPeers, setOutgoingPeers] = useState<Record<string, PeerProfile>>({});
 
   const [friends, setFriends] = useState<FriendRequestRow[]>([]);
-  const [friendNames, setFriendNames] = useState<Record<string, string>>({});
+  const [friendPeers, setFriendPeers] = useState<Record<string, PeerProfile>>({});
 
   const loadAll = useCallback(async (uid: string) => {
     const { data: inc } = await supabase
@@ -55,14 +63,17 @@ export default function FriendsPage() {
 
     const sids = [...new Set(incomingRows.map((r) => r.sender_id))];
     if (sids.length) {
-      const { data: profs } = await supabase.from("profiles").select("user_id, username").in("user_id", sids);
-      const map: Record<string, string> = {};
-      (profs as ProfileMini[] | null)?.forEach((p) => {
-        map[p.user_id] = p.username;
+      const { data: profs } = await supabase
+        .from("profiles")
+        .select("user_id, username, name")
+        .in("user_id", sids);
+      const map: Record<string, PeerProfile> = {};
+      (profs as PeerProfile[] | null)?.forEach((p) => {
+        map[p.user_id] = p;
       });
-      setIncomingNames(map);
+      setIncomingPeers(map);
     } else {
-      setIncomingNames({});
+      setIncomingPeers({});
     }
 
     const { data: out } = await supabase
@@ -76,14 +87,17 @@ export default function FriendsPage() {
 
     const rids = [...new Set(outgoingRows.map((r) => r.receiver_id))];
     if (rids.length) {
-      const { data: profs2 } = await supabase.from("profiles").select("user_id, username").in("user_id", rids);
-      const map2: Record<string, string> = {};
-      (profs2 as ProfileMini[] | null)?.forEach((p) => {
-        map2[p.user_id] = p.username;
+      const { data: profs2 } = await supabase
+        .from("profiles")
+        .select("user_id, username, name")
+        .in("user_id", rids);
+      const map2: Record<string, PeerProfile> = {};
+      (profs2 as PeerProfile[] | null)?.forEach((p) => {
+        map2[p.user_id] = p;
       });
-      setOutgoingNames(map2);
+      setOutgoingPeers(map2);
     } else {
-      setOutgoingNames({});
+      setOutgoingPeers({});
     }
 
     const { data: acc } = await supabase
@@ -98,14 +112,17 @@ export default function FriendsPage() {
 
     const otherIds = [...new Set(friendRows.map((r) => otherParticipantId(r, uid)))];
     if (otherIds.length) {
-      const { data: profs3 } = await supabase.from("profiles").select("user_id, username").in("user_id", otherIds);
-      const map3: Record<string, string> = {};
-      (profs3 as ProfileMini[] | null)?.forEach((p) => {
-        map3[p.user_id] = p.username;
+      const { data: profs3 } = await supabase
+        .from("profiles")
+        .select("user_id, username, name")
+        .in("user_id", otherIds);
+      const map3: Record<string, PeerProfile> = {};
+      (profs3 as PeerProfile[] | null)?.forEach((p) => {
+        map3[p.user_id] = p;
       });
-      setFriendNames(map3);
+      setFriendPeers(map3);
     } else {
-      setFriendNames({});
+      setFriendPeers({});
     }
   }, []);
 
@@ -124,10 +141,15 @@ export default function FriendsPage() {
 
       const { data: meProf } = await supabase
         .from("profiles")
-        .select("username")
+        .select("username, name")
         .eq("user_id", user.id)
         .maybeSingle();
-      if (!cancelled && meProf?.username) setMyUsername(meProf.username as string);
+      if (!cancelled) {
+        setMeProfile({
+          username: (meProf?.username as string | null) ?? null,
+          name: (meProf as { name?: string | null } | null)?.name ?? null,
+        });
+      }
 
       await loadAll(user.id);
       if (!cancelled) setReady(true);
@@ -140,9 +162,13 @@ export default function FriendsPage() {
   async function handleSendRequest() {
     if (!myId) return;
     setMessage(null);
-    const clean = search.trim().toLowerCase();
+    const clean = normalizeUsernameInput(search);
     if (!clean) {
       setMessage("Enter a username.");
+      return;
+    }
+    if (!isValidUsernameFormat(clean)) {
+      setMessage("Username unavailable");
       return;
     }
 
@@ -150,7 +176,7 @@ export default function FriendsPage() {
     try {
       const target = await fetchProfileByUsername(supabase, clean);
       if (!target) {
-        setMessage("No user with that username. Check spelling and try again.");
+        setMessage("No user with that username.");
         return;
       }
       if (target.user_id === myId) {
@@ -235,6 +261,8 @@ export default function FriendsPage() {
     return <FullPageLoading label="Loading friends..." />;
   }
 
+  const meLabel = publicProfileLabel(meProfile);
+
   const sectionTitle = (text: string) => (
     <h2
       style={{
@@ -271,11 +299,15 @@ export default function FriendsPage() {
           Add collectors by username. When they accept, you can view each other&apos;s garages
           (read-only).
         </p>
-        {myUsername ? (
-          <p style={{ margin: "0 0 20px", color: t.textMuted, fontSize: 13 }}>
-            Your username: <strong style={{ color: t.orange300 }}>{myUsername}</strong>
+        <div style={{ margin: "0 0 20px" }}>
+          <p style={{ margin: "0 0 4px", color: t.textMuted, fontSize: 13 }}>
+            Your public handle:{" "}
+            <strong style={{ color: meLabel.handle ? t.orange300 : t.textSecondary }}>{meLabel.primary}</strong>
           </p>
-        ) : null}
+          {meLabel.secondary ? (
+            <p style={{ margin: 0, color: t.textMuted, fontSize: 12 }}>{meLabel.secondary}</p>
+          ) : null}
+        </div>
 
         {sectionTitle("Find user")}
         <div style={{ display: "flex", gap: 10, marginBottom: 10, flexWrap: "wrap" }}>
@@ -305,31 +337,41 @@ export default function FriendsPage() {
           <p style={{ color: t.textMuted, fontSize: 14, marginBottom: 24 }}>No pending requests.</p>
         ) : (
           <div style={{ display: "grid", gap: 12, marginBottom: 28 }}>
-            {incoming.map((row) => (
-              <div key={row.id} style={{ ...dvListCard, flexDirection: "column", alignItems: "stretch" }}>
-                <div style={{ fontWeight: 700, color: t.textPrimary, marginBottom: 10 }}>
-                  @{incomingNames[row.sender_id] ?? "…"}
+            {incoming.map((row) => {
+              const peer = incomingPeers[row.sender_id];
+              const label = publicProfileLabel({
+                username: peer?.username ?? null,
+                name: peer?.name ?? null,
+              });
+              return (
+                <div key={row.id} style={{ ...dvListCard, flexDirection: "column", alignItems: "stretch" }}>
+                  <div style={{ marginBottom: 10 }}>
+                    <div style={{ fontWeight: 700, color: t.textPrimary }}>{label.primary}</div>
+                    {label.secondary ? (
+                      <div style={{ fontSize: 12, color: t.textMuted, marginTop: 4 }}>{label.secondary}</div>
+                    ) : null}
+                  </div>
+                  <div style={{ display: "flex", gap: 10 }}>
+                    <button
+                      type="button"
+                      disabled={busy}
+                      onClick={() => void handleRespond(row, "accepted")}
+                      style={{ ...dvPrimaryButton, flex: 1 }}
+                    >
+                      Accept
+                    </button>
+                    <button
+                      type="button"
+                      disabled={busy}
+                      onClick={() => void handleRespond(row, "rejected")}
+                      style={{ ...dvGhostButton, flex: 1 }}
+                    >
+                      Reject
+                    </button>
+                  </div>
                 </div>
-                <div style={{ display: "flex", gap: 10 }}>
-                  <button
-                    type="button"
-                    disabled={busy}
-                    onClick={() => void handleRespond(row, "accepted")}
-                    style={{ ...dvPrimaryButton, flex: 1 }}
-                  >
-                    Accept
-                  </button>
-                  <button
-                    type="button"
-                    disabled={busy}
-                    onClick={() => void handleRespond(row, "rejected")}
-                    style={{ ...dvGhostButton, flex: 1 }}
-                  >
-                    Reject
-                  </button>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
 
@@ -340,14 +382,24 @@ export default function FriendsPage() {
           <div style={{ display: "grid", gap: 10, marginBottom: 28 }}>
             {outgoing
               .filter((r) => r.status === "pending")
-              .map((row) => (
-                <div key={row.id} style={{ ...dvListCard, justifyContent: "space-between" }}>
-                  <span style={{ color: t.textPrimary, fontWeight: 600 }}>
-                    @{outgoingNames[row.receiver_id] ?? "…"}
-                  </span>
-                  <span style={{ color: t.orange300, fontSize: 12, fontWeight: 600 }}>Pending</span>
-                </div>
-              ))}
+              .map((row) => {
+                const peer = outgoingPeers[row.receiver_id];
+                const label = publicProfileLabel({
+                  username: peer?.username ?? null,
+                  name: peer?.name ?? null,
+                });
+                return (
+                  <div key={row.id} style={{ ...dvListCard, justifyContent: "space-between", alignItems: "center" }}>
+                    <div style={{ minWidth: 0 }}>
+                      <div style={{ color: t.textPrimary, fontWeight: 600 }}>{label.primary}</div>
+                      {label.secondary ? (
+                        <div style={{ fontSize: 12, color: t.textMuted, marginTop: 4 }}>{label.secondary}</div>
+                      ) : null}
+                    </div>
+                    <span style={{ color: t.orange300, fontSize: 12, fontWeight: 600, flexShrink: 0 }}>Pending</span>
+                  </div>
+                );
+              })}
           </div>
         )}
 
@@ -358,14 +410,22 @@ export default function FriendsPage() {
           <div style={{ display: "grid", gap: 10 }}>
             {friends.map((row) => {
               const oid = otherParticipantId(row, myId);
-              const un = friendNames[oid];
-              const label = un ? `@${un}` : "Collector";
-              const href = un ? `/user/${encodeURIComponent(un)}` : undefined;
+              const peer = friendPeers[oid];
+              const label = publicProfileLabel({
+                username: peer?.username ?? null,
+                name: peer?.name ?? null,
+              });
+              const href = label.handle ? `/user/${encodeURIComponent(label.handle)}` : undefined;
               const inner = (
                 <>
-                  <span style={{ fontWeight: 700 }}>{label}</span>
-                  <span style={{ color: t.textMuted, fontSize: 13 }}>
-                    {un ? "View collection →" : "…"}
+                  <div style={{ minWidth: 0 }}>
+                    <span style={{ fontWeight: 700 }}>{label.primary}</span>
+                    {label.secondary ? (
+                      <div style={{ fontSize: 12, color: t.textMuted, marginTop: 4 }}>{label.secondary}</div>
+                    ) : null}
+                  </div>
+                  <span style={{ color: t.textMuted, fontSize: 13, flexShrink: 0 }}>
+                    {href ? "View collection →" : "—"}
                   </span>
                 </>
               );

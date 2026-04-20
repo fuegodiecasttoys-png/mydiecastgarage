@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState, type CSSProperties } from "react";
 import { supabase } from "../lib/supabaseClient";
+import { isValidUsernameFormat, normalizeUsernameInput } from "../lib/profileUsername";
 import { useRouter } from "next/navigation";
 
 export default function SignupPage() {
@@ -19,7 +20,7 @@ export default function SignupPage() {
   const router = useRouter();
   async function handleSignup() {
     const cleanEmail = email.trim().toLowerCase();
-    const cleanUsername = username.trim().toLowerCase();
+    const cleanUsername = normalizeUsernameInput(username);
     const cleanName = name.trim();
     const cleanLastName = lastName.trim();
 
@@ -40,12 +41,17 @@ export default function SignupPage() {
       return;
     }
 
+    if (!isValidUsernameFormat(cleanUsername)) {
+      alert("Username unavailable");
+      return;
+    }
+
     setLoading(true);
 
     try {
       const { data: existingUser, error: usernameError } = await supabase
         .from("profiles")
-        .select("id")
+        .select("user_id")
         .eq("username", cleanUsername)
         .maybeSingle();
 
@@ -55,7 +61,7 @@ export default function SignupPage() {
       }
 
       if (existingUser) {
-        alert("That username is already taken.");
+        alert("Username already used");
         return;
       }
 

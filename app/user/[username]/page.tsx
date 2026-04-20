@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState, use } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "../../lib/supabaseClient";
 import { areFriends, fetchProfileByUsername } from "../../lib/friendQueries";
+import { isValidUsernameFormat, normalizeUsernameInput } from "../../lib/profileUsername";
 import { t } from "../../ui/dv-tokens";
 import {
   dvGhostButton,
@@ -70,13 +71,15 @@ export default function UserCollectionPage({
   params: Promise<{ username: string }>;
 }) {
   const { username: rawUsername } = use(params);
-  const username = decodeURIComponent(rawUsername).trim().toLowerCase();
+  const pathSlug = normalizeUsernameInput(decodeURIComponent(rawUsername));
   const router = useRouter();
 
   const [loading, setLoading] = useState(true);
   const [allowed, setAllowed] = useState(false);
+  const [badSlug, setBadSlug] = useState(false);
   const [notFound, setNotFound] = useState(false);
   const [ownerUsername, setOwnerUsername] = useState("");
+  const [ownerDisplayName, setOwnerDisplayName] = useState<string | null>(null);
   const [items, setItems] = useState<Item[]>([]);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("newest");
@@ -85,6 +88,23 @@ export default function UserCollectionPage({
   useEffect(() => {
     let cancelled = false;
     (async () => {
+      if (!isValidUsernameFormat(pathSlug)) {
+        if (!cancelled) {
+          setBadSlug(true);
+          setNotFound(false);
+          setAllowed(false);
+          setOwnerUsername("");
+          setOwnerDisplayName(null);
+          setLoading(false);
+        }
+        return;
+      }
+
+      if (!cancelled) {
+        setBadSlug(false);
+        setNotFound(false);
+      }
+
       const {
         data: { user },
       } = await supabase.auth.getUser();
@@ -93,18 +113,23 @@ export default function UserCollectionPage({
         return;
       }
 
-      const profile = await fetchProfileByUsername(supabase, username);
+      const profile = await fetchProfileByUsername(supabase, pathSlug);
       if (!profile) {
         if (!cancelled) {
+          setBadSlug(false);
           setNotFound(true);
           setAllowed(false);
           setOwnerUsername("");
+          setOwnerDisplayName(null);
           setLoading(false);
         }
         return;
       }
 
-      if (!cancelled) setOwnerUsername(profile.username);
+      if (!cancelled) {
+        setOwnerUsername(profile.username);
+        setOwnerDisplayName(profile.name);
+      }
 
       const ok = await areFriends(supabase, user.id, profile.user_id);
       if (!cancelled) {
@@ -134,7 +159,7 @@ export default function UserCollectionPage({
     return () => {
       cancelled = true;
     };
-  }, [username, router]);
+  }, [pathSlug, router]);
 
   const filteredItems = useMemo(() => {
     const text = search.toLowerCase().trim();
@@ -173,10 +198,21 @@ export default function UserCollectionPage({
     return <FullPageLoading label="Loading collection..." />;
   }
 
+  if (badSlug) {
+    return (
+      <div style={{ ...dvPageShell, padding: 24, textAlign: "center" }}>
+        <p style={{ color: t.textSecondary }}>Username unavailable</p>
+        <Link href="/friends" style={{ ...dvGhostButton, display: "inline-block", marginTop: 16 }}>
+          Back to Friends
+        </Link>
+      </div>
+    );
+  }
+
   if (notFound) {
     return (
       <div style={{ ...dvPageShell, padding: 24, textAlign: "center" }}>
-        <p style={{ color: t.textSecondary }}>User not found.</p>
+        <p style={{ color: t.textSecondary }}>No user with that username.</p>
         <Link href="/friends" style={{ ...dvGhostButton, display: "inline-block", marginTop: 16 }}>
           Back to Friends
         </Link>
@@ -189,7 +225,7 @@ export default function UserCollectionPage({
       <div style={{ ...dvPageShell, padding: 24, textAlign: "center" }}>
         <p style={{ color: t.textSecondary, maxWidth: 360, margin: "0 auto", lineHeight: 1.5 }}>
           {`You can only view this collection if you are friends (accepted) with @${
-            ownerUsername || username
+            ownerUsername || pathSlug
           }.`}
         </p>
         <Link href="/friends" style={{ ...dvGhostButton, display: "inline-block", marginTop: 16 }}>
@@ -199,8 +235,8 @@ export default function UserCollectionPage({
     );
   }
 
-  const encUser = encodeURIComponent(ownerUsername || username);
-  const displayUser = ownerUsername || username;
+  const encUser = encodeURIComponent(ownerUsername || pathSlug);
+  const displayUser = ownerUsername || pathSlug;
 
   return (
     <div style={{ ...dvPageShell, position: "relative", padding: 20 }}>
@@ -220,6 +256,9 @@ export default function UserCollectionPage({
         >
           @{displayUser}
         </h1>
+        {ownerDisplayName ? (
+          <p style={{ margin: "0 0 6px", color: t.textMuted, fontSize: 14 }}>{ownerDisplayName}</p>
+        ) : null}
         <p style={{ margin: "0 0 18px", color: t.textMuted, fontSize: 13 }}>Read-only collection</p>
 
         <div style={{ display: "flex", gap: 8, marginBottom: 10 }}>

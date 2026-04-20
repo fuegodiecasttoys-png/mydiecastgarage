@@ -5,6 +5,7 @@ import { useEffect, useState, use, type CSSProperties } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "../../../../lib/supabaseClient";
 import { areFriends, fetchProfileByUsername } from "../../../../lib/friendQueries";
+import { isValidUsernameFormat, normalizeUsernameInput } from "../../../../lib/profileUsername";
 import { t } from "../../../../ui/dv-tokens";
 import { dvGhostButton, dvPageShell, dvDisplayFont } from "../../../../ui/dv-visual";
 import { FullPageLoading } from "../../../../components/FullPageLoading";
@@ -69,19 +70,37 @@ export default function UserCarReadOnlyPage({
   params: Promise<{ username: string; id: string }>;
 }) {
   const { username: rawUsername, id: rawId } = use(params);
-  const username = decodeURIComponent(rawUsername).trim().toLowerCase();
+  const pathSlug = normalizeUsernameInput(decodeURIComponent(rawUsername));
   const router = useRouter();
 
   const [loading, setLoading] = useState(true);
   const [item, setItem] = useState<Item | null>(null);
   const [allowed, setAllowed] = useState(false);
+  const [badSlug, setBadSlug] = useState(false);
   const [notFoundUser, setNotFoundUser] = useState(false);
   const [showImageModal, setShowImageModal] = useState(false);
   const [ownerUsername, setOwnerUsername] = useState<string>("");
+  const [ownerDisplayName, setOwnerDisplayName] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
+      if (!isValidUsernameFormat(pathSlug)) {
+        if (!cancelled) {
+          setBadSlug(true);
+          setNotFoundUser(false);
+          setOwnerUsername("");
+          setOwnerDisplayName(null);
+          setLoading(false);
+        }
+        return;
+      }
+
+      if (!cancelled) {
+        setBadSlug(false);
+        setNotFoundUser(false);
+      }
+
       const {
         data: { user },
       } = await supabase.auth.getUser();
@@ -90,16 +109,21 @@ export default function UserCarReadOnlyPage({
         return;
       }
 
-      const profile = await fetchProfileByUsername(supabase, username);
+      const profile = await fetchProfileByUsername(supabase, pathSlug);
       if (!profile) {
         if (!cancelled) {
           setNotFoundUser(true);
+          setOwnerUsername("");
+          setOwnerDisplayName(null);
           setLoading(false);
         }
         return;
       }
 
-      if (!cancelled) setOwnerUsername(profile.username);
+      if (!cancelled) {
+        setOwnerUsername(profile.username);
+        setOwnerDisplayName(profile.name);
+      }
 
       const ok = await areFriends(supabase, user.id, profile.user_id);
       if (!cancelled) {
@@ -135,16 +159,27 @@ export default function UserCarReadOnlyPage({
     return () => {
       cancelled = true;
     };
-  }, [username, rawId, router]);
+  }, [pathSlug, rawId, router]);
 
   if (loading) {
     return <FullPageLoading label="Loading diecast..." />;
   }
 
+  if (badSlug) {
+    return (
+      <div style={{ ...dvPageShell, padding: 24, textAlign: "center" }}>
+        <p style={{ color: t.textSecondary }}>Username unavailable</p>
+        <Link href="/friends" style={{ ...dvGhostButton, display: "inline-block", marginTop: 16 }}>
+          Friends
+        </Link>
+      </div>
+    );
+  }
+
   if (notFoundUser) {
     return (
       <div style={{ ...dvPageShell, padding: 24, textAlign: "center" }}>
-        <p style={{ color: t.textSecondary }}>User not found.</p>
+        <p style={{ color: t.textSecondary }}>No user with that username.</p>
         <Link href="/friends" style={{ ...dvGhostButton, display: "inline-block", marginTop: 16 }}>
           Friends
         </Link>
@@ -156,7 +191,7 @@ export default function UserCarReadOnlyPage({
     return (
       <div style={{ ...dvPageShell, padding: 24, textAlign: "center" }}>
         <p style={{ color: t.textSecondary, maxWidth: 360, margin: "0 auto", lineHeight: 1.5 }}>
-          You can only view this car if you are friends with @{username}.
+          You can only view this car if you are friends with @{ownerUsername || pathSlug}.
         </p>
         <Link href="/friends" style={{ ...dvGhostButton, display: "inline-block", marginTop: 16 }}>
           Friends
@@ -170,7 +205,7 @@ export default function UserCarReadOnlyPage({
       <div style={{ ...dvPageShell, padding: 24, textAlign: "center" }}>
         <p style={{ color: t.textSecondary }}>This model is not in their garage.</p>
         <Link
-          href={`/user/${encodeURIComponent(ownerUsername || username)}`}
+          href={`/user/${encodeURIComponent(ownerUsername || pathSlug)}`}
           style={{ ...dvGhostButton, display: "inline-block", marginTop: 16 }}
         >
           ← Collection
@@ -179,7 +214,7 @@ export default function UserCarReadOnlyPage({
     );
   }
 
-  const enc = encodeURIComponent(ownerUsername || username);
+  const enc = encodeURIComponent(ownerUsername || pathSlug);
   const backHref = `/user/${enc}`;
 
   return (
@@ -213,8 +248,16 @@ export default function UserCarReadOnlyPage({
           </span>
         </div>
 
-        <p style={{ margin: "0 0 16px", fontSize: 13, color: t.textMuted }}>
-          @{ownerUsername || username}&apos;s collection
+        <p style={{ margin: "0 0 16px", fontSize: 13, color: t.textMuted, lineHeight: 1.45 }}>
+          <span style={{ fontWeight: 600 }}>@{ownerUsername || pathSlug}</span>
+          {ownerDisplayName ? (
+            <>
+              <br />
+              <span>{ownerDisplayName}</span>
+            </>
+          ) : null}
+          <br />
+          <span style={{ opacity: 0.85 }}>Read-only</span>
         </p>
 
         <div
