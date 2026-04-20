@@ -1,22 +1,11 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 
-/** Client-side rules; keep aligned with Supabase Auth password policy in dashboard. */
-
-export const PASSWORD_RULES_SUMMARY =
-  "At least 8 characters, with uppercase, lowercase, and a number.";
+/** Shown under the password field on signup. */
+export const PASSWORD_RULES_SUMMARY = "At least 6 characters.";
 
 export function validateSignupPassword(password: string): { ok: true } | { ok: false; message: string } {
-  if (password.length < 8) {
-    return { ok: false, message: "Password must be at least 8 characters." };
-  }
-  if (!/[a-z]/.test(password)) {
-    return { ok: false, message: "Password must include a lowercase letter." };
-  }
-  if (!/[A-Z]/.test(password)) {
-    return { ok: false, message: "Password must include an uppercase letter." };
-  }
-  if (!/[0-9]/.test(password)) {
-    return { ok: false, message: "Password must include a number." };
+  if (password.length < 6) {
+    return { ok: false, message: "Password must be at least 6 characters." };
   }
   return { ok: true };
 }
