@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type CSSProperties } from "react";
+import { useCallback, useEffect, useState, type CSSProperties } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "./lib/supabaseClient";
 import { FullPageLoading } from "./components/FullPageLoading";
@@ -35,7 +35,31 @@ const rowCardBase = dvRowCardBase;
 export default function Home() {
   const router = useRouter();
   const [checkingAuth, setCheckingAuth] = useState(true);
+  const [userId, setUserId] = useState<string | null>(null);
   const [garageCount, setGarageCount] = useState(0);
+  const [garageCountError, setGarageCountError] = useState<string | null>(null);
+  const [garageCountRetrying, setGarageCountRetrying] = useState(false);
+
+  const fetchGarageCount = useCallback(async (uid: string) => {
+    setGarageCountRetrying(true);
+    setGarageCountError(null);
+    const { count, error } = await supabase
+      .from("items")
+      .select("*", { count: "exact", head: true })
+      .eq("user_id", uid);
+
+    setGarageCountRetrying(false);
+
+    if (error) {
+      setGarageCountError(error.message || "Could not load your collection.");
+      return;
+    }
+    if (count === null) {
+      setGarageCountError("Could not load your collection.");
+      return;
+    }
+    setGarageCount(count);
+  }, []);
 
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
@@ -58,22 +82,13 @@ export default function Home() {
         return;
       }
 
-      const { count, error } = await supabase
-        .from("items")
-        .select("*", { count: "exact", head: true })
-        .eq("user_id", data.user.id);
-
-      if (!error && count !== null) {
-        setGarageCount(count);
-      } else {
-        setGarageCount(0);
-      }
-
+      setUserId(data.user.id);
+      await fetchGarageCount(data.user.id);
       setCheckingAuth(false);
     }
 
     void checkUser();
-  }, [router]);
+  }, [router, fetchGarageCount]);
 
   if (checkingAuth) {
     return <FullPageLoading label="Loading your garage..." />;
@@ -233,6 +248,34 @@ export default function Home() {
           </button>
         </div>
 
+        {garageCountError ? (
+          <div
+            style={{
+              marginBottom: 12,
+              padding: "12px 14px",
+              borderRadius: t.radiusMd,
+              border: "1px solid rgba(248,113,113,0.35)",
+              background: "rgba(248,113,113,0.08)",
+              boxSizing: "border-box",
+            }}
+          >
+            <p style={{ margin: "0 0 6px", fontSize: 13, fontWeight: 700, color: "rgba(248,113,113,0.95)", lineHeight: 1.4 }}>
+              Couldn&apos;t load your garage count.
+            </p>
+            <p style={{ margin: "0 0 12px", fontSize: 12, lineHeight: 1.45, color: t.textMuted }}>{garageCountError}</p>
+            <button
+              type="button"
+              disabled={garageCountRetrying || !userId}
+              onClick={() => {
+                if (userId) void fetchGarageCount(userId);
+              }}
+              style={{ ...dvGhostButton, fontSize: 13 }}
+            >
+              {garageCountRetrying ? "Retrying…" : "Retry"}
+            </button>
+          </div>
+        ) : null}
+
         {/* My Garage — primary */}
         <button
           type="button"
@@ -258,12 +301,12 @@ export default function Home() {
             </div>
             <div style={{ marginBottom: 8 }}>
               <AccentBadge>
-                {garageCount > 0 ? (
+                {garageCountError ? null : garageCount > 0 ? (
                   <span style={{ fontSize: 11, opacity: 0.95 }} aria-hidden>
                     📦
                   </span>
                 ) : null}
-                {garageCountLabel(garageCount)}
+                {garageCountError ? "Count unavailable" : garageCountLabel(garageCount)}
               </AccentBadge>
             </div>
             <div
@@ -274,7 +317,7 @@ export default function Home() {
                 lineHeight: 1.35,
               }}
             >
-              View your collection
+              {garageCountError ? "You can still open your collection below." : "View your collection"}
             </div>
           </div>
           <span style={{ ...chevronStyle, color: t.orange400 }} aria-hidden>
