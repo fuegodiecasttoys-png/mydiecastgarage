@@ -12,6 +12,13 @@ import { useRouter } from "next/navigation"
 import { supabase } from "../lib/supabaseClient"
 import { BRANDS, COLORS } from "../lib/constants"
 import { FullPageLoading } from "../components/FullPageLoading"
+import { t } from "../ui/dv-tokens"
+import {
+  dvPageShell,
+  dvInput,
+  dvPrimaryButton,
+  dvPrimaryButtonDisabled,
+} from "../ui/dv-visual"
 
 const SCALE_OPTIONS = [
   "1:64",
@@ -23,48 +30,18 @@ const SCALE_OPTIONS = [
   "Other",
 ]
 
-const pageStyle: CSSProperties = {
-  minHeight: "100vh",
-  background: "#0f0f0f",
-  color: "#fff",
-  fontFamily: "system-ui",
-  padding: 20,
-}
+const pageStyle: CSSProperties = { ...dvPageShell, padding: 20 }
 
 const containerStyle: CSSProperties = {
   maxWidth: 520,
   margin: "0 auto",
 }
 
-const inputStyle: CSSProperties = {
-  width: "100%",
-  padding: "12px 14px",
-  borderRadius: 12,
-  border: "1px solid rgba(255,255,255,0.12)",
-  background: "#171717",
-  color: "#fff",
-  fontSize: 15,
-  outline: "none",
-  boxSizing: "border-box",
-}
+const inputStyle: CSSProperties = dvInput
 
-const buttonStyle: CSSProperties = {
-  width: "100%",
-  padding: "14px 16px",
-  borderRadius: 12,
-  border: "1px solid rgba(255,255,255,0.14)",
-  background: "rgba(59,130,246,0.35)",
-  color: "#fff",
-  cursor: "pointer",
-  fontSize: 16,
-  fontWeight: 700,
-}
+const buttonStyle: CSSProperties = dvPrimaryButton
 
-const disabledButtonStyle: CSSProperties = {
-  ...buttonStyle,
-  background: "rgba(255,255,255,0.08)",
-  cursor: "not-allowed",
-}
+const disabledButtonStyle: CSSProperties = dvPrimaryButtonDisabled
 
 async function compressImage(file: File) {
   return new Promise<File>((resolve) => {
@@ -610,7 +587,7 @@ export default function CapturePage() {
                     top: "calc(100% + 6px)",
                     left: 0,
                     right: 0,
-                    background: "#111",
+                    background: t.bgSecondary,
                     border: "1px solid rgba(255,255,255,0.1)",
                     borderRadius: 10,
                     maxHeight: 180,
@@ -647,7 +624,7 @@ export default function CapturePage() {
                 <option
                   key={option}
                   value={option}
-                  style={{ background: "#171717", color: "#fff" }}
+                  style={{ background: t.surface, color: t.textPrimary }}
                 >
                   {option}
                 </option>
@@ -691,7 +668,7 @@ export default function CapturePage() {
                   padding: "12px 14px",
                   borderRadius: 12,
                   border: "1px solid rgba(255,255,255,0.12)",
-                  background: "#171717",
+                  background: t.surface,
                 }}
               >
                 <input
@@ -711,7 +688,7 @@ export default function CapturePage() {
                   padding: "12px 14px",
                   borderRadius: 12,
                   border: "1px solid rgba(255,255,255,0.12)",
-                  background: "#171717",
+                  background: t.surface,
                 }}
               >
                 <input
@@ -731,7 +708,7 @@ export default function CapturePage() {
                   padding: "12px 14px",
                   borderRadius: 12,
                   border: "1px solid rgba(255,255,255,0.12)",
-                  background: "#171717",
+                  background: t.surface,
                 }}
               >
                 <input

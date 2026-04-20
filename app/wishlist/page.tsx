@@ -4,6 +4,14 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "../lib/supabaseClient";
 import Link from "next/link";
+import { t } from "../ui/dv-tokens";
+import {
+  dvGhostButton,
+  dvListCard,
+  dvPageShell,
+  dvInput,
+  dvSelect,
+} from "../ui/dv-visual";
 
 
 type WishlistItem = {
@@ -142,37 +150,32 @@ export default function WishlistPage() {
   const priorityBadge = (priority: WishlistItem["priority"]) => {
     if (priority === "high") {
       return {
-        label: "🔴 High",
-        bg: "rgba(255,0,0,0.16)",
-        border: "1px solid rgba(255,0,0,0.35)",
+        label: "High",
+        bg: "rgba(255,106,0,0.18)",
+        border: "1px solid rgba(255,106,0,0.42)",
+        color: t.orange300,
       };
     }
 
     if (priority === "low") {
       return {
-        label: "🟢 Low",
-        bg: "rgba(50,205,50,0.16)",
-        border: "1px solid rgba(50,205,50,0.35)",
+        label: "Low",
+        bg: "rgba(255,255,255,0.04)",
+        border: `1px solid ${t.borderSubtle}`,
+        color: t.textMuted,
       };
     }
 
     return {
-      label: "🟡 Medium",
-      bg: "rgba(255,215,0,0.16)",
-      border: "1px solid rgba(255,215,0,0.35)",
+      label: "Medium",
+      bg: "rgba(255,106,0,0.08)",
+      border: "1px solid rgba(255,106,0,0.22)",
+      color: t.textSecondary,
     };
   };
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: "#0f0f0f",
-        padding: 20,
-        color: "#fff",
-        fontFamily: 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
-      }}
-    >
+    <div style={{ ...dvPageShell, position: "relative", padding: 20 }}>
       <Link
   href="/"
   style={{
@@ -180,7 +183,7 @@ export default function WishlistPage() {
     top: 20,
     left: 20,
     textDecoration: "none",
-    color: "white",
+    color: t.textPrimary,
     fontSize: 20,
     zIndex: 10,
   }}
@@ -211,6 +214,7 @@ export default function WishlistPage() {
               fontSize: 28,
               margin: "10px 0 4px 0",
               fontWeight: 800,
+              color: t.textPrimary,
             }}
           >
             ⭐ My Wishlist
@@ -229,28 +233,19 @@ export default function WishlistPage() {
               placeholder="Search your wishlist..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              style={{
-                flex: 1,
-                padding: "10px 12px",
-                borderRadius: 8,
-                border: "1px solid #333",
-                background: "#111",
-                color: "white",
-                fontSize: 14,
-                boxSizing: "border-box",
-              }}
+              style={{ ...dvInput, flex: 1, width: "auto", padding: "10px 12px", fontSize: 14 }}
             />
 
             <button
               type="button"
               style={{
+                ...dvGhostButton,
                 width: 44,
-                borderRadius: 8,
-                border: "1px solid rgba(255,255,255,0.2)",
-                background: "rgba(255,255,255,0.05)",
-                color: "white",
+                padding: 0,
+                display: "grid",
+                placeItems: "center",
+                borderRadius: 12,
                 fontSize: 16,
-                cursor: "pointer",
               }}
             >
               🔎
@@ -260,16 +255,7 @@ export default function WishlistPage() {
           <select
             value={sort}
             onChange={(e) => setSort(e.target.value)}
-            style={{
-              width: "100%",
-              padding: "10px",
-              marginBottom: 10,
-              borderRadius: 8,
-              border: "1px solid #333",
-              background: "#111",
-              color: "white",
-              fontSize: 14,
-            }}
+            style={{ ...dvSelect, marginBottom: 10 }}
           >
             <option value="newest">Newest</option>
             <option value="oldest">Oldest</option>
@@ -280,16 +266,9 @@ export default function WishlistPage() {
 
           <div style={{ marginTop: 10, marginBottom: 10 }}>
             <button
+              type="button"
               onClick={() => router.push("/wishlist/add")}
-              style={{
-                padding: "8px 14px",
-                borderRadius: 8,
-                border: "1px solid rgba(255,255,255,0.2)",
-                background: "rgba(255,255,255,0.05)",
-                color: "white",
-                fontSize: 13,
-                cursor: "pointer",
-              }}
+              style={{ ...dvGhostButton, borderRadius: 12 }}
             >
               + Add
             </button>
@@ -297,7 +276,7 @@ export default function WishlistPage() {
 
           <div
             style={{
-              opacity: 0.72,
+              color: t.textSecondary,
               fontSize: 16,
               fontWeight: 600,
             }}
@@ -362,15 +341,8 @@ export default function WishlistPage() {
 >
                     <div
                       style={{
-                        display: "flex",
-                        gap: 12,
-                        alignItems: "center",
+                        ...dvListCard,
                         padding: 10,
-                        borderRadius: 16,
-                        background:
-                          "linear-gradient(180deg, #171717 0%, #101010 100%)",
-                        border: "1px solid rgba(255,255,255,0.08)",
-                        position: "relative",
                       }}
                     >
                       <div
@@ -380,11 +352,11 @@ export default function WishlistPage() {
                           borderRadius: 14,
                           overflow: "hidden",
                           flexShrink: 0,
-                          background: "#222",
+                          background: t.bgSecondary,
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
-                          border: "1px solid rgba(255,255,255,0.08)",
+                          border: `1px solid ${t.borderSubtle}`,
                         }}
                       >
                         {item.photo_url ? (
@@ -461,6 +433,7 @@ export default function WishlistPage() {
                           borderRadius: 10,
                           background: badge.bg,
                           border: badge.border,
+                          color: badge.color,
                         }}
                       >
                         {badge.label}
@@ -481,36 +454,34 @@ export default function WishlistPage() {
                 }}
               >
                 <button
+                  type="button"
                   onClick={() => setPage((p) => Math.max(p - 1, 1))}
                   disabled={page === 1}
                   style={{
+                    ...dvGhostButton,
                     padding: "6px 12px",
-                    borderRadius: 6,
-                    border: "1px solid #333",
-                    background: "#111",
-                    color: "white",
+                    borderRadius: 10,
                     opacity: page === 1 ? 0.4 : 1,
-                    cursor: "pointer",
+                    cursor: page === 1 ? "not-allowed" : "pointer",
                   }}
                 >
                   ⬅️
                 </button>
 
-                <span style={{ alignSelf: "center", fontSize: 14 }}>
+                <span style={{ alignSelf: "center", fontSize: 14, color: t.textSecondary }}>
                   {page} / {totalPages}
                 </span>
 
                 <button
+                  type="button"
                   onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
                   disabled={page === totalPages}
                   style={{
+                    ...dvGhostButton,
                     padding: "6px 12px",
-                    borderRadius: 6,
-                    border: "1px solid #333",
-                    background: "#111",
-                    color: "white",
+                    borderRadius: 10,
                     opacity: page === totalPages ? 0.4 : 1,
-                    cursor: "pointer",
+                    cursor: page === totalPages ? "not-allowed" : "pointer",
                   }}
                 >
                   ➡️

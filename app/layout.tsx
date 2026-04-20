@@ -1,6 +1,20 @@
 // app/layout.tsx
 import "./globals.css";
 import type { Metadata } from "next";
+import { Inter, Inter_Tight } from "next/font/google";
+import { t } from "./ui/dv-tokens";
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--dv-font-body",
+  display: "swap",
+});
+
+const interTight = Inter_Tight({
+  subsets: ["latin"],
+  variable: "--dv-font-display",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "Diecast Vault",
@@ -13,22 +27,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${inter.variable} ${interTight.variable}`}>
       <body
         style={{
           margin: 0,
           minHeight: "100vh",
-          background: "#0F0F10",
-          color: "#ffffff",
-          fontFamily:
-            'system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji"',
+          background:
+            "linear-gradient(180deg, #0B1018 0%, #090D14 32%, #07090D 62%, #050608 100%)",
+          color: t.textPrimary,
+          fontFamily: `var(--dv-font-body), system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji"`,
           display: "flex",
           flexDirection: "column",
         }}
       >
-        
-
-        {/* CONTENT (centrado tipo mobile) */}
         <main
           style={{
             width: "100%",

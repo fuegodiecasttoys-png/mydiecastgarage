@@ -1,21 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { Inter, Inter_Tight } from "next/font/google";
-import type { CSSProperties, ReactNode } from "react";
+import type { CSSProperties } from "react";
 import { t } from "./tokens";
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--exp-font-body",
-  display: "swap",
-});
-
-const interTight = Inter_Tight({
-  subsets: ["latin"],
-  variable: "--exp-font-display",
-  display: "swap",
-});
+import { IconCircle } from "../ui/IconCircle";
+import { dvBodyFont, dvDisplayFont } from "../ui/dv-visual";
 
 const MOCK_GARAGE_COUNT = 12;
 const MOCK_WISHLIST_COUNT = 5;
@@ -33,11 +22,11 @@ function wishlistLabel(count: number) {
 }
 
 const fontVars: CSSProperties = {
-  fontFamily: `var(--exp-font-body), system-ui, sans-serif`,
+  fontFamily: dvBodyFont,
   color: t.textPrimary,
 };
 
-const displayFont = `var(--exp-font-display), var(--exp-font-body), system-ui, sans-serif`;
+const displayFont = dvDisplayFont;
 
 /** Subtle orange system for secondary/tertiary cards (My Garage stays stronger). */
 const expOrangeBorderSubtle = "rgba(255,106,0,0.25)";
@@ -51,64 +40,6 @@ const expQuickBoxShadow =
 const expQuickBoxShadowHover =
   "0 0 0 1px rgba(255,106,0,0.13), 0 12px 34px rgba(255,106,0,0.09)";
 const expQuickIconColor = "rgba(255,129,36,0.8)";
-
-function IconFrame({
-  children,
-  variant,
-}: {
-  children: ReactNode;
-  variant: "accent" | "neutral" | "muted" | "orangeSubtle" | "orangeQuick";
-}) {
-  const ring =
-    variant === "accent"
-      ? {
-          border: `1px solid ${t.borderMedium}`,
-          bg: `linear-gradient(160deg, ${t.surfaceElevated} 0%, ${t.surface} 100%)`,
-          glow: "0 8px 22px rgba(0,0,0,0.42)",
-        }
-      : variant === "orangeSubtle"
-        ? {
-            border: `1px solid ${expOrangeBorderSubtle}`,
-            bg: `linear-gradient(165deg, ${t.surfaceElevated} 0%, ${t.surface} 100%)`,
-            glow: `0 0 22px ${expOrangeGlowSubtle}`,
-          }
-        : variant === "orangeQuick"
-          ? {
-              border: "1px solid rgba(255,106,0,0.14)",
-              bg: `linear-gradient(165deg, rgba(255,106,0,0.07) 0%, rgba(18,23,34,0.92) 42%, ${t.surface} 100%)`,
-              glow: "0 0 18px rgba(255,106,0,0.05)",
-            }
-        : variant === "muted"
-          ? {
-              border: `1px dashed ${t.borderMedium}`,
-              bg: t.bgSecondary,
-              glow: "none",
-            }
-          : {
-              border: `1px solid ${t.borderSubtle}`,
-              bg: `linear-gradient(165deg, ${t.surfaceElevated} 0%, ${t.surface} 100%)`,
-              glow: "0 8px 22px rgba(0,0,0,0.35)",
-            };
-
-  return (
-    <div
-      aria-hidden
-      style={{
-        width: 48,
-        height: 48,
-        borderRadius: 14,
-        display: "grid",
-        placeItems: "center",
-        flexShrink: 0,
-        background: ring.bg,
-        border: ring.border,
-        boxShadow: `${ring.glow === "none" ? "" : `${ring.glow}, `}inset 0 1px 0 rgba(255,255,255,0.06)`,
-      }}
-    >
-      {children}
-    </div>
-  );
-}
 
 function IconPacked() {
   return (
@@ -289,7 +220,6 @@ export default function ExperimentPage() {
 
   return (
     <div
-      className={`${inter.variable} ${interTight.variable}`}
       style={{
         ...fontVars,
         minHeight: "100vh",
@@ -400,9 +330,9 @@ export default function ExperimentPage() {
             }}
           >
             <div style={{ display: "flex", justifyContent: "center", marginBottom: 10 }}>
-              <IconFrame variant="orangeQuick">
+              <IconCircle variant="orangeQuick">
                 <IconPacked />
-              </IconFrame>
+              </IconCircle>
             </div>
             <div
               style={{
@@ -434,9 +364,9 @@ export default function ExperimentPage() {
             }}
           >
             <div style={{ display: "flex", justifyContent: "center", marginBottom: 10 }}>
-              <IconFrame variant="orangeQuick">
+              <IconCircle variant="orangeQuick">
                 <IconLoose />
-              </IconFrame>
+              </IconCircle>
             </div>
             <div
               style={{
@@ -483,9 +413,9 @@ export default function ExperimentPage() {
                 justifyContent: "flex-start",
               }}
             >
-              <IconFrame variant="accent">
+              <IconCircle variant="accent">
                 <IconGarage />
-              </IconFrame>
+              </IconCircle>
             </div>
             <div
               style={{
@@ -584,9 +514,9 @@ export default function ExperimentPage() {
             e.currentTarget.style.transform = "translateY(0)";
           }}
         >
-          <IconFrame variant="orangeSubtle">
+          <IconCircle variant="orangeSubtle">
             <IconWishlist />
-          </IconFrame>
+          </IconCircle>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div
               style={{
@@ -643,9 +573,9 @@ export default function ExperimentPage() {
           role="group"
           aria-label="Add friends — coming soon"
         >
-          <IconFrame variant="orangeSubtle">
+          <IconCircle variant="orangeSubtle">
             <IconFriends />
-          </IconFrame>
+          </IconCircle>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
               <h3
@@ -693,9 +623,9 @@ export default function ExperimentPage() {
             e.currentTarget.style.transform = "translateY(0)";
           }}
         >
-          <IconFrame variant="orangeSubtle">
+          <IconCircle variant="orangeSubtle">
             <IconHowTo />
-          </IconFrame>
+          </IconCircle>
           <div style={{ flex: 1, minWidth: 0 }}>
             <h3
               style={{

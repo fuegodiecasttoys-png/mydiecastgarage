@@ -4,6 +4,15 @@ import Link from "next/link"
 import { useEffect, useMemo, useState } from "react"
 import { supabase } from "../lib/supabaseClient"
 import { useRouter } from "next/navigation"
+import { t } from "../ui/dv-tokens"
+import {
+  dvGhostButton,
+  dvImageThumb,
+  dvListCard,
+  dvPageShell,
+  dvInput,
+  dvSelect,
+} from "../ui/dv-visual"
 
 
 type Item = {
@@ -25,13 +34,7 @@ type Item = {
   chase: boolean | null
 }
 
-const pageStyle = {
-  minHeight: "100vh",
-  background: "#0f0f0f",
-  padding: 20,
-  color: "#fff",
-  fontFamily: 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
-} as const
+const pageStyle = { ...dvPageShell, position: "relative" as const, padding: 20 }
 
 const containerStyle = {
   maxWidth: 520,
@@ -44,78 +47,29 @@ const homeLinkStyle = {
   left: 20,
   fontSize: 20,
   textDecoration: "none",
-  color: "white",
+  color: t.textPrimary,
   zIndex: 10,
 } as const
 
-const searchInputStyle = {
-  flex: 1,
-  padding: "10px 12px",
-  borderRadius: 8,
-  border: "1px solid #333",
-  background: "#111",
-  color: "white",
-  fontSize: 14,
-  boxSizing: "border-box" as const,
-} as const
+const searchInputStyle = { ...dvInput, flex: 1, width: "auto", padding: "10px 12px", fontSize: 14 }
 
 const searchButtonStyle = {
+  ...dvGhostButton,
   width: 44,
-  borderRadius: 8,
-  border: "1px solid rgba(255,255,255,0.2)",
-  background: "rgba(255,255,255,0.05)",
-  color: "white",
+  padding: 0,
+  display: "grid",
+  placeItems: "center",
+  borderRadius: 12,
   fontSize: 16,
-  cursor: "pointer",
 } as const
 
-const sortSelectStyle = {
-  width: "100%",
-  padding: "10px",
-  marginBottom: 10,
-  borderRadius: 8,
-  border: "1px solid #333",
-  background: "#111",
-  color: "white",
-  fontSize: 14,
-} as const
+const sortSelectStyle = { ...dvSelect, marginBottom: 10 }
 
-const exportButtonStyle = {
-  padding: "8px 14px",
-  borderRadius: 8,
-  border: "1px solid rgba(255,255,255,0.2)",
-  background: "rgba(255,255,255,0.05)",
-  color: "white",
-  fontSize: 13,
-  cursor: "pointer",
-} as const
+const exportButtonStyle = { ...dvGhostButton, borderRadius: 12 }
 
-const cardStyle = {
-  display: "flex",
-  gap: 12,
-  alignItems: "center",
-  padding: 12,
-  borderRadius: 18,
-  background: "linear-gradient(180deg, #1a1a1a 0%, #0f0f0f 100%)",
-  border: "1px solid rgba(255,255,255,0.08)",
-  position: "relative" as const,
-  boxShadow: "0 10px 30px rgba(0,0,0,0.4)",
-  transition: "all 0.2s ease",
-} as const
+const cardStyle = { ...dvListCard, transition: "all 0.2s ease" as const }
 
-const imageWrapStyle = {
-  width: 70,
-  height: 70,
-  borderRadius: 16,
-  overflow: "hidden",
-  flexShrink: 0,
-  background: "#111",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  border: "1px solid rgba(255,255,255,0.10)",
-  boxShadow: "0 6px 18px rgba(0,0,0,0.5)",
-} as const
+const imageWrapStyle = { ...dvImageThumb }
 
 function escapeCsvCell(value: string | number | boolean | null | undefined) {
   if (value === null || value === undefined) return ""
@@ -164,8 +118,9 @@ const scaleBadgeStyle = {
   fontWeight: 600,
   padding: "4px 10px",
   borderRadius: 10,
-  border: "1px solid rgba(255,255,255,0.18)",
-  background: "rgba(255,255,255,0.04)",
+  border: "1px solid rgba(255,106,0,0.25)",
+  background: "rgba(255,106,0,0.08)",
+  color: t.textSecondary,
 } as const
 
 export default function MyGarage() {
@@ -264,6 +219,7 @@ export default function MyGarage() {
               fontSize: 28,
               margin: "10px 0 4px 0",
               fontWeight: 800,
+              color: t.textPrimary,
             }}
           >
             My Garage
@@ -316,19 +272,18 @@ export default function MyGarage() {
               Export CSV
             </button>
             <button
-  onClick={() => router.push("/favorites")}
-  style={{
-    padding: "8px 14px",
-    borderRadius: 999,
-    border: "1px solid rgba(250,204,21,0.3)",
-    background: "rgba(250,204,21,0.08)",
-    color: "#facc15",
-    fontWeight: 700,
-    cursor: "pointer",
-  }}
->
-  ⭐ Favorites
-</button>
+              type="button"
+              onClick={() => router.push("/favorites")}
+              style={{
+                ...dvGhostButton,
+                borderRadius: 999,
+                border: "1px solid rgba(255,106,0,0.28)",
+                color: t.orange300,
+                fontWeight: 700,
+              }}
+            >
+              ⭐ Favorites
+            </button>
 
           </div>
         </div>
@@ -360,11 +315,12 @@ export default function MyGarage() {
                   {item.type === "packed" ? (
                     <span
                       style={{
-                        background: "#1e3a8a",
-                        color: "white",
+                        background: "rgba(255,106,0,0.14)",
+                        color: t.textPrimary,
                         padding: "4px 10px",
                         borderRadius: 8,
                         fontSize: 12,
+                        border: "1px solid rgba(255,106,0,0.28)",
                       }}
                     >
                       📦 Packed
@@ -372,14 +328,15 @@ export default function MyGarage() {
                   ) : (
                     <span
                       style={{
-                        background: "#065f46",
-                        color: "white",
+                        background: "rgba(255,255,255,0.05)",
+                        color: t.textSecondary,
                         padding: "4px 10px",
                         borderRadius: 8,
                         fontSize: 12,
+                        border: `1px solid ${t.borderSubtle}`,
                       }}
                     >
-                      🟢 Loose
+                      Loose
                     </span>
                   )}
                 </div>
@@ -546,14 +503,13 @@ export default function MyGarage() {
             }}
           >
             <button
+              type="button"
               onClick={() => setPage((p) => Math.max(p - 1, 1))}
               disabled={page === 1}
               style={{
+                ...dvGhostButton,
                 padding: "6px 12px",
-                borderRadius: 6,
-                border: "1px solid #333",
-                background: "#111",
-                color: "white",
+                borderRadius: 10,
                 opacity: page === 1 ? 0.4 : 1,
                 cursor: page === 1 ? "not-allowed" : "pointer",
               }}
@@ -561,19 +517,18 @@ export default function MyGarage() {
               ⬅️
             </button>
 
-            <span style={{ alignSelf: "center", fontSize: 14 }}>
+            <span style={{ alignSelf: "center", fontSize: 14, color: t.textSecondary }}>
               {page} / {totalPages}
             </span>
 
             <button
+              type="button"
               onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
               disabled={page === totalPages}
               style={{
+                ...dvGhostButton,
                 padding: "6px 12px",
-                borderRadius: 6,
-                border: "1px solid #333",
-                background: "#111",
-                color: "white",
+                borderRadius: 10,
                 opacity: page === totalPages ? 0.4 : 1,
                 cursor: page === totalPages ? "not-allowed" : "pointer",
               }}

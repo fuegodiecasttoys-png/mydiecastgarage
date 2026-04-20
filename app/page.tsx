@@ -1,43 +1,25 @@
 "use client";
 
-import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "./lib/supabaseClient";
 import { FullPageLoading } from "./components/FullPageLoading";
+import { AccentBadge } from "./ui/AccentBadge";
+import { IconCircle } from "./ui/IconCircle";
+import { t } from "./ui/dv-tokens";
+import {
+  dvDisplayFont,
+  dvGhostButton,
+  dvHeroRowCard,
+  dvPageShell,
+  dvQuickTile,
+  dvRowCardBase,
+} from "./ui/dv-visual";
 
 function garageCountLabel(count: number) {
   if (count === 0) return "No models yet";
   if (count === 1) return "1 model";
   return `${count} models`;
-}
-
-function IconCircle({
-  children,
-  bg,
-  border,
-}: {
-  children: ReactNode;
-  bg: string;
-  border: string;
-}) {
-  return (
-    <div
-      style={{
-        width: 46,
-        height: 46,
-        borderRadius: "50%",
-        background: bg,
-        border: `1px solid ${border}`,
-        display: "grid",
-        placeItems: "center",
-        fontSize: 22,
-        flexShrink: 0,
-        boxShadow: "0 4px 14px rgba(0,0,0,0.35)",
-      }}
-    >
-      {children}
-    </div>
-  );
 }
 
 const chevronStyle: CSSProperties = {
@@ -48,22 +30,7 @@ const chevronStyle: CSSProperties = {
   flexShrink: 0,
 };
 
-const rowCardBase: CSSProperties = {
-  width: "100%",
-  display: "flex",
-  alignItems: "center",
-  gap: 14,
-  padding: "16px 16px",
-  borderRadius: 16,
-  border: "1px solid rgba(255,255,255,0.08)",
-  background:
-    "linear-gradient(165deg, rgba(28,28,32,0.98) 0%, rgba(16,16,20,0.99) 100%)",
-  boxShadow: "0 8px 28px rgba(0,0,0,0.38), inset 0 1px 0 rgba(255,255,255,0.04)",
-  cursor: "pointer",
-  textAlign: "left",
-  color: "#fff",
-  WebkitTapHighlightColor: "transparent",
-};
+const rowCardBase = dvRowCardBase;
 
 export default function Home() {
   const router = useRouter();
@@ -113,18 +80,7 @@ export default function Home() {
   }
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        width: "100%",
-        background:
-          "radial-gradient(ellipse 120% 70% at 50% -8%, rgba(55,184,255,0.16) 0%, transparent 52%), radial-gradient(ellipse 90% 50% at 50% 100%, rgba(21,131,255,0.06) 0%, transparent 45%), linear-gradient(180deg, #07080c 0%, #05060a 40%, #040508 100%)",
-        padding: "20px 18px 32px",
-        fontFamily:
-          'system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
-        boxSizing: "border-box",
-      }}
-    >
+    <div style={dvPageShell}>
       <div
         style={{
           position: "relative",
@@ -136,18 +92,12 @@ export default function Home() {
           type="button"
           onClick={handleLogout}
           style={{
+            ...dvGhostButton,
             position: "absolute",
             top: 0,
             right: 0,
             zIndex: 2,
-            background: "rgba(255,255,255,0.04)",
-            border: "1px solid rgba(255,255,255,0.14)",
-            color: "rgba(255,255,255,0.88)",
-            padding: "7px 14px",
-            borderRadius: 999,
-            cursor: "pointer",
             fontSize: 12,
-            fontWeight: 600,
             letterSpacing: "0.02em",
           }}
         >
@@ -159,7 +109,7 @@ export default function Home() {
           <div
             style={{
               marginBottom: 14,
-              filter: "drop-shadow(0 0 20px rgba(55,184,255,0.35)) drop-shadow(0 6px 24px rgba(0,0,0,0.45))",
+              filter: "drop-shadow(0 0 14px rgba(255,106,0,0.12))",
             }}
           >
             <img
@@ -176,14 +126,13 @@ export default function Home() {
           <h1
             style={{
               margin: 0,
+              fontFamily: dvDisplayFont,
               fontSize: 13,
               fontWeight: 800,
               letterSpacing: "0.16em",
               textTransform: "uppercase",
               lineHeight: 1.45,
-              color: "#7dd3fc",
-              textShadow:
-                "0 0 28px rgba(56,189,248,0.4), 0 1px 0 rgba(0,0,0,0.35)",
+              color: t.textSecondary,
             }}
           >
             <span aria-hidden style={{ opacity: 0.4, letterSpacing: "0.08em" }}>
@@ -209,7 +158,7 @@ export default function Home() {
             type="button"
             onClick={() => router.push("/capture-packed")}
             style={{
-              ...rowCardBase,
+              ...dvQuickTile,
               flexDirection: "column",
               alignItems: "stretch",
               padding: "16px 12px 14px",
@@ -218,12 +167,7 @@ export default function Home() {
             }}
           >
             <div style={{ display: "flex", justifyContent: "center" }}>
-              <IconCircle
-                bg="rgba(59,130,246,0.22)"
-                border="rgba(96,165,250,0.45)"
-              >
-                📦
-              </IconCircle>
+              <IconCircle variant="orangeQuick">📦</IconCircle>
             </div>
             <div style={{ textAlign: "center" }}>
               <div
@@ -240,7 +184,7 @@ export default function Home() {
                 style={{
                   fontSize: 12,
                   fontWeight: 500,
-                  color: "rgba(255,255,255,0.52)",
+                  color: t.textMuted,
                   lineHeight: 1.35,
                 }}
               >
@@ -253,7 +197,7 @@ export default function Home() {
             type="button"
             onClick={() => router.push("/capture-loose")}
             style={{
-              ...rowCardBase,
+              ...dvQuickTile,
               flexDirection: "column",
               alignItems: "stretch",
               padding: "16px 12px 14px",
@@ -262,12 +206,7 @@ export default function Home() {
             }}
           >
             <div style={{ display: "flex", justifyContent: "center" }}>
-              <IconCircle
-                bg="rgba(59,130,246,0.22)"
-                border="rgba(96,165,250,0.45)"
-              >
-                🚗
-              </IconCircle>
+              <IconCircle variant="orangeQuick">🚗</IconCircle>
             </div>
             <div style={{ textAlign: "center" }}>
               <div
@@ -284,7 +223,7 @@ export default function Home() {
                 style={{
                   fontSize: 12,
                   fontWeight: 500,
-                  color: "rgba(255,255,255,0.52)",
+                  color: t.textMuted,
                   lineHeight: 1.35,
                 }}
               >
@@ -299,26 +238,16 @@ export default function Home() {
           type="button"
           onClick={() => router.push("/mygarage")}
           style={{
-            ...rowCardBase,
+            ...dvHeroRowCard,
             marginBottom: 12,
-            padding: "18px 16px",
-            border: "1px solid rgba(56,189,248,0.35)",
-            background:
-              "linear-gradient(165deg, rgba(24,32,44,0.98) 0%, rgba(14,18,28,0.99) 100%)",
-            boxShadow:
-              "0 0 0 1px rgba(14,165,233,0.08), 0 12px 40px rgba(0,0,0,0.45), 0 0 48px rgba(14,165,233,0.12), inset 0 1px 0 rgba(255,255,255,0.06)",
             minHeight: 120,
           }}
         >
-          <IconCircle
-            bg="rgba(14,165,233,0.28)"
-            border="rgba(56,189,248,0.5)"
-          >
-            🏠
-          </IconCircle>
+          <IconCircle variant="accent">🏠</IconCircle>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div
               style={{
+                fontFamily: dvDisplayFont,
                 fontSize: 17,
                 fontWeight: 800,
                 letterSpacing: "-0.02em",
@@ -327,42 +256,28 @@ export default function Home() {
             >
               My Garage
             </div>
-            <div
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 5,
-                padding: "4px 11px",
-                borderRadius: 999,
-                fontSize: 11,
-                fontWeight: 700,
-                letterSpacing: "0.02em",
-                color: "rgba(224,242,254,0.95)",
-                background: "rgba(14,165,233,0.22)",
-                border: "1px solid rgba(56,189,248,0.35)",
-                marginBottom: 8,
-                boxShadow: "0 2px 10px rgba(14,165,233,0.15)",
-              }}
-            >
-              {garageCount > 0 ? (
-                <span style={{ fontSize: 11, opacity: 0.95 }} aria-hidden>
-                  📦
-                </span>
-              ) : null}
-              {garageCountLabel(garageCount)}
+            <div style={{ marginBottom: 8 }}>
+              <AccentBadge>
+                {garageCount > 0 ? (
+                  <span style={{ fontSize: 11, opacity: 0.95 }} aria-hidden>
+                    📦
+                  </span>
+                ) : null}
+                {garageCountLabel(garageCount)}
+              </AccentBadge>
             </div>
             <div
               style={{
                 fontSize: 13,
                 fontWeight: 500,
-                color: "rgba(255,255,255,0.55)",
+                color: t.textSecondary,
                 lineHeight: 1.35,
               }}
             >
               View your collection
             </div>
           </div>
-          <span style={{ ...chevronStyle, color: "#38bdf8" }} aria-hidden>
+          <span style={{ ...chevronStyle, color: t.orange400 }} aria-hidden>
             ›
           </span>
         </button>
@@ -373,12 +288,7 @@ export default function Home() {
           onClick={() => router.push("/wishlist")}
           style={{ ...rowCardBase, marginBottom: 12 }}
         >
-          <IconCircle
-            bg="rgba(168,85,247,0.2)"
-            border="rgba(192,132,252,0.45)"
-          >
-            💜
-          </IconCircle>
+          <IconCircle variant="orangeSubtle">⭐</IconCircle>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div
               style={{
@@ -394,14 +304,14 @@ export default function Home() {
               style={{
                 fontSize: 12,
                 fontWeight: 500,
-                color: "rgba(255,255,255,0.52)",
+                color: t.textMuted,
                 lineHeight: 1.35,
               }}
             >
               Models you want next
             </div>
           </div>
-          <span style={{ ...chevronStyle, color: "#c084fc" }} aria-hidden>
+          <span style={{ ...chevronStyle, color: t.textMuted }} aria-hidden>
             ›
           </span>
         </button>
@@ -418,12 +328,7 @@ export default function Home() {
             pointerEvents: "none",
           }}
         >
-          <IconCircle
-            bg="rgba(34,197,94,0.16)"
-            border="rgba(74,222,128,0.35)"
-          >
-            👥
-          </IconCircle>
+          <IconCircle variant="muted">👥</IconCircle>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div
               style={{
@@ -431,7 +336,7 @@ export default function Home() {
                 fontWeight: 800,
                 marginBottom: 4,
                 letterSpacing: "-0.02em",
-                color: "rgba(255,255,255,0.92)",
+                color: t.textSecondary,
               }}
             >
               Add Friends
@@ -440,29 +345,16 @@ export default function Home() {
               style={{
                 fontSize: 12,
                 fontWeight: 500,
-                color: "rgba(255,255,255,0.45)",
+                color: t.textMuted,
                 lineHeight: 1.35,
               }}
             >
               Connect with collectors
             </div>
           </div>
-          <span
-            style={{
-              fontSize: 10,
-              fontWeight: 700,
-              letterSpacing: "0.06em",
-              textTransform: "uppercase",
-              padding: "6px 10px",
-              borderRadius: 999,
-              border: "1px solid rgba(74,222,128,0.45)",
-              color: "rgba(187,247,208,0.95)",
-              background: "rgba(22,101,52,0.35)",
-              flexShrink: 0,
-            }}
-          >
+          <AccentBadge muted style={{ flexShrink: 0 }}>
             Coming soon
-          </span>
+          </AccentBadge>
         </div>
 
         {/* How To */}
@@ -471,12 +363,7 @@ export default function Home() {
           onClick={() => router.push("/howto")}
           style={{ ...rowCardBase, marginBottom: 0 }}
         >
-          <IconCircle
-            bg="rgba(249,115,22,0.18)"
-            border="rgba(251,146,60,0.45)"
-          >
-            📖
-          </IconCircle>
+          <IconCircle variant="orangeSubtle">📖</IconCircle>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div
               style={{
@@ -492,14 +379,14 @@ export default function Home() {
               style={{
                 fontSize: 12,
                 fontWeight: 500,
-                color: "rgba(255,255,255,0.52)",
+                color: t.textMuted,
                 lineHeight: 1.35,
               }}
             >
               Tips for great photos
             </div>
           </div>
-          <span style={{ ...chevronStyle, color: "#fb923c" }} aria-hidden>
+          <span style={{ ...chevronStyle, color: t.textMuted }} aria-hidden>
             ›
           </span>
         </button>
