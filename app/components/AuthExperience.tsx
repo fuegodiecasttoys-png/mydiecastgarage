@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useMemo, useState, type CSSProperties } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "../lib/supabaseClient";
 import {
@@ -34,6 +34,9 @@ const benefits = [
   { title: "View collector garages", body: "Friends see your shelves read-only by @username." },
 ] as const;
 
+/** Fixed height for all benefit rows (tallest copy + body + padding); not derived from layout. */
+const BENEFIT_CARD_HEIGHT_PX = 180;
+
 export function AuthExperience({ initialTab }: { initialTab: Tab }) {
   const router = useRouter();
   const [tab, setTab] = useState<Tab>(initialTab);
@@ -51,9 +54,6 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
   const [usernameCheckPending, setUsernameCheckPending] = useState(false);
   const [usernameRpcError, setUsernameRpcError] = useState<string | null>(null);
 
-  const benefitCardRefs = useRef<(HTMLDivElement | null)[]>([null, null, null]);
-  const [benefitCardMinHeight, setBenefitCardMinHeight] = useState<number | undefined>(undefined);
-
   const normalizedUsername = useMemo(() => normalizeUsernameInput(username), [username]);
   const usernameFormatOk =
     normalizedUsername.length === 0 ? null : isValidUsernameFormat(normalizedUsername);
@@ -67,28 +67,6 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
     setLoginError(null);
     setBanner(null);
   }, [tab]);
-
-  useLayoutEffect(() => {
-    let raf = 0;
-    const measure = () => {
-      const heights = benefitCardRefs.current.map((el) => el?.getBoundingClientRect().height ?? 0);
-      if (heights.length !== benefits.length || heights.some((h) => h <= 0)) return;
-      setBenefitCardMinHeight(Math.max(...heights));
-    };
-    const onResize = () => {
-      setBenefitCardMinHeight(undefined);
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(() => {
-        requestAnimationFrame(measure);
-      });
-    };
-    measure();
-    window.addEventListener("resize", onResize);
-    return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener("resize", onResize);
-    };
-  }, []);
 
   useEffect(() => {
     if (tab !== "signup") return;
@@ -399,12 +377,9 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
             Why collectors use it
           </p>
           <div style={{ display: "grid", gap: 10, width: "100%" }}>
-            {benefits.map((b, i) => (
+            {benefits.map((b) => (
               <div
                 key={b.title}
-                ref={(el) => {
-                  benefitCardRefs.current[i] = el;
-                }}
                 style={{
                   padding: "14px 16px",
                   borderRadius: t.radiusLg,
@@ -414,7 +389,9 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
                   textAlign: "center",
                   boxSizing: "border-box",
                   width: "100%",
-                  minHeight: benefitCardMinHeight,
+                  height: BENEFIT_CARD_HEIGHT_PX,
+                  minHeight: BENEFIT_CARD_HEIGHT_PX,
+                  maxHeight: BENEFIT_CARD_HEIGHT_PX,
                   display: "flex",
                   flexDirection: "column",
                   justifyContent: "center",
