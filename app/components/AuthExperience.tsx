@@ -30,7 +30,7 @@ type Tab = "login" | "signup";
 
 const benefits = [
   { title: "Track every model", body: "Packed or loose — your garage stays organized." },
-  { title: "Build your wishlist", body: "Grails and gaps, all in one place." },
+  { title: "Build your wishlist & highlight favorites", body: "Grails and gaps, all in one place." },
   { title: "View collector garages", body: "Friends see your shelves read-only by @username." },
 ] as const;
 
