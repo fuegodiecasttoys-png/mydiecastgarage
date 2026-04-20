@@ -353,7 +353,7 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
           style={{
             width: "100%",
             maxWidth: 440,
-            margin: "0 auto 24px",
+            margin: "0 auto 16px",
             padding: 0,
             boxSizing: "border-box",
             textAlign: "center",
