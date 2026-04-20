@@ -37,7 +37,7 @@ const benefits = [
 /** Same chrome as benefit cards — shared background, border, shadow, radius. */
 const unifiedBenefitAuthCardChrome: CSSProperties = {
   background: t.surface,
-  border: `1px solid rgba(255,106,0,0.14)`,
+  border: `1px solid rgba(255,106,0,0.08)`,
   boxShadow: "inset 0 1px 0 rgba(255,255,255,0.03)",
   borderRadius: t.radiusLg,
   boxSizing: "border-box",
