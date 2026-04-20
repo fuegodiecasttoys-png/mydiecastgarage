@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useMemo, useState, type CSSProperties } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "../lib/supabaseClient";
 import {
@@ -51,6 +51,9 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
   const [usernameCheckPending, setUsernameCheckPending] = useState(false);
   const [usernameRpcError, setUsernameRpcError] = useState<string | null>(null);
 
+  const benefitCardRefs = useRef<(HTMLDivElement | null)[]>([null, null, null]);
+  const [benefitCardMinHeight, setBenefitCardMinHeight] = useState<number | undefined>(undefined);
+
   const normalizedUsername = useMemo(() => normalizeUsernameInput(username), [username]);
   const usernameFormatOk =
     normalizedUsername.length === 0 ? null : isValidUsernameFormat(normalizedUsername);
@@ -64,6 +67,28 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
     setLoginError(null);
     setBanner(null);
   }, [tab]);
+
+  useLayoutEffect(() => {
+    let raf = 0;
+    const measure = () => {
+      const heights = benefitCardRefs.current.map((el) => el?.getBoundingClientRect().height ?? 0);
+      if (heights.length !== benefits.length || heights.some((h) => h <= 0)) return;
+      setBenefitCardMinHeight(Math.max(...heights));
+    };
+    const onResize = () => {
+      setBenefitCardMinHeight(undefined);
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        requestAnimationFrame(measure);
+      });
+    };
+    measure();
+    window.addEventListener("resize", onResize);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", onResize);
+    };
+  }, []);
 
   useEffect(() => {
     if (tab !== "signup") return;
@@ -374,9 +399,12 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
             Why collectors use it
           </p>
           <div style={{ display: "grid", gap: 10, width: "100%" }}>
-            {benefits.map((b) => (
+            {benefits.map((b, i) => (
               <div
                 key={b.title}
+                ref={(el) => {
+                  benefitCardRefs.current[i] = el;
+                }}
                 style={{
                   padding: "14px 16px",
                   borderRadius: t.radiusLg,
@@ -384,13 +412,19 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
                   background: t.surface,
                   boxShadow: "inset 0 1px 0 rgba(255,255,255,0.03)",
                   textAlign: "center",
+                  boxSizing: "border-box",
+                  width: "100%",
+                  minHeight: benefitCardMinHeight,
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
                 }}
               >
                 <div
                   style={{
                     fontWeight: 700,
                     fontSize: 15,
-                    marginBottom: 6,
                     color: t.textPrimary,
                     textAlign: "center",
                   }}
@@ -399,6 +433,7 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
                 </div>
                 <div
                   style={{
+                    marginTop: 6,
                     fontSize: 13,
                     color: t.textSecondary,
                     lineHeight: 1.45,
