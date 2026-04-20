@@ -12,11 +12,16 @@ export const dvOrangeBorderSubtle = "rgba(255,106,0,0.25)";
 export const dvOrangeGlowSubtle = "rgba(255,106,0,0.10)";
 export const dvIconOrangeMuted = "#FF8124";
 
-export const dvQuickBorder = "rgba(255,106,0,0.18)";
+/** Card / row / quick-tile border — same orange weight as auth (login) cards. */
+export const dvCardOrangeBorder = "rgba(255,106,0,0.38)";
+
+/** @deprecated Prefer `dvCardOrangeBorder`; kept as alias for older imports. */
+export const dvQuickBorder = dvCardOrangeBorder;
 export const dvQuickBoxShadow =
   "0 0 0 1px rgba(255,106,0,0.08), 0 10px 30px rgba(255,106,0,0.06)";
 
-export const dvHeroBorder = "rgba(255,106,0,0.4)";
+/** @deprecated Prefer `dvCardOrangeBorder`; kept as alias for older imports. */
+export const dvHeroBorder = dvCardOrangeBorder;
 export const dvHeroShadow =
   "0 14px 36px rgba(0,0,0,0.42), 0 6px 16px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.07), inset 0 -1px 0 rgba(0,0,0,0.32)";
 
@@ -88,7 +93,7 @@ export const dvRowCardBase: CSSProperties = {
   gap: 14,
   padding: "16px 16px",
   borderRadius: t.radiusLg,
-  border: `1px solid ${dvOrangeBorderSubtle}`,
+  border: `1px solid ${dvCardOrangeBorder}`,
   background: t.surface,
   boxShadow: `0 0 22px ${dvOrangeGlowSubtle}, 0 12px 32px rgba(0,0,0,0.38), inset 0 1px 0 rgba(255,255,255,0.05)`,
   cursor: "pointer",
@@ -100,14 +105,14 @@ export const dvRowCardBase: CSSProperties = {
 export const dvHeroRowCard: CSSProperties = {
   ...dvRowCardBase,
   padding: "18px 16px",
-  border: `1px solid ${dvHeroBorder}`,
+  border: `1px solid ${dvCardOrangeBorder}`,
   background: t.surfaceElevated,
   boxShadow: dvHeroShadow,
 };
 
 export const dvQuickTile: CSSProperties = {
   ...dvRowCardBase,
-  border: `1px solid ${dvQuickBorder}`,
+  border: `1px solid ${dvCardOrangeBorder}`,
   boxShadow: `${dvQuickBoxShadow}, inset 0 1px 0 rgba(255,255,255,0.05)`,
 };
 
@@ -118,7 +123,7 @@ export const dvListCard: CSSProperties = {
   padding: 12,
   borderRadius: t.radiusLg,
   background: t.surface,
-  border: `1px solid ${dvOrangeBorderSubtle}`,
+  border: `1px solid ${dvCardOrangeBorder}`,
   position: "relative",
   boxShadow: `0 0 18px ${dvOrangeGlowSubtle}, 0 10px 28px rgba(0,0,0,0.35)`,
 };

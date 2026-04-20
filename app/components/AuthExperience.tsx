@@ -17,6 +17,7 @@ import {
 } from "../lib/signupValidation";
 import { t } from "../ui/dv-tokens";
 import {
+  dvCardOrangeBorder,
   dvDisplayFont,
   dvInput,
   dvPrimaryButton,
@@ -67,7 +68,7 @@ const benefits = [
 /** Same chrome as benefit cards — shared background, border, shadow, radius. */
 const unifiedBenefitAuthCardChrome: CSSProperties = {
   background: t.surface,
-  border: `1px solid rgba(255,106,0,0.38)`,
+  border: `1px solid ${dvCardOrangeBorder}`,
   boxShadow: "inset 0 1px 0 rgba(255,255,255,0.04)",
   borderRadius: t.radiusLg,
   boxSizing: "border-box",
