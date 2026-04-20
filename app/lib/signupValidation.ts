@@ -1,11 +1,21 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 /** Shown under the password field on signup. */
-export const PASSWORD_RULES_SUMMARY = "At least 6 characters.";
+export const PASSWORD_RULES_SUMMARY =
+  "At least 6 characters, one uppercase letter, one number, and one special character.";
 
 export function validateSignupPassword(password: string): { ok: true } | { ok: false; message: string } {
   if (password.length < 6) {
     return { ok: false, message: "Password must be at least 6 characters." };
+  }
+  if (!/[A-Z]/.test(password)) {
+    return { ok: false, message: "Password must include at least one uppercase letter." };
+  }
+  if (!/[0-9]/.test(password)) {
+    return { ok: false, message: "Password must include at least one number." };
+  }
+  if (!/[^A-Za-z0-9]/.test(password)) {
+    return { ok: false, message: "Password must include at least one special character." };
   }
   return { ok: true };
 }
