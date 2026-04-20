@@ -21,8 +21,8 @@ export function validateSignupPassword(password: string): { ok: true } | { ok: f
 }
 
 /**
- * Uses DB RPC `public.is_username_available` (security definer) so signup works
- * even when anonymous users cannot read `public.profiles` under RLS.
+ * Checks `public.profiles` for an existing row with the same normalized username.
+ * Requires SELECT on `profiles` (or a permissive RLS policy) for the anon role used at signup.
  */
 export async function fetchUsernameAvailable(
   supabase: SupabaseClient,
@@ -31,14 +31,17 @@ export async function fetchUsernameAvailable(
   | { ok: true; available: boolean }
   | { ok: false; message: string }
 > {
-  const { data, error } = await supabase.rpc("is_username_available", {
-    p_username: normalizedUsername,
-  });
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("username")
+    .eq("username", normalizedUsername)
+    .maybeSingle();
+
   if (error) {
     return { ok: false, message: error.message || "Could not verify username." };
   }
-  if (typeof data !== "boolean") {
-    return { ok: false, message: "Could not verify username." };
+  if (data) {
+    return { ok: true, available: false };
   }
-  return { ok: true, available: data };
+  return { ok: true, available: true };
 }
