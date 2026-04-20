@@ -34,9 +34,6 @@ const benefits = [
   { title: "View collector garages", body: "Friends see your shelves read-only by @username." },
 ] as const;
 
-/** Fixed height for all benefit rows — compact, equal across cards. */
-const BENEFIT_CARD_HEIGHT_PX = 136;
-
 export function AuthExperience({ initialTab }: { initialTab: Tab }) {
   const router = useRouter();
   const [tab, setTab] = useState<Tab>(initialTab);
@@ -381,7 +378,7 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
               <div
                 key={b.title}
                 style={{
-                  padding: "10px 14px",
+                  padding: "12px 16px",
                   borderRadius: t.radiusLg,
                   border: `1px solid rgba(255,106,0,0.14)`,
                   background: t.surface,
@@ -389,9 +386,6 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
                   textAlign: "center",
                   boxSizing: "border-box",
                   width: "100%",
-                  height: BENEFIT_CARD_HEIGHT_PX,
-                  minHeight: BENEFIT_CARD_HEIGHT_PX,
-                  maxHeight: BENEFIT_CARD_HEIGHT_PX,
                   display: "flex",
                   flexDirection: "column",
                   justifyContent: "center",
@@ -402,7 +396,7 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
                   style={{
                     fontWeight: 700,
                     fontSize: 15,
-                    lineHeight: 1.25,
+                    lineHeight: 1.22,
                     color: t.textPrimary,
                     textAlign: "center",
                   }}
@@ -414,7 +408,7 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
                     marginTop: 4,
                     fontSize: 13,
                     color: t.textSecondary,
-                    lineHeight: 1.4,
+                    lineHeight: 1.35,
                     textAlign: "center",
                   }}
                 >
