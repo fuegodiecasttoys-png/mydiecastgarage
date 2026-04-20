@@ -293,6 +293,9 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
 
   const passwordsMismatchSignup = confirmPassword.length > 0 && password !== confirmPassword;
 
+  /** Log in tab — same CTA pattern as Create account (gray until form is ready). */
+  const loginSubmitDisabled = loading || !email.trim() || !password;
+
   /** Used only on the Sign up tab (Create account). */
   const signupCreateDisabled =
     loading ||
@@ -304,6 +307,9 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
     !!usernameRpcError ||
     !passwordCheck.ok ||
     password !== confirmPassword;
+
+  const primaryCtaStyle = (disabled: boolean) =>
+    disabled ? dvPrimaryButtonDisabled : dvPrimaryButton;
 
   const shell: CSSProperties = {
     minHeight: "100vh",
@@ -543,9 +549,9 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
               ) : null}
               <button
                 type="button"
-                disabled={loading}
+                disabled={loginSubmitDisabled}
                 onClick={() => void handleLogin()}
-                style={loading ? dvPrimaryButtonDisabled : dvPrimaryButton}
+                style={primaryCtaStyle(loginSubmitDisabled)}
               >
                 {loading ? "Signing in…" : "Enter the garage"}
               </button>
@@ -655,7 +661,7 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
                 type="button"
                 disabled={signupCreateDisabled}
                 onClick={() => void handleSignup()}
-                style={signupCreateDisabled ? dvPrimaryButtonDisabled : dvPrimaryButton}
+                style={primaryCtaStyle(signupCreateDisabled)}
               >
                 {loading ? "Creating account…" : "Create account"}
               </button>
