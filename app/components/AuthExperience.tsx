@@ -564,6 +564,7 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
                 </label>
                 <input
                   id="auth-signup-email"
+                  name="signup_email"
                   type="email"
                   autoComplete="email"
                   placeholder="you@example.com"
@@ -578,8 +579,13 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
                 </label>
                 <input
                   id="auth-username"
+                  name="garage_public_username"
                   type="text"
-                  autoComplete="username"
+                  inputMode="text"
+                  autoComplete="off"
+                  autoCorrect="off"
+                  autoCapitalize="none"
+                  spellCheck={false}
                   placeholder="e.g. collector_1"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
