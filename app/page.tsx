@@ -39,6 +39,21 @@ export default function Home() {
   const [garageCount, setGarageCount] = useState(0);
   const [garageCountError, setGarageCountError] = useState<string | null>(null);
   const [garageCountRetrying, setGarageCountRetrying] = useState(false);
+  const [pendingFriendRequestsCount, setPendingFriendRequestsCount] = useState(0);
+
+  const fetchPendingFriendRequests = useCallback(async (uid: string) => {
+    const { count, error } = await supabase
+      .from("friend_requests")
+      .select("*", { count: "exact", head: true })
+      .eq("receiver_id", uid)
+      .eq("status", "pending");
+
+    if (error || count === null) {
+      setPendingFriendRequestsCount(0);
+      return;
+    }
+    setPendingFriendRequestsCount(count);
+  }, []);
 
   const fetchGarageCount = useCallback(async (uid: string) => {
     setGarageCountRetrying(true);
@@ -83,12 +98,12 @@ export default function Home() {
       }
 
       setUserId(data.user.id);
-      await fetchGarageCount(data.user.id);
+      await Promise.all([fetchGarageCount(data.user.id), fetchPendingFriendRequests(data.user.id)]);
       setCheckingAuth(false);
     }
 
     void checkUser();
-  }, [router, fetchGarageCount]);
+  }, [router, fetchGarageCount, fetchPendingFriendRequests]);
 
   if (checkingAuth) {
     return <FullPageLoading label="Loading your garage..." />;
@@ -347,13 +362,36 @@ export default function Home() {
           <div style={{ flex: 1, minWidth: 0 }}>
             <div
               style={{
-                fontSize: 16,
-                fontWeight: 800,
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+                flexWrap: "wrap",
                 marginBottom: 4,
-                letterSpacing: "-0.02em",
               }}
             >
-              Add Friends
+              <span
+                style={{
+                  fontSize: 16,
+                  fontWeight: 800,
+                  letterSpacing: "-0.02em",
+                }}
+              >
+                Add Friends
+              </span>
+              {pendingFriendRequestsCount > 0 ? (
+                <AccentBadge
+                  aria-label={`${pendingFriendRequestsCount} pending friend request${pendingFriendRequestsCount === 1 ? "" : "s"}`}
+                  style={{
+                    padding: "2px 10px",
+                    fontSize: 12,
+                    fontWeight: 800,
+                    minWidth: 24,
+                    justifyContent: "center",
+                  }}
+                >
+                  {pendingFriendRequestsCount > 99 ? "99+" : pendingFriendRequestsCount}
+                </AccentBadge>
+              ) : null}
             </div>
             <div
               style={{
