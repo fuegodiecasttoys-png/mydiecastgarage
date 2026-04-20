@@ -185,7 +185,7 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
       setForgotBanner({ kind: "error", text: error.message });
       return;
     }
-    setForgotBanner({ kind: "info", text: "Reset link sent. Check your email." });
+    setForgotBanner({ kind: "info", text: "Reset link sent. Check your email, spam, or junk folder." });
   }
 
   async function handleSignup() {
