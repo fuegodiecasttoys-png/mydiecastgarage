@@ -312,7 +312,7 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
               alignItems: "center",
               width: "100%",
               maxWidth: "100%",
-              margin: "0 auto 24px",
+              margin: "0 auto 18px",
               padding: 0,
               boxSizing: "border-box",
               filter: "drop-shadow(0 0 18px rgba(255,106,0,0.15))",
@@ -335,7 +335,7 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
           </div>
           <h1
             style={{
-              margin: "0 0 22px",
+              margin: "0 0 16px",
               fontFamily: dvDisplayFont,
               fontSize: "clamp(1.45rem, 4.5vw, 1.75rem)",
               fontWeight: 800,
@@ -353,7 +353,7 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
           style={{
             width: "100%",
             maxWidth: 440,
-            margin: "0 auto 16px",
+            margin: "0 auto 12px",
             padding: 0,
             boxSizing: "border-box",
             textAlign: "center",
