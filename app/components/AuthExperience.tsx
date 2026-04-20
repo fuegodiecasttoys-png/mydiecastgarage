@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useMemo, useState, type CSSProperties } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "../lib/supabaseClient";
+import { getPublicSiteOrigin } from "../lib/siteUrl";
 import {
   isValidUsernameFormat,
   normalizeUsernameInput,
@@ -86,6 +87,9 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);
   const [banner, setBanner] = useState<{ kind: "error" | "info"; text: string } | null>(null);
+  const [loginMode, setLoginMode] = useState<"form" | "forgot">("form");
+  const [forgotLoading, setForgotLoading] = useState(false);
+  const [forgotBanner, setForgotBanner] = useState<{ kind: "error" | "info"; text: string } | null>(null);
 
   const [usernameInUse, setUsernameInUse] = useState<boolean | null>(null);
   const [usernameCheckPending, setUsernameCheckPending] = useState(false);
@@ -103,6 +107,13 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
   useEffect(() => {
     setLoginError(null);
     setBanner(null);
+  }, [tab]);
+
+  useEffect(() => {
+    if (tab !== "login") {
+      setLoginMode("form");
+      setForgotBanner(null);
+    }
   }, [tab]);
 
   useEffect(() => {
@@ -159,6 +170,24 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
     router.push("/");
   }
 
+  async function handleSendResetLink() {
+    const clean = email.trim().toLowerCase();
+    setForgotBanner(null);
+    if (!clean || !clean.includes("@")) {
+      setForgotBanner({ kind: "error", text: "Enter a valid email address." });
+      return;
+    }
+    setForgotLoading(true);
+    const redirectTo = `${getPublicSiteOrigin()}/reset-password`;
+    const { error } = await supabase.auth.resetPasswordForEmail(clean, { redirectTo });
+    setForgotLoading(false);
+    if (error) {
+      setForgotBanner({ kind: "error", text: error.message });
+      return;
+    }
+    setForgotBanner({ kind: "info", text: "Reset link sent. Check your email." });
+  }
+
   async function handleSignup() {
     setBanner(null);
     const cleanEmail = email.trim().toLowerCase();
@@ -211,7 +240,7 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
         email: cleanEmail,
         password,
         options: {
-          emailRedirectTo: "https://www.mydiecastgarage.app/auth/callback",
+          emailRedirectTo: `${getPublicSiteOrigin()}/auth/callback`,
           data: {
             username: cleanUsername,
             name: cleanUsername,
@@ -507,54 +536,157 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
 
           {tab === "login" ? (
             <div style={{ display: "grid", gap: 14 }}>
-              <div>
-                <label htmlFor="auth-email" style={label}>
-                  Email
-                </label>
-                <input
-                  id="auth-email"
-                  type="email"
-                  autoComplete="email"
-                  placeholder="you@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  style={inputBase}
-                />
-              </div>
-              <div>
-                <label htmlFor="auth-login-password" style={label}>
-                  Password
-                </label>
-                <div style={{ position: "relative", width: "100%" }}>
-                  <input
-                    id="auth-login-password"
-                    type={showLoginPassword ? "text" : "password"}
-                    autoComplete="current-password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    style={inputPasswordWithToggle}
-                  />
+              {loginMode === "forgot" ? (
+                <>
                   <button
                     type="button"
-                    onClick={() => setShowLoginPassword((v) => !v)}
-                    aria-label={showLoginPassword ? "Hide password" : "Show password"}
-                    style={passwordToggleBtn}
+                    onClick={() => {
+                      setLoginMode("form");
+                      setForgotBanner(null);
+                    }}
+                    style={{
+                      justifySelf: "start",
+                      margin: 0,
+                      padding: 0,
+                      border: "none",
+                      background: "none",
+                      cursor: "pointer",
+                      fontSize: 13,
+                      fontWeight: 600,
+                      color: t.textMuted,
+                      textDecoration: "underline",
+                      textUnderlineOffset: 3,
+                    }}
                   >
-                    {showLoginPassword ? <EyeClosedIcon /> : <EyeOpenIcon />}
+                    ← Back to log in
                   </button>
-                </div>
-              </div>
-              {loginError ? (
-                <p style={{ margin: 0, fontSize: 13, color: "rgba(248,113,113,0.95)", lineHeight: 1.4 }}>{loginError}</p>
-              ) : null}
-              <button
-                type="button"
-                disabled={loginSubmitDisabled}
-                onClick={() => void handleLogin()}
-                style={primaryCtaStyle(loginSubmitDisabled)}
-              >
-                {loading ? "Signing in…" : "Enter the garage"}
-              </button>
+                  <div>
+                    <h2
+                      style={{
+                        margin: "0 0 8px",
+                        fontFamily: dvDisplayFont,
+                        fontSize: "1.2rem",
+                        fontWeight: 800,
+                        letterSpacing: "-0.02em",
+                        color: t.textPrimary,
+                      }}
+                    >
+                      Reset your password
+                    </h2>
+                    <p style={{ margin: 0, fontSize: 14, lineHeight: 1.5, color: t.textSecondary }}>
+                      Enter your email and we&apos;ll send you a reset link.
+                    </p>
+                  </div>
+                  <div>
+                    <label htmlFor="auth-email-forgot" style={label}>
+                      Email
+                    </label>
+                    <input
+                      id="auth-email-forgot"
+                      type="email"
+                      autoComplete="email"
+                      placeholder="you@example.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      style={inputBase}
+                    />
+                  </div>
+                  {forgotBanner ? (
+                    <p
+                      style={{
+                        margin: 0,
+                        fontSize: 13,
+                        lineHeight: 1.45,
+                        color: forgotBanner.kind === "error" ? "rgba(248,113,113,0.95)" : t.orange300,
+                      }}
+                    >
+                      {forgotBanner.text}
+                    </p>
+                  ) : null}
+                  <button
+                    type="button"
+                    disabled={forgotLoading || !email.trim()}
+                    onClick={() => void handleSendResetLink()}
+                    style={primaryCtaStyle(forgotLoading || !email.trim())}
+                  >
+                    {forgotLoading ? "Sending…" : "Send reset link"}
+                  </button>
+                </>
+              ) : (
+                <>
+                  <div>
+                    <label htmlFor="auth-email" style={label}>
+                      Email
+                    </label>
+                    <input
+                      id="auth-email"
+                      type="email"
+                      autoComplete="email"
+                      placeholder="you@example.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      style={inputBase}
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="auth-login-password" style={label}>
+                      Password
+                    </label>
+                    <div style={{ position: "relative", width: "100%" }}>
+                      <input
+                        id="auth-login-password"
+                        type={showLoginPassword ? "text" : "password"}
+                        autoComplete="current-password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        style={inputPasswordWithToggle}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowLoginPassword((v) => !v)}
+                        aria-label={showLoginPassword ? "Hide password" : "Show password"}
+                        style={passwordToggleBtn}
+                      >
+                        {showLoginPassword ? <EyeClosedIcon /> : <EyeOpenIcon />}
+                      </button>
+                    </div>
+                  </div>
+                  <div style={{ marginTop: -6 }}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setLoginMode("forgot");
+                        setForgotBanner(null);
+                      }}
+                      style={{
+                        margin: 0,
+                        padding: 0,
+                        border: "none",
+                        background: "none",
+                        cursor: "pointer",
+                        fontSize: 13,
+                        fontWeight: 600,
+                        color: t.textMuted,
+                        textDecoration: "underline",
+                        textUnderlineOffset: 3,
+                      }}
+                    >
+                      Forgot password?
+                    </button>
+                  </div>
+                  {loginError ? (
+                    <p style={{ margin: 0, fontSize: 13, color: "rgba(248,113,113,0.95)", lineHeight: 1.4 }}>{loginError}</p>
+                  ) : null}
+                  <button
+                    type="button"
+                    disabled={loginSubmitDisabled}
+                    onClick={() => void handleLogin()}
+                    style={primaryCtaStyle(loginSubmitDisabled)}
+                  >
+                    {loading ? "Signing in…" : "Enter the garage"}
+                  </button>
+                </>
+              )}
             </div>
           ) : (
             <div style={{ display: "grid", gap: 14 }}>
