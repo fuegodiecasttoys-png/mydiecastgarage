@@ -39,12 +39,17 @@ const fontVars: CSSProperties = {
 
 const displayFont = `var(--exp-font-display), var(--exp-font-body), system-ui, sans-serif`;
 
+/** Subtle orange system for secondary/tertiary cards (My Garage stays stronger). */
+const expOrangeBorderSubtle = "rgba(255,106,0,0.25)";
+const expOrangeGlowSubtle = "rgba(255,106,0,0.10)";
+const expIconOrangeMuted = "#FF8124";
+
 function IconFrame({
   children,
   variant,
 }: {
   children: ReactNode;
-  variant: "accent" | "neutral" | "muted" | "blueHint";
+  variant: "accent" | "neutral" | "muted" | "orangeSubtle";
 }) {
   const ring =
     variant === "accent"
@@ -53,11 +58,11 @@ function IconFrame({
           bg: `linear-gradient(160deg, ${t.surfaceElevated} 0%, ${t.surface} 100%)`,
           glow: "0 8px 22px rgba(0,0,0,0.42)",
         }
-      : variant === "blueHint"
+      : variant === "orangeSubtle"
         ? {
-            border: `1px solid ${t.borderSubtle}`,
+            border: `1px solid ${expOrangeBorderSubtle}`,
             bg: `linear-gradient(165deg, ${t.surfaceElevated} 0%, ${t.surface} 100%)`,
-            glow: `0 0 18px ${t.blueGlow}`,
+            glow: `0 0 22px ${expOrangeGlowSubtle}`,
           }
         : variant === "muted"
           ? {
@@ -139,7 +144,7 @@ function IconWishlist() {
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden>
       <path
         d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"
-        stroke={t.textSecondary}
+        stroke={expIconOrangeMuted}
         strokeWidth="1.5"
         strokeLinejoin="round"
       />
@@ -150,11 +155,11 @@ function IconWishlist() {
 function IconFriends() {
   return (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden>
-      <circle cx="9" cy="9" r="3" stroke={t.textMuted} strokeWidth="1.5" />
-      <circle cx="16" cy="10" r="2.5" stroke={t.textMuted} strokeWidth="1.5" />
+      <circle cx="9" cy="9" r="3" stroke={expIconOrangeMuted} strokeWidth="1.5" />
+      <circle cx="16" cy="10" r="2.5" stroke={expIconOrangeMuted} strokeWidth="1.5" />
       <path
         d="M4 19v-1a4 4 0 014-4h2M20 19v-1a3 3 0 00-3-3h-2"
-        stroke={t.textMuted}
+        stroke={expIconOrangeMuted}
         strokeWidth="1.5"
         strokeLinecap="round"
       />
@@ -171,10 +176,10 @@ function IconHowTo() {
         width="14"
         height="11"
         rx="2"
-        stroke={t.textSecondary}
+        stroke={expIconOrangeMuted}
         strokeWidth="1.5"
       />
-      <circle cx="12" cy="12.5" r="2" stroke={t.orange400} strokeWidth="1.5" />
+      <circle cx="12" cy="12.5" r="2" stroke={expIconOrangeMuted} strokeWidth="1.5" />
     </svg>
   );
 }
@@ -235,8 +240,9 @@ export default function ExperimentPage() {
     textDecoration: "none",
     color: t.textPrimary,
     background: t.surface,
-    border: `1px solid ${t.borderSubtle}`,
+    border: `1px solid ${expOrangeBorderSubtle}`,
     boxShadow: `
+      0 0 22px ${expOrangeGlowSubtle},
       0 12px 32px rgba(0,0,0,0.38),
       inset 0 1px 0 rgba(255,255,255,0.05)
     `,
@@ -251,8 +257,11 @@ export default function ExperimentPage() {
     padding: "16px 16px",
     borderRadius: t.radiusLg,
     background: t.bgSecondary,
-    border: `1px solid ${t.borderSubtle}`,
-    boxShadow: "inset 0 1px 0 rgba(255,255,255,0.04)",
+    border: `1px solid ${expOrangeBorderSubtle}`,
+    boxShadow: `
+      0 0 22px ${expOrangeGlowSubtle},
+      inset 0 1px 0 rgba(255,255,255,0.04)
+    `,
     marginBottom: t.spaceTight,
   };
 
@@ -549,15 +558,15 @@ export default function ExperimentPage() {
           href="/wishlist"
           style={secondaryCard}
           onMouseEnter={(e) => {
-            e.currentTarget.style.borderColor = t.borderMedium;
+            e.currentTarget.style.borderColor = "rgba(255,106,0,0.38)";
             e.currentTarget.style.transform = "translateY(-1px)";
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.borderColor = t.borderSubtle;
+            e.currentTarget.style.borderColor = expOrangeBorderSubtle;
             e.currentTarget.style.transform = "translateY(0)";
           }}
         >
-          <IconFrame variant="blueHint">
+          <IconFrame variant="orangeSubtle">
             <IconWishlist />
           </IconFrame>
           <div style={{ flex: 1, minWidth: 0 }}>
@@ -616,7 +625,7 @@ export default function ExperimentPage() {
           role="group"
           aria-label="Add friends — coming soon"
         >
-          <IconFrame variant="muted">
+          <IconFrame variant="orangeSubtle">
             <IconFriends />
           </IconFrame>
           <div style={{ flex: 1, minWidth: 0 }}>
@@ -658,15 +667,15 @@ export default function ExperimentPage() {
           href="/howto"
           style={tertiaryLink}
           onMouseEnter={(e) => {
-            e.currentTarget.style.borderColor = t.borderMedium;
+            e.currentTarget.style.borderColor = "rgba(255,106,0,0.38)";
             e.currentTarget.style.transform = "translateY(-1px)";
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.borderColor = t.borderSubtle;
+            e.currentTarget.style.borderColor = expOrangeBorderSubtle;
             e.currentTarget.style.transform = "translateY(0)";
           }}
         >
-          <IconFrame variant="neutral">
+          <IconFrame variant="orangeSubtle">
             <IconHowTo />
           </IconFrame>
           <div style={{ flex: 1, minWidth: 0 }}>
