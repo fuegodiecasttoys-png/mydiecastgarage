@@ -34,8 +34,8 @@ const benefits = [
   { title: "View collector garages", body: "Friends see your shelves read-only by @username." },
 ] as const;
 
-/** Fixed height for all benefit rows (tallest copy + body + padding); not derived from layout. */
-const BENEFIT_CARD_HEIGHT_PX = 180;
+/** Fixed height for all benefit rows — compact, equal across cards. */
+const BENEFIT_CARD_HEIGHT_PX = 136;
 
 export function AuthExperience({ initialTab }: { initialTab: Tab }) {
   const router = useRouter();
@@ -376,12 +376,12 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
           >
             Why collectors use it
           </p>
-          <div style={{ display: "grid", gap: 10, width: "100%" }}>
+          <div style={{ display: "grid", gap: 8, width: "100%" }}>
             {benefits.map((b) => (
               <div
                 key={b.title}
                 style={{
-                  padding: "14px 16px",
+                  padding: "10px 14px",
                   borderRadius: t.radiusLg,
                   border: `1px solid rgba(255,106,0,0.14)`,
                   background: t.surface,
@@ -402,6 +402,7 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
                   style={{
                     fontWeight: 700,
                     fontSize: 15,
+                    lineHeight: 1.25,
                     color: t.textPrimary,
                     textAlign: "center",
                   }}
@@ -410,10 +411,10 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
                 </div>
                 <div
                   style={{
-                    marginTop: 6,
+                    marginTop: 4,
                     fontSize: 13,
                     color: t.textSecondary,
-                    lineHeight: 1.45,
+                    lineHeight: 1.4,
                     textAlign: "center",
                   }}
                 >
