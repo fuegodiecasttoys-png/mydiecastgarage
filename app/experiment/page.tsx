@@ -44,12 +44,20 @@ const expOrangeBorderSubtle = "rgba(255,106,0,0.25)";
 const expOrangeGlowSubtle = "rgba(255,106,0,0.10)";
 const expIconOrangeMuted = "#FF8124";
 
+/** Quick actions: weakest orange tier (My Garage > Wishlist > Quick). */
+const expQuickBorder = "rgba(255,106,0,0.18)";
+const expQuickBoxShadow =
+  "0 0 0 1px rgba(255,106,0,0.08), 0 10px 30px rgba(255,106,0,0.06)";
+const expQuickBoxShadowHover =
+  "0 0 0 1px rgba(255,106,0,0.13), 0 12px 34px rgba(255,106,0,0.09)";
+const expQuickIconColor = "rgba(255,129,36,0.8)";
+
 function IconFrame({
   children,
   variant,
 }: {
   children: ReactNode;
-  variant: "accent" | "neutral" | "muted" | "orangeSubtle";
+  variant: "accent" | "neutral" | "muted" | "orangeSubtle" | "orangeQuick";
 }) {
   const ring =
     variant === "accent"
@@ -64,6 +72,12 @@ function IconFrame({
             bg: `linear-gradient(165deg, ${t.surfaceElevated} 0%, ${t.surface} 100%)`,
             glow: `0 0 22px ${expOrangeGlowSubtle}`,
           }
+        : variant === "orangeQuick"
+          ? {
+              border: "1px solid rgba(255,106,0,0.14)",
+              bg: `linear-gradient(165deg, rgba(255,106,0,0.07) 0%, rgba(18,23,34,0.92) 42%, ${t.surface} 100%)`,
+              glow: "0 0 18px rgba(255,106,0,0.05)",
+            }
         : variant === "muted"
           ? {
               border: `1px dashed ${t.borderMedium}`,
@@ -101,11 +115,11 @@ function IconPacked() {
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden>
       <path
         d="M4 8l8-4 8 4v8l-8 4-8-4V8z"
-        stroke={t.textSecondary}
+        stroke={expQuickIconColor}
         strokeWidth="1.5"
         strokeLinejoin="round"
       />
-      <path d="M4 8l8 4M12 12v8M12 12l8-4" stroke={t.textMuted} strokeWidth="1.5" />
+      <path d="M4 8l8 4M12 12v8M12 12l8-4" stroke={expQuickIconColor} strokeWidth="1.5" />
     </svg>
   );
 }
@@ -115,12 +129,12 @@ function IconLoose() {
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden>
       <path
         d="M6 16l6-10 6 10"
-        stroke={t.textSecondary}
+        stroke={expQuickIconColor}
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      <circle cx="12" cy="17" r="1.6" fill={t.orange400} />
+      <circle cx="12" cy="17" r="1.6" fill={expQuickIconColor} />
     </svg>
   );
 }
@@ -213,8 +227,8 @@ export default function ExperimentPage() {
     textDecoration: "none",
     color: t.textPrimary,
     background: t.surface,
-    border: `1px solid ${t.borderSubtle}`,
-    boxShadow: "0 10px 28px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.05)",
+    border: `1px solid ${expQuickBorder}`,
+    boxShadow: `${expQuickBoxShadow}, inset 0 1px 0 rgba(255,255,255,0.05)`,
     transition: "border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease",
   };
 
@@ -375,16 +389,18 @@ export default function ExperimentPage() {
             href="/capture-packed"
             style={quickBase}
             onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = t.borderMedium;
+              e.currentTarget.style.borderColor = "rgba(255,106,0,0.26)";
+              e.currentTarget.style.boxShadow = `${expQuickBoxShadowHover}, inset 0 1px 0 rgba(255,255,255,0.06)`;
               e.currentTarget.style.transform = "translateY(-1px)";
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = t.borderSubtle;
+              e.currentTarget.style.borderColor = expQuickBorder;
+              e.currentTarget.style.boxShadow = `${expQuickBoxShadow}, inset 0 1px 0 rgba(255,255,255,0.05)`;
               e.currentTarget.style.transform = "translateY(0)";
             }}
           >
             <div style={{ display: "flex", justifyContent: "center", marginBottom: 10 }}>
-              <IconFrame variant="neutral">
+              <IconFrame variant="orangeQuick">
                 <IconPacked />
               </IconFrame>
             </div>
@@ -407,16 +423,18 @@ export default function ExperimentPage() {
             href="/capture-loose"
             style={quickBase}
             onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = t.borderMedium;
+              e.currentTarget.style.borderColor = "rgba(255,106,0,0.26)";
+              e.currentTarget.style.boxShadow = `${expQuickBoxShadowHover}, inset 0 1px 0 rgba(255,255,255,0.06)`;
               e.currentTarget.style.transform = "translateY(-1px)";
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = t.borderSubtle;
+              e.currentTarget.style.borderColor = expQuickBorder;
+              e.currentTarget.style.boxShadow = `${expQuickBoxShadow}, inset 0 1px 0 rgba(255,255,255,0.05)`;
               e.currentTarget.style.transform = "translateY(0)";
             }}
           >
             <div style={{ display: "flex", justifyContent: "center", marginBottom: 10 }}>
-              <IconFrame variant="neutral">
+              <IconFrame variant="orangeQuick">
                 <IconLoose />
               </IconFrame>
             </div>
