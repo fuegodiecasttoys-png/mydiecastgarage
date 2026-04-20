@@ -567,49 +567,42 @@ export default function ExperimentPage() {
           </span>
         </Link>
 
-        <div
-          style={tertiaryCard}
-          aria-disabled={true}
-          role="group"
-          aria-label="Add friends — coming soon"
+        <Link
+          href="/friends"
+          style={tertiaryLink}
+          aria-label="Add friends"
+          onMouseEnter={(e) => {
+            e.currentTarget.style.borderColor = "rgba(255,106,0,0.38)";
+            e.currentTarget.style.transform = "translateY(-1px)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.borderColor = expOrangeBorderSubtle;
+            e.currentTarget.style.transform = "translateY(0)";
+          }}
         >
           <IconCircle variant="orangeSubtle">
             <IconFriends />
           </IconCircle>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
-              <h3
-                style={{
-                  margin: 0,
-                  fontFamily: displayFont,
-                  fontSize: 16,
-                  fontWeight: 700,
-                  color: t.textSecondary,
-                }}
-              >
-                Add Friends
-              </h3>
-              <span
-                style={{
-                  fontSize: 11,
-                  fontWeight: 600,
-                  letterSpacing: "0.06em",
-                  textTransform: "uppercase",
-                  padding: "4px 8px",
-                  borderRadius: 999,
-                  color: t.textMuted,
-                  border: `1px solid ${t.borderSubtle}`,
-                  background: t.bg,
-                }}
-              >
-                Coming Soon
-              </span>
-            </div>
-            <p style={{ margin: 0, fontSize: 13, fontWeight: 500, color: t.textMuted }}>
-              Share shelves with trusted collectors.
+            <h3
+              style={{
+                margin: "0 0 6px",
+                fontFamily: displayFont,
+                fontSize: 16,
+                fontWeight: 700,
+                color: t.textPrimary,
+              }}
+            >
+              Add Friends
+            </h3>
+            <p style={{ margin: 0, fontSize: 14, fontWeight: 500, color: t.textSecondary }}>
+              View trusted collectors&apos; garages (read-only)
             </p>
           </div>
-        </div>
+          <span style={{ fontSize: 20, color: t.textMuted, flexShrink: 0 }} aria-hidden>
+            ›
+          </span>
+        </Link>
 
         <Link
           href="/howto"

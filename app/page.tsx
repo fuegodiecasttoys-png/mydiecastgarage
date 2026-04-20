@@ -316,19 +316,12 @@ export default function Home() {
           </span>
         </button>
 
-        {/* Add Friends — coming soon */}
-        <div
-          role="group"
-          aria-label="Add friends, coming soon"
-          style={{
-            ...rowCardBase,
-            marginBottom: 12,
-            opacity: 0.62,
-            cursor: "default",
-            pointerEvents: "none",
-          }}
+        <button
+          type="button"
+          onClick={() => router.push("/friends")}
+          style={{ ...rowCardBase, marginBottom: 12 }}
         >
-          <IconCircle variant="muted">👥</IconCircle>
+          <IconCircle variant="orangeSubtle">👥</IconCircle>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div
               style={{
@@ -336,7 +329,6 @@ export default function Home() {
                 fontWeight: 800,
                 marginBottom: 4,
                 letterSpacing: "-0.02em",
-                color: t.textSecondary,
               }}
             >
               Add Friends
@@ -349,13 +341,13 @@ export default function Home() {
                 lineHeight: 1.35,
               }}
             >
-              Connect with collectors
+              View each other&apos;s garages (read-only)
             </div>
           </div>
-          <AccentBadge muted style={{ flexShrink: 0 }}>
-            Coming soon
-          </AccentBadge>
-        </div>
+          <span style={{ ...chevronStyle, color: t.textMuted }} aria-hidden>
+            ›
+          </span>
+        </button>
 
         {/* How To */}
         <button
