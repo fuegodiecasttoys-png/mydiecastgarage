@@ -8,6 +8,7 @@ import { AccentBadge } from "./ui/AccentBadge";
 import { IconCircle } from "./ui/IconCircle";
 import { t } from "./ui/dv-tokens";
 import {
+  dvCardOrangeBorder,
   dvDisplayFont,
   dvGhostButton,
   dvHeroRowCard,
@@ -278,6 +279,7 @@ export default function Home() {
             ...dvHeroRowCard,
             marginBottom: 12,
             minHeight: 120,
+            border: `2px solid ${dvCardOrangeBorder}`,
           }}
         >
           <IconCircle variant="accent">🏠</IconCircle>
