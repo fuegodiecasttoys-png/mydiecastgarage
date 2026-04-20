@@ -574,7 +574,7 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
                   id="auth-username"
                   type="text"
                   autoComplete="username"
-                  placeholder="e.g. roberto_2"
+                  placeholder="e.g. collector_1"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   style={inputBase}
