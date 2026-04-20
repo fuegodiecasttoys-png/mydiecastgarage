@@ -34,6 +34,15 @@ const benefits = [
   { title: "View collector garages", body: "Friends see your shelves read-only by @username." },
 ] as const;
 
+/** Same chrome as benefit cards — shared background, border, shadow, radius. */
+const unifiedBenefitAuthCardChrome: CSSProperties = {
+  background: t.surface,
+  border: `1px solid rgba(255,106,0,0.14)`,
+  boxShadow: "inset 0 1px 0 rgba(255,255,255,0.03)",
+  borderRadius: t.radiusLg,
+  boxSizing: "border-box",
+};
+
 export function AuthExperience({ initialTab }: { initialTab: Tab }) {
   const router = useRouter();
   const [tab, setTab] = useState<Tab>(initialTab);
@@ -260,16 +269,11 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
   };
 
   const card: CSSProperties = {
+    ...unifiedBenefitAuthCardChrome,
     width: "100%",
     maxWidth: 440,
     margin: "0 auto",
-    borderRadius: t.radiusXl,
-    border: `1px solid rgba(255,106,0,0.22)`,
-    background: t.surfaceElevated,
-    boxShadow:
-      "0 14px 40px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,106,0,0.06), inset 0 1px 0 rgba(255,255,255,0.06)",
     padding: "22px 20px 24px",
-    boxSizing: "border-box",
   };
 
   const tabBtn = (active: boolean): CSSProperties => ({
@@ -378,13 +382,9 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
               <div
                 key={b.title}
                 style={{
+                  ...unifiedBenefitAuthCardChrome,
                   padding: "12px 16px",
-                  borderRadius: t.radiusLg,
-                  border: `1px solid rgba(255,106,0,0.14)`,
-                  background: t.surface,
-                  boxShadow: "inset 0 1px 0 rgba(255,255,255,0.03)",
                   textAlign: "center",
-                  boxSizing: "border-box",
                   width: "100%",
                   display: "flex",
                   flexDirection: "column",
