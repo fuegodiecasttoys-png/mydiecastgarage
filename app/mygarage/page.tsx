@@ -6,10 +6,11 @@ import { supabase } from "../lib/supabaseClient"
 import { useRouter } from "next/navigation"
 import { t } from "../ui/dv-tokens"
 import {
+  dvAppPageShell,
+  dvDashboardInner,
   dvGhostButton,
   dvImageThumb,
   dvListCard,
-  dvPageShell,
   dvInput,
   dvSelect,
 } from "../ui/dv-visual"
@@ -34,12 +35,9 @@ type Item = {
   chase: boolean | null
 }
 
-const pageStyle = { ...dvPageShell, position: "relative" as const, padding: 20 }
+const pageStyle = dvAppPageShell
 
-const containerStyle = {
-  maxWidth: 520,
-  margin: "0 auto",
-} as const
+const containerStyle = dvDashboardInner
 
 const homeLinkStyle = {
   position: "absolute",

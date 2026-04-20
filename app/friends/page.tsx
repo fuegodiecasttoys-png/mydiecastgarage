@@ -17,9 +17,10 @@ import {
 } from "../lib/profileUsername";
 import { t } from "../ui/dv-tokens";
 import {
+  dvAppPageShell,
+  dvDashboardInner,
   dvGhostButton,
   dvListCard,
-  dvPageShell,
   dvInput,
   dvPrimaryButton,
   dvDisplayFont,
@@ -278,12 +279,12 @@ export default function FriendsPage() {
   );
 
   return (
-    <div style={{ ...dvPageShell, position: "relative", padding: 20 }}>
+    <div style={dvAppPageShell}>
       <Link href="/" style={{ ...dvGhostButton, textDecoration: "none", display: "inline-block", marginBottom: 16 }}>
         ← Home
       </Link>
 
-      <div style={{ maxWidth: 520, margin: "0 auto" }}>
+      <div style={dvDashboardInner}>
         <h1
           style={{
             margin: "0 0 6px",

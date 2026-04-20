@@ -35,6 +35,24 @@ export const dvPageShell: CSSProperties = {
   background: shellBackground(),
 };
 
+/** Home (`/`) inner column width — default for list / tool pages. */
+export const dvDashboardContentMaxPx = 400;
+
+/** Centered column matching the home dashboard hub. */
+export const dvDashboardInner: CSSProperties = {
+  position: "relative",
+  width: "100%",
+  maxWidth: dvDashboardContentMaxPx,
+  margin: "0 auto",
+  boxSizing: "border-box",
+};
+
+/** `dvPageShell` + `position: relative` for absolute corner controls (🏠, etc.). */
+export const dvAppPageShell: CSSProperties = {
+  ...dvPageShell,
+  position: "relative",
+};
+
 export const dvInput: CSSProperties = {
   width: "100%",
   padding: "12px 14px",

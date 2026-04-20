@@ -7,11 +7,14 @@ import { supabase } from "@/app/lib/supabaseClient";
 import { PASSWORD_RULES_SUMMARY, validateSignupPassword } from "@/app/lib/signupValidation";
 import { t } from "@/app/ui/dv-tokens";
 import {
+  dvAppPageShell,
+  dvCardOrangeBorder,
+  dvDashboardContentMaxPx,
+  dvDashboardInner,
   dvDisplayFont,
   dvInput,
   dvPrimaryButton,
   dvPrimaryButtonDisabled,
-  shellBackground,
 } from "@/app/ui/dv-visual";
 
 function EyeOpenIcon() {
@@ -46,7 +49,7 @@ function EyeClosedIcon() {
 
 const cardChrome: CSSProperties = {
   background: t.surface,
-  border: `1px solid rgba(255,106,0,0.38)`,
+  border: `1px solid ${dvCardOrangeBorder}`,
   boxShadow: "inset 0 1px 0 rgba(255,255,255,0.04)",
   borderRadius: t.radiusLg,
   boxSizing: "border-box",
@@ -138,16 +141,6 @@ export default function ResetPasswordClient() {
     }, 1200);
   }
 
-  const shell: CSSProperties = {
-    minHeight: "100vh",
-    width: "100%",
-    boxSizing: "border-box",
-    padding: "20px 16px 40px",
-    color: t.textPrimary,
-    fontFamily: `var(--dv-font-body), system-ui, sans-serif`,
-    background: shellBackground(),
-  };
-
   const label: CSSProperties = {
     display: "block",
     marginBottom: 6,
@@ -188,14 +181,14 @@ export default function ResetPasswordClient() {
   const card: CSSProperties = {
     ...cardChrome,
     width: "100%",
-    maxWidth: 440,
+    maxWidth: dvDashboardContentMaxPx,
     margin: "0 auto",
     padding: "22px 20px 24px",
   };
 
   return (
-    <div className="auth-experience" style={shell}>
-      <div style={{ maxWidth: 520, margin: "0 auto" }}>
+    <div className="auth-experience" style={dvAppPageShell}>
+      <div style={dvDashboardInner}>
         <header style={{ textAlign: "center", marginBottom: 20 }}>
           <div
             style={{

@@ -5,6 +5,15 @@ import Link from "next/link"
 import { useParams, useRouter } from "next/navigation"
 import { supabase } from "../../lib/supabaseClient"
 import { FullPageLoading } from "../../components/FullPageLoading"
+import { t } from "../../ui/dv-tokens"
+import {
+  dvAppPageShell,
+  dvCardOrangeBorder,
+  dvDashboardInner,
+  dvDisplayFont,
+  dvGhostButton,
+  dvOrangeGlowSubtle,
+} from "../../ui/dv-visual"
 
 type WishlistItem = {
   id: number
@@ -21,18 +30,17 @@ type WishlistItem = {
   photo_url: string | null
 }
 
-const pageStyle: CSSProperties = {
-  minHeight: "100vh",
-  background: "#0f0f0f",
-  color: "#fff",
-  padding: 20,
-  fontFamily: 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
-}
+const pageStyle: CSSProperties = dvAppPageShell
 
-const containerStyle: CSSProperties = {
-  width: "100%",
-  maxWidth: 420,
-  margin: "0 auto",
+const containerStyle: CSSProperties = dvDashboardInner
+
+const detailPanelStyle: CSSProperties = {
+  background: t.surface,
+  border: `1px solid ${dvCardOrangeBorder}`,
+  borderRadius: t.radiusLg,
+  padding: 16,
+  marginBottom: 16,
+  boxShadow: `0 0 18px ${dvOrangeGlowSubtle}, 0 10px 28px rgba(0,0,0,0.35)`,
 }
 
 const rowStyle: CSSProperties = {
@@ -45,14 +53,19 @@ const rowStyle: CSSProperties = {
 }
 
 const labelStyle: CSSProperties = {
-  opacity: 0.6,
+  color: t.textMuted,
   minWidth: 96,
+  fontSize: 13,
+  fontWeight: 600,
 }
 
 const valueStyle: CSSProperties = {
   textAlign: "right",
   flex: 1,
   wordBreak: "break-word",
+  color: t.textPrimary,
+  fontSize: 14,
+  fontWeight: 500,
 }
 
 function priorityLabel(priority: WishlistItem["priority"]) {
@@ -144,21 +157,32 @@ export default function WishlistDetailPage() {
             <Link
               href="/wishlist"
               style={{
-                background: "none",
+                ...dvGhostButton,
+                background: "transparent",
                 border: "none",
-                color: "#fff",
-                cursor: "pointer",
+                boxShadow: "none",
+                padding: 0,
+                display: "inline-block",
                 fontSize: 16,
                 textDecoration: "underline",
+                color: t.textPrimary,
               }}
             >
               Back to wishlist
             </Link>
           </div>
-          <h1 style={{ fontSize: 22, fontWeight: 800, marginBottom: 12 }}>
+          <h1
+            style={{
+              fontFamily: dvDisplayFont,
+              fontSize: 22,
+              fontWeight: 800,
+              marginBottom: 12,
+              color: t.textPrimary,
+            }}
+          >
             Not found
           </h1>
-          <p style={{ opacity: 0.72, lineHeight: 1.5 }}>
+          <p style={{ color: t.textSecondary, lineHeight: 1.5 }}>
             This wishlist item does not exist or you do not have access to it.
           </p>
         </div>
@@ -181,9 +205,10 @@ export default function WishlistDetailPage() {
             href="/wishlist"
             style={{
               justifySelf: "start",
-              color: "#fff",
+              color: t.textPrimary,
               fontSize: 16,
               textDecoration: "none",
+              fontWeight: 600,
             }}
           >
             Back
@@ -194,7 +219,8 @@ export default function WishlistDetailPage() {
               justifySelf: "center",
               fontSize: 14,
               fontWeight: 700,
-              opacity: 0.85,
+              color: t.textSecondary,
+              fontFamily: dvDisplayFont,
             }}
           >
             Wishlist
@@ -206,7 +232,7 @@ export default function WishlistDetailPage() {
             style={{
               justifySelf: "end",
               padding: "7px 12px",
-              borderRadius: 999,
+              borderRadius: t.radiusMd,
               border: "1px solid rgba(239,68,68,0.25)",
               background: "rgba(239,68,68,0.06)",
               color: "#f87171",
@@ -224,11 +250,12 @@ export default function WishlistDetailPage() {
             width: "100%",
             maxWidth: 240,
             aspectRatio: "1",
-            borderRadius: 18,
+            borderRadius: t.radiusLg,
             overflow: "hidden",
-            background: "#222",
+            background: t.bgSecondary,
             margin: "0 auto 20px",
-            border: "1px solid rgba(255,255,255,0.08)",
+            border: `1px solid ${dvCardOrangeBorder}`,
+            boxShadow: `0 0 18px ${dvOrangeGlowSubtle}, 0 10px 28px rgba(0,0,0,0.35)`,
           }}
         >
           {item.photo_url ? (
@@ -248,7 +275,7 @@ export default function WishlistDetailPage() {
                 height: "100%",
                 display: "grid",
                 placeItems: "center",
-                opacity: 0.45,
+                color: t.textMuted,
                 fontSize: 14,
               }}
             >
@@ -260,15 +287,17 @@ export default function WishlistDetailPage() {
         <div style={{ marginBottom: 16, textAlign: "center" }}>
           <div
             style={{
+              fontFamily: dvDisplayFont,
               fontSize: 22,
               fontWeight: 800,
               lineHeight: 1.15,
               marginBottom: 6,
+              color: t.textPrimary,
             }}
           >
             {item.model ?? "Unnamed model"}
           </div>
-          <div style={{ opacity: 0.72, fontSize: 14, fontWeight: 600 }}>
+          <div style={{ color: t.textSecondary, fontSize: 14, fontWeight: 600 }}>
             {item.brand ?? "Unknown brand"}
           </div>
           <div
@@ -276,22 +305,14 @@ export default function WishlistDetailPage() {
               marginTop: 10,
               fontSize: 12,
               fontWeight: 600,
-              opacity: 0.8,
+              color: t.textMuted,
             }}
           >
             Priority: {priorityLabel(item.priority)}
           </div>
         </div>
 
-        <div
-          style={{
-            background: "linear-gradient(180deg, #171717 0%, #101010 100%)",
-            border: "1px solid rgba(255,255,255,0.08)",
-            borderRadius: 18,
-            padding: 16,
-            marginBottom: 16,
-          }}
-        >
+        <div style={detailPanelStyle}>
           <div style={rowStyle}>
             <span style={labelStyle}>Color</span>
             <span style={valueStyle}>{item.color ?? "-"}</span>
@@ -319,18 +340,11 @@ export default function WishlistDetailPage() {
         </div>
 
         {item.notes ? (
-          <div
-            style={{
-              background: "linear-gradient(180deg, #171717 0%, #101010 100%)",
-              border: "1px solid rgba(255,255,255,0.08)",
-              borderRadius: 18,
-              padding: 16,
-            }}
-          >
-            <div style={{ opacity: 0.6, marginBottom: 8, fontSize: 14 }}>
+          <div style={{ ...detailPanelStyle, marginBottom: 0 }}>
+            <div style={{ color: t.textMuted, marginBottom: 8, fontSize: 14, fontWeight: 600 }}>
               Notes
             </div>
-            <div style={{ lineHeight: 1.5, wordBreak: "break-word" }}>
+            <div style={{ lineHeight: 1.5, wordBreak: "break-word", color: t.textPrimary }}>
               {item.notes}
             </div>
           </div>
@@ -340,15 +354,13 @@ export default function WishlistDetailPage() {
           <Link
             href="/wishlist"
             style={{
+              ...dvGhostButton,
               display: "inline-block",
               padding: "12px 20px",
-              borderRadius: 12,
-              border: "1px solid rgba(255,255,255,0.2)",
-              background: "rgba(255,255,255,0.06)",
-              color: "#fff",
-              fontWeight: 700,
+              borderRadius: t.radiusMd,
               textDecoration: "none",
               fontSize: 15,
+              fontWeight: 700,
             }}
           >
             Back to wishlist
@@ -376,28 +388,32 @@ export default function WishlistDetailPage() {
             aria-modal="true"
             onClick={(e) => e.stopPropagation()}
             style={{
-              background: "#111",
+              background: t.surface,
               padding: 20,
-              borderRadius: 16,
-              border: "1px solid rgba(255,255,255,0.1)",
+              borderRadius: t.radiusLg,
+              border: `1px solid ${dvCardOrangeBorder}`,
+              boxShadow: `0 0 18px ${dvOrangeGlowSubtle}, 0 10px 28px rgba(0,0,0,0.35)`,
               textAlign: "center",
               maxWidth: 300,
               width: "100%",
             }}
           >
-            <p style={{ marginBottom: 20 }}>Remove this item from your wishlist?</p>
+            <p style={{ marginBottom: 20, color: t.textPrimary }}>
+              Remove this item from your wishlist?
+            </p>
             <div style={{ display: "flex", gap: 10 }}>
               <button
                 type="button"
                 disabled={deleting}
                 onClick={() => setShowDeleteModal(false)}
                 style={{
+                  ...dvGhostButton,
                   flex: 1,
                   padding: "10px",
-                  borderRadius: 8,
-                  background: "#222",
-                  color: "#fff",
-                  border: "none",
+                  borderRadius: t.radiusMd,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                   cursor: deleting ? "not-allowed" : "pointer",
                 }}
               >
@@ -410,12 +426,13 @@ export default function WishlistDetailPage() {
                 style={{
                   flex: 1,
                   padding: "10px",
-                  borderRadius: 8,
+                  borderRadius: t.radiusMd,
                   background: "#ef4444",
                   color: "#fff",
-                  border: "none",
+                  border: "1px solid rgba(239,68,68,0.45)",
                   cursor: deleting ? "not-allowed" : "pointer",
                   opacity: deleting ? 0.7 : 1,
+                  fontWeight: 700,
                 }}
               >
                 {deleting ? "Removing..." : "Remove"}

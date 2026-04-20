@@ -4,6 +4,17 @@ import { useEffect, useState, type CSSProperties } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { supabase } from "../../lib/supabaseClient"
 import { FullPageLoading } from "../../components/FullPageLoading"
+import { t } from "../../ui/dv-tokens"
+import {
+  dvAppPageShell,
+  dvBodyFont,
+  dvCardOrangeBorder,
+  dvDashboardInner,
+  dvDisplayFont,
+  dvGhostButton,
+  dvInput,
+  dvOrangeGlowSubtle,
+} from "../../ui/dv-visual"
 
 type Item = {
   id: number
@@ -25,18 +36,17 @@ type Item = {
   favorite: boolean | null
 }
 
-const pageStyle: CSSProperties = {
-  minHeight: "100vh",
-  background: "#0f0f0f",
-  color: "#fff",
-  padding: 20,
-  fontFamily: 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
-}
+const pageStyle: CSSProperties = dvAppPageShell
 
-const containerStyle: CSSProperties = {
-  width: "100%",
-  maxWidth: 420,
-  margin: "0 auto",
+const containerStyle: CSSProperties = dvDashboardInner
+
+const detailPanelStyle: CSSProperties = {
+  background: t.surface,
+  border: `1px solid ${dvCardOrangeBorder}`,
+  borderRadius: t.radiusLg,
+  padding: 16,
+  marginBottom: 16,
+  boxShadow: `0 0 18px ${dvOrangeGlowSubtle}, 0 10px 28px rgba(0,0,0,0.35)`,
 }
 
 const topBarStyle: CSSProperties = {
@@ -47,11 +57,11 @@ const topBarStyle: CSSProperties = {
 }
 
 const ghostButtonStyle: CSSProperties = {
-  background: "none",
+  ...dvGhostButton,
+  background: "transparent",
   border: "none",
-  color: "#fff",
+  boxShadow: "none",
   padding: 0,
-  cursor: "pointer",
   fontSize: 16,
 }
 
@@ -65,41 +75,39 @@ const rowStyle: CSSProperties = {
 }
 
 const labelStyle: CSSProperties = {
-  opacity: 0.6,
+  color: t.textMuted,
   minWidth: 88,
+  fontSize: 13,
+  fontWeight: 600,
 }
 
 const valueStyle: CSSProperties = {
   textAlign: "right",
   flex: 1,
   wordBreak: "break-word",
+  color: t.textPrimary,
+  fontSize: 14,
+  fontWeight: 500,
 }
 
 const inputStyle: CSSProperties = {
+  ...dvInput,
   flex: 1,
   minWidth: 0,
   maxWidth: 170,
-  background: "#111",
-  color: "#fff",
-  border: "1px solid #444",
-  borderRadius: 10,
-  padding: "8px 10px",
-  outline: "none",
   textAlign: "right",
+  padding: "8px 10px",
+  fontSize: 14,
 }
 
 const notesInputStyle: CSSProperties = {
+  ...dvInput,
   width: "100%",
-  background: "#111",
-  color: "#fff",
-  border: "1px solid #444",
-  borderRadius: 10,
-  padding: "10px 12px",
-  outline: "none",
   minHeight: 90,
   resize: "vertical",
-  fontFamily: "system-ui",
+  fontFamily: dvBodyFont,
   boxSizing: "border-box",
+  textAlign: "left",
 }
 
 export default function CarDetail() {
@@ -305,12 +313,12 @@ export default function CarDetail() {
             width: "100%",
             maxWidth: 240,
             aspectRatio: "1",
-            borderRadius: 18,
+            borderRadius: t.radiusLg,
             overflow: "hidden",
-            background: "#222",
+            background: t.bgSecondary,
             margin: "0 auto 20px",
-            boxShadow: "0 10px 30px rgba(0,0,0,0.4)",
-            border: "1px solid rgba(255,255,255,0.08)",
+            boxShadow: `0 0 18px ${dvOrangeGlowSubtle}, 0 10px 28px rgba(0,0,0,0.35)`,
+            border: `1px solid ${dvCardOrangeBorder}`,
           }}
         >
           {item.photo_url && (
@@ -332,11 +340,13 @@ export default function CarDetail() {
         <div style={{ marginBottom: 16, textAlign: "center" }}>
           <div
             style={{
+              fontFamily: dvDisplayFont,
               fontSize: 24,
               fontWeight: 800,
               lineHeight: 1.1,
               marginBottom: 6,
               letterSpacing: "-0.03em",
+              color: t.textPrimary,
             }}
           >
             {item.name ?? "Unnamed model"}
@@ -344,7 +354,7 @@ export default function CarDetail() {
 
           <div
             style={{
-              opacity: 0.72,
+              color: t.textSecondary,
               fontSize: 14,
               fontWeight: 600,
             }}
@@ -408,15 +418,7 @@ export default function CarDetail() {
           )}
         </div>
 
-        <div
-          style={{
-            background: "linear-gradient(180deg, #171717 0%, #101010 100%)",
-            border: "1px solid rgba(255,255,255,0.08)",
-            borderRadius: 18,
-            padding: 16,
-            marginBottom: 16,
-          }}
-        >
+        <div style={detailPanelStyle}>
           <div style={rowStyle}>
             <span style={labelStyle}>Brand</span>
             {isEditing ? (
@@ -505,15 +507,7 @@ export default function CarDetail() {
           </div>
         </div>
 
-        <div
-          style={{
-            background: "linear-gradient(180deg, #171717 0%, #101010 100%)",
-            border: "1px solid rgba(255,255,255,0.08)",
-            borderRadius: 18,
-            padding: 16,
-            marginBottom: 16,
-          }}
-        >
+        <div style={detailPanelStyle}>
           <div style={rowStyle}>
             <span style={labelStyle}>Number</span>
             {isEditing ? (
@@ -596,15 +590,8 @@ export default function CarDetail() {
         </div>
 
         {(isEditing || item.notes) && (
-          <div
-            style={{
-              background: "linear-gradient(180deg, #171717 0%, #101010 100%)",
-              border: "1px solid rgba(255,255,255,0.08)",
-              borderRadius: 18,
-              padding: 16,
-            }}
-          >
-            <div style={{ opacity: 0.6, marginBottom: 8, fontSize: 14 }}>
+          <div style={{ ...detailPanelStyle, marginBottom: 0 }}>
+            <div style={{ color: t.textMuted, marginBottom: 8, fontSize: 14, fontWeight: 600 }}>
               Notes
             </div>
 
@@ -644,7 +631,7 @@ export default function CarDetail() {
               style={{
                 maxWidth: "90%",
                 maxHeight: "90%",
-                borderRadius: 12,
+                borderRadius: t.radiusMd,
               }}
             />
           </div>
@@ -666,16 +653,17 @@ export default function CarDetail() {
             <div
               onClick={(e) => e.stopPropagation()}
               style={{
-                background: "#111",
+                background: t.surface,
                 padding: 20,
-                borderRadius: 16,
-                border: "1px solid rgba(255,255,255,0.1)",
+                borderRadius: t.radiusLg,
+                border: `1px solid ${dvCardOrangeBorder}`,
+                boxShadow: `0 0 18px ${dvOrangeGlowSubtle}, 0 10px 28px rgba(0,0,0,0.35)`,
                 textAlign: "center",
                 maxWidth: 300,
                 width: "100%",
               }}
             >
-              <p style={{ marginBottom: 20 }}>
+              <p style={{ marginBottom: 20, color: t.textPrimary }}>
                 Delete this diecast?
               </p>
 
@@ -683,13 +671,13 @@ export default function CarDetail() {
                 <button
                   onClick={() => setShowDeleteModal(false)}
                   style={{
+                    ...dvGhostButton,
                     flex: 1,
                     padding: "10px",
-                    borderRadius: 8,
-                    background: "#222",
-                    color: "#fff",
-                    border: "none",
-                    cursor: "pointer",
+                    borderRadius: t.radiusMd,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
                   }}
                 >
                   Cancel
@@ -700,11 +688,12 @@ export default function CarDetail() {
                   style={{
                     flex: 1,
                     padding: "10px",
-                    borderRadius: 8,
+                    borderRadius: t.radiusMd,
                     background: "#ef4444",
                     color: "#fff",
-                    border: "none",
+                    border: "1px solid rgba(239,68,68,0.45)",
                     cursor: "pointer",
+                    fontWeight: 700,
                   }}
                 >
                   Delete

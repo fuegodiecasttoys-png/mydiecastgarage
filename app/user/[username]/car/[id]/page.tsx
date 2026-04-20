@@ -7,7 +7,14 @@ import { supabase } from "../../../../lib/supabaseClient";
 import { areFriends, fetchProfileByUsername } from "../../../../lib/friendQueries";
 import { isValidUsernameFormat, normalizeUsernameInput } from "../../../../lib/profileUsername";
 import { t } from "../../../../ui/dv-tokens";
-import { dvGhostButton, dvPageShell, dvDisplayFont } from "../../../../ui/dv-visual";
+import {
+  dvAppPageShell,
+  dvCardOrangeBorder,
+  dvDashboardInner,
+  dvDisplayFont,
+  dvGhostButton,
+  dvOrangeGlowSubtle,
+} from "../../../../ui/dv-visual";
 import { FullPageLoading } from "../../../../components/FullPageLoading";
 
 type Item = {
@@ -58,10 +65,11 @@ const valueStyle: CSSProperties = {
 
 const panelStyle: CSSProperties = {
   background: t.surface,
-  border: `1px solid ${t.borderSubtle}`,
-  borderRadius: 16,
+  border: `1px solid ${dvCardOrangeBorder}`,
+  borderRadius: t.radiusLg,
   padding: 16,
   marginBottom: 16,
+  boxShadow: `0 0 18px ${dvOrangeGlowSubtle}, 0 10px 28px rgba(0,0,0,0.35)`,
 };
 
 export default function UserCarReadOnlyPage({
@@ -167,7 +175,7 @@ export default function UserCarReadOnlyPage({
 
   if (badSlug) {
     return (
-      <div style={{ ...dvPageShell, padding: 24, textAlign: "center" }}>
+      <div style={{ ...dvAppPageShell, padding: 24, textAlign: "center" }}>
         <p style={{ color: t.textSecondary }}>Username unavailable</p>
         <Link href="/friends" style={{ ...dvGhostButton, display: "inline-block", marginTop: 16 }}>
           Friends
@@ -178,7 +186,7 @@ export default function UserCarReadOnlyPage({
 
   if (notFoundUser) {
     return (
-      <div style={{ ...dvPageShell, padding: 24, textAlign: "center" }}>
+      <div style={{ ...dvAppPageShell, padding: 24, textAlign: "center" }}>
         <p style={{ color: t.textSecondary }}>No user with that username.</p>
         <Link href="/friends" style={{ ...dvGhostButton, display: "inline-block", marginTop: 16 }}>
           Friends
@@ -189,7 +197,7 @@ export default function UserCarReadOnlyPage({
 
   if (!allowed) {
     return (
-      <div style={{ ...dvPageShell, padding: 24, textAlign: "center" }}>
+      <div style={{ ...dvAppPageShell, padding: 24, textAlign: "center" }}>
         <p style={{ color: t.textSecondary, maxWidth: 360, margin: "0 auto", lineHeight: 1.5 }}>
           You can only view this car if you are friends with @{ownerUsername || pathSlug}.
         </p>
@@ -202,7 +210,7 @@ export default function UserCarReadOnlyPage({
 
   if (!item) {
     return (
-      <div style={{ ...dvPageShell, padding: 24, textAlign: "center" }}>
+      <div style={{ ...dvAppPageShell, padding: 24, textAlign: "center" }}>
         <p style={{ color: t.textSecondary }}>This model is not in their garage.</p>
         <Link
           href={`/user/${encodeURIComponent(ownerUsername || pathSlug)}`}
@@ -218,8 +226,8 @@ export default function UserCarReadOnlyPage({
   const backHref = `/user/${enc}`;
 
   return (
-    <div style={{ ...dvPageShell, padding: 20 }}>
-      <div style={{ maxWidth: 420, margin: "0 auto" }}>
+    <div style={dvAppPageShell}>
+      <div style={dvDashboardInner}>
         <div
           style={{
             display: "grid",

@@ -14,7 +14,8 @@ import { BRANDS, COLORS } from "../lib/constants"
 import { FullPageLoading } from "../components/FullPageLoading"
 import { t } from "../ui/dv-tokens"
 import {
-  dvPageShell,
+  dvAppPageShell,
+  dvDashboardInner,
   dvInput,
   dvPrimaryButton,
   dvPrimaryButtonDisabled,
@@ -30,12 +31,9 @@ const SCALE_OPTIONS = [
   "Other",
 ]
 
-const pageStyle: CSSProperties = { ...dvPageShell, padding: 20 }
+const pageStyle: CSSProperties = dvAppPageShell
 
-const containerStyle: CSSProperties = {
-  maxWidth: 520,
-  margin: "0 auto",
-}
+const containerStyle: CSSProperties = dvDashboardInner
 
 const inputStyle: CSSProperties = dvInput
 

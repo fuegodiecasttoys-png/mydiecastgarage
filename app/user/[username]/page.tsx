@@ -8,10 +8,11 @@ import { areFriends, fetchProfileByUsername } from "../../lib/friendQueries";
 import { isValidUsernameFormat, normalizeUsernameInput } from "../../lib/profileUsername";
 import { t } from "../../ui/dv-tokens";
 import {
+  dvAppPageShell,
+  dvDashboardInner,
   dvGhostButton,
   dvImageThumb,
   dvListCard,
-  dvPageShell,
   dvInput,
   dvSelect,
   dvDisplayFont,
@@ -200,7 +201,7 @@ export default function UserCollectionPage({
 
   if (badSlug) {
     return (
-      <div style={{ ...dvPageShell, padding: 24, textAlign: "center" }}>
+      <div style={{ ...dvAppPageShell, padding: 24, textAlign: "center" }}>
         <p style={{ color: t.textSecondary }}>Username unavailable</p>
         <Link href="/friends" style={{ ...dvGhostButton, display: "inline-block", marginTop: 16 }}>
           Back to Friends
@@ -211,7 +212,7 @@ export default function UserCollectionPage({
 
   if (notFound) {
     return (
-      <div style={{ ...dvPageShell, padding: 24, textAlign: "center" }}>
+      <div style={{ ...dvAppPageShell, padding: 24, textAlign: "center" }}>
         <p style={{ color: t.textSecondary }}>No user with that username.</p>
         <Link href="/friends" style={{ ...dvGhostButton, display: "inline-block", marginTop: 16 }}>
           Back to Friends
@@ -222,7 +223,7 @@ export default function UserCollectionPage({
 
   if (!allowed) {
     return (
-      <div style={{ ...dvPageShell, padding: 24, textAlign: "center" }}>
+      <div style={{ ...dvAppPageShell, padding: 24, textAlign: "center" }}>
         <p style={{ color: t.textSecondary, maxWidth: 360, margin: "0 auto", lineHeight: 1.5 }}>
           {`You can only view this collection if you are friends (accepted) with @${
             ownerUsername || pathSlug
@@ -239,12 +240,12 @@ export default function UserCollectionPage({
   const displayUser = ownerUsername || pathSlug;
 
   return (
-    <div style={{ ...dvPageShell, position: "relative", padding: 20 }}>
+    <div style={dvAppPageShell}>
       <Link href="/friends" style={{ ...dvGhostButton, textDecoration: "none", display: "inline-block", marginBottom: 16 }}>
         ← Friends
       </Link>
 
-      <div style={{ maxWidth: 520, margin: "0 auto" }}>
+      <div style={dvDashboardInner}>
         <h1
           style={{
             margin: "0 0 4px",

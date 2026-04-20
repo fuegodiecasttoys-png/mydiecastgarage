@@ -9,6 +9,7 @@ import { IconCircle } from "./ui/IconCircle";
 import { t } from "./ui/dv-tokens";
 import {
   dvCardOrangeBorder,
+  dvDashboardInner,
   dvDisplayFont,
   dvGhostButton,
   dvHeroRowCard,
@@ -112,13 +113,7 @@ export default function Home() {
 
   return (
     <div style={dvPageShell}>
-      <div
-        style={{
-          position: "relative",
-          maxWidth: 400,
-          margin: "0 auto",
-        }}
-      >
+      <div style={dvDashboardInner}>
         <button
           type="button"
           onClick={handleLogout}

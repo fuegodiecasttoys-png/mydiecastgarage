@@ -6,9 +6,10 @@ import { supabase } from "../lib/supabaseClient";
 import Link from "next/link";
 import { t } from "../ui/dv-tokens";
 import {
+  dvAppPageShell,
+  dvDashboardInner,
   dvGhostButton,
   dvListCard,
-  dvPageShell,
   dvInput,
   dvSelect,
 } from "../ui/dv-visual";
@@ -175,7 +176,7 @@ export default function WishlistPage() {
   };
 
   return (
-    <div style={{ ...dvPageShell, position: "relative", padding: 20 }}>
+    <div style={dvAppPageShell}>
       <Link
   href="/"
   style={{
@@ -191,12 +192,7 @@ export default function WishlistPage() {
   🏠
 </Link>
 
-      <div
-        style={{
-          maxWidth: 520,
-          margin: "0 auto",
-        }}
-      >
+      <div style={dvDashboardInner}>
         <div style={{ textAlign: "center", marginBottom: 22 }}>
           <img
             src="/logo.png"

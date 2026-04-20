@@ -18,6 +18,8 @@ import {
 import { t } from "../ui/dv-tokens";
 import {
   dvCardOrangeBorder,
+  dvDashboardContentMaxPx,
+  dvDashboardInner,
   dvDisplayFont,
   dvInput,
   dvPrimaryButton,
@@ -354,7 +356,7 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
   const card: CSSProperties = {
     ...unifiedBenefitAuthCardChrome,
     width: "100%",
-    maxWidth: 440,
+    maxWidth: dvDashboardContentMaxPx,
     margin: "0 auto",
     padding: "22px 20px 24px",
   };
@@ -411,7 +413,7 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
 
   return (
     <div className="auth-experience" style={shell}>
-      <div style={{ maxWidth: 520, margin: "0 auto" }}>
+      <div style={dvDashboardInner}>
         {/* Hero */}
         <header style={{ textAlign: "center", marginBottom: 0, width: "100%", padding: 0 }}>
           <div
@@ -461,7 +463,7 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
         <section
           style={{
             width: "100%",
-            maxWidth: 440,
+            maxWidth: dvDashboardContentMaxPx,
             margin: "0 auto 12px",
             padding: 0,
             boxSizing: "border-box",
