@@ -120,10 +120,9 @@ export default function Home() {
         </button>
 
         {/* Branding */}
-        <div style={{ textAlign: "center", paddingTop: 4, marginBottom: 26 }}>
+        <div style={{ textAlign: "center", paddingTop: 4, marginBottom: 22 }}>
           <div
             style={{
-              marginBottom: 14,
               filter: "drop-shadow(0 0 14px rgba(255,106,0,0.12))",
             }}
           >
@@ -138,26 +137,6 @@ export default function Home() {
               }}
             />
           </div>
-          <h1
-            style={{
-              margin: 0,
-              fontFamily: dvDisplayFont,
-              fontSize: 13,
-              fontWeight: 800,
-              letterSpacing: "0.16em",
-              textTransform: "uppercase",
-              lineHeight: 1.45,
-              color: t.textSecondary,
-            }}
-          >
-            <span aria-hidden style={{ opacity: 0.4, letterSpacing: "0.08em" }}>
-              —
-            </span>{" "}
-            MY DIECAST GARAGE{" "}
-            <span aria-hidden style={{ opacity: 0.4, letterSpacing: "0.08em" }}>
-              —
-            </span>
-          </h1>
         </div>
 
         {/* Add Packed / Add Loose */}
