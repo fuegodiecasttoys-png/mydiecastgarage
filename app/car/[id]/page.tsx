@@ -317,8 +317,9 @@ export default function CarDetail() {
             overflow: "hidden",
             background: t.bgSecondary,
             margin: "0 auto 20px",
-            boxShadow: `0 0 18px ${dvOrangeGlowSubtle}, 0 10px 28px rgba(0,0,0,0.35)`,
-            border: `1px solid ${dvCardOrangeBorder}`,
+            boxShadow:
+              "0 0 20px rgba(255,106,0,0.13), 0 10px 28px rgba(0,0,0,0.35)",
+            border: "1px solid rgba(255,106,0,0.44)",
           }}
         >
           {item.photo_url && (
