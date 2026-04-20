@@ -304,7 +304,7 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
     <div style={shell}>
       <div style={{ maxWidth: 520, margin: "0 auto" }}>
         {/* Hero */}
-        <header style={{ textAlign: "center", marginBottom: 22, width: "100%", padding: 0 }}>
+        <header style={{ textAlign: "center", marginBottom: 0, width: "100%", padding: 0 }}>
           <div
             style={{
               display: "flex",
@@ -348,7 +348,7 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
           </h1>
           <p
             style={{
-              margin: "0 auto",
+              margin: "0 auto 20px",
               fontSize: 15,
               fontWeight: 500,
               lineHeight: 1.45,
@@ -359,6 +359,48 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
             Track packed and loose models, build your wishlist, and share your collection.
           </p>
         </header>
+
+        {/* Benefits — above auth so value prop is seen on mobile before the form */}
+        <section
+          style={{
+            width: "100%",
+            maxWidth: 440,
+            margin: "0 auto 24px",
+            padding: 0,
+            boxSizing: "border-box",
+          }}
+        >
+          <p
+            style={{
+              margin: "0 0 12px",
+              fontSize: 11,
+              fontWeight: 700,
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
+              color: t.textMuted,
+              textAlign: "center",
+            }}
+          >
+            Why collectors use it
+          </p>
+          <div style={{ display: "grid", gap: 10 }}>
+            {benefits.map((b) => (
+              <div
+                key={b.title}
+                style={{
+                  padding: "14px 16px",
+                  borderRadius: t.radiusLg,
+                  border: `1px solid rgba(255,106,0,0.14)`,
+                  background: t.surface,
+                  boxShadow: "inset 0 1px 0 rgba(255,255,255,0.03)",
+                }}
+              >
+                <div style={{ fontWeight: 700, fontSize: 15, marginBottom: 4, color: t.textPrimary }}>{b.title}</div>
+                <div style={{ fontSize: 13, color: t.textSecondary, lineHeight: 1.4 }}>{b.body}</div>
+              </div>
+            ))}
+          </div>
+        </section>
 
         {/* Auth card */}
         <div style={card}>
@@ -510,40 +552,6 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
             </div>
           )}
         </div>
-
-        {/* Benefits */}
-        <section style={{ marginTop: 28, maxWidth: 440, marginLeft: "auto", marginRight: "auto" }}>
-          <p
-            style={{
-              margin: "0 0 12px",
-              fontSize: 11,
-              fontWeight: 700,
-              letterSpacing: "0.12em",
-              textTransform: "uppercase",
-              color: t.textMuted,
-              textAlign: "center",
-            }}
-          >
-            Why collectors use it
-          </p>
-          <div style={{ display: "grid", gap: 10 }}>
-            {benefits.map((b) => (
-              <div
-                key={b.title}
-                style={{
-                  padding: "14px 16px",
-                  borderRadius: t.radiusLg,
-                  border: `1px solid rgba(255,106,0,0.18)`,
-                  background: t.surface,
-                  boxShadow: "inset 0 1px 0 rgba(255,255,255,0.04)",
-                }}
-              >
-                <div style={{ fontWeight: 700, fontSize: 15, marginBottom: 4, color: t.textPrimary }}>{b.title}</div>
-                <div style={{ fontSize: 13, color: t.textSecondary, lineHeight: 1.4 }}>{b.body}</div>
-              </div>
-            ))}
-          </div>
-        </section>
       </div>
     </div>
   );
