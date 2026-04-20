@@ -335,7 +335,7 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
           </div>
           <h1
             style={{
-              margin: "0 0 10px",
+              margin: "0 0 22px",
               fontFamily: dvDisplayFont,
               fontSize: "clamp(1.45rem, 4.5vw, 1.75rem)",
               fontWeight: 800,
@@ -346,21 +346,9 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
           >
             Build your diecast garage
           </h1>
-          <p
-            style={{
-              margin: "0 auto 20px",
-              fontSize: 15,
-              fontWeight: 500,
-              lineHeight: 1.45,
-              color: t.textSecondary,
-              maxWidth: 380,
-            }}
-          >
-            Track packed and loose models, build your wishlist, and share your collection.
-          </p>
         </header>
 
-        {/* Benefits — above auth so value prop is seen on mobile before the form */}
+        {/* Benefits — above auth; centered for mobile scan */}
         <section
           style={{
             width: "100%",
@@ -368,11 +356,13 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
             margin: "0 auto 24px",
             padding: 0,
             boxSizing: "border-box",
+            textAlign: "center",
           }}
         >
           <p
             style={{
-              margin: "0 0 12px",
+              margin: "0 auto 14px",
+              maxWidth: 360,
               fontSize: 11,
               fontWeight: 700,
               letterSpacing: "0.12em",
@@ -383,7 +373,7 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
           >
             Why collectors use it
           </p>
-          <div style={{ display: "grid", gap: 10 }}>
+          <div style={{ display: "grid", gap: 10, width: "100%" }}>
             {benefits.map((b) => (
               <div
                 key={b.title}
@@ -393,10 +383,30 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
                   border: `1px solid rgba(255,106,0,0.14)`,
                   background: t.surface,
                   boxShadow: "inset 0 1px 0 rgba(255,255,255,0.03)",
+                  textAlign: "center",
                 }}
               >
-                <div style={{ fontWeight: 700, fontSize: 15, marginBottom: 4, color: t.textPrimary }}>{b.title}</div>
-                <div style={{ fontSize: 13, color: t.textSecondary, lineHeight: 1.4 }}>{b.body}</div>
+                <div
+                  style={{
+                    fontWeight: 700,
+                    fontSize: 15,
+                    marginBottom: 6,
+                    color: t.textPrimary,
+                    textAlign: "center",
+                  }}
+                >
+                  {b.title}
+                </div>
+                <div
+                  style={{
+                    fontSize: 13,
+                    color: t.textSecondary,
+                    lineHeight: 1.45,
+                    textAlign: "center",
+                  }}
+                >
+                  {b.body}
+                </div>
               </div>
             ))}
           </div>
