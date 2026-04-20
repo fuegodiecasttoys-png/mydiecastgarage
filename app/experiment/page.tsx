@@ -329,12 +329,13 @@ export default function ExperimentPage() {
             <img
               src="/logo.png"
               alt="My Diecast Garage"
-              width={128}
+              width={110}
               style={{
                 display: "block",
-                width: 128,
-                maxWidth: "min(128px, 100%)",
+                width: 110,
+                maxWidth: "min(110px, 100%)",
                 height: "auto",
+                filter: "brightness(0.92) saturate(0.86)",
               }}
             />
           </div>
