@@ -304,14 +304,34 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
     <div style={shell}>
       <div style={{ maxWidth: 520, margin: "0 auto" }}>
         {/* Hero */}
-        <header style={{ textAlign: "center", marginBottom: 22 }}>
+        <header style={{ textAlign: "center", marginBottom: 22, width: "100%", padding: 0 }}>
           <div
             style={{
-              marginBottom: 14,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              width: "100%",
+              maxWidth: "100%",
+              margin: "0 auto 24px",
+              padding: 0,
+              boxSizing: "border-box",
               filter: "drop-shadow(0 0 18px rgba(255,106,0,0.15))",
             }}
           >
-            <Image src="/logo.png" alt="My Diecast Garage" width={88} height={88} priority style={{ height: "auto" }} />
+            <Image
+              src="/logo.png"
+              alt="My Diecast Garage"
+              width={88}
+              height={88}
+              priority
+              style={{
+                display: "block",
+                height: "auto",
+                width: "auto",
+                maxWidth: "100%",
+                margin: 0,
+              }}
+            />
           </div>
           <h1
             style={{
