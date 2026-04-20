@@ -106,7 +106,7 @@ export default function UserCollectionPage({
 
       if (!cancelled) setOwnerUsername(profile.username);
 
-      const ok = await areFriends(supabase, user.id, profile.id);
+      const ok = await areFriends(supabase, user.id, profile.user_id);
       if (!cancelled) {
         setAllowed(ok);
         if (!ok) {
@@ -118,7 +118,7 @@ export default function UserCollectionPage({
       const { data, error } = await supabase
         .from("items")
         .select("*")
-        .eq("user_id", profile.id)
+        .eq("user_id", profile.user_id)
         .order("created_at", { ascending: false });
 
       if (!cancelled) {

@@ -101,7 +101,7 @@ export default function UserCarReadOnlyPage({
 
       if (!cancelled) setOwnerUsername(profile.username);
 
-      const ok = await areFriends(supabase, user.id, profile.id);
+      const ok = await areFriends(supabase, user.id, profile.user_id);
       if (!cancelled) {
         setAllowed(ok);
         if (!ok) {
@@ -120,7 +120,7 @@ export default function UserCarReadOnlyPage({
         .from("items")
         .select("*")
         .eq("id", idNum)
-        .eq("user_id", profile.id)
+        .eq("user_id", profile.user_id)
         .maybeSingle();
 
       if (!cancelled) {

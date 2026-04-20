@@ -6,8 +6,8 @@
 -- ---------------------------------------------------------------------------
 create table if not exists public.friend_requests (
   id uuid primary key default gen_random_uuid(),
-  sender_id uuid not null references public.profiles (id) on delete cascade,
-  receiver_id uuid not null references public.profiles (id) on delete cascade,
+  sender_id uuid not null references public.profiles (user_id) on delete cascade,
+  receiver_id uuid not null references public.profiles (user_id) on delete cascade,
   status text not null default 'pending'
     constraint friend_requests_status_check
     check (status in ('pending', 'accepted', 'rejected')),
@@ -91,7 +91,8 @@ create policy "profiles_select_authenticated_directory"
 -- ---------------------------------------------------------------------------
 -- Notes
 -- ---------------------------------------------------------------------------
--- - Ensure `public.profiles.id` matches `auth.users.id` (typical pattern).
+-- - `sender_id` / `receiver_id` must match `public.profiles.user_id` (same UUID as `auth.users.id`).
+-- - If you created this table earlier with references (id), drop and recreate or migrate FKs to (user_id).
 -- - If `profiles_select_authenticated_directory` is too broad for your product,
 --   replace with a SECURITY DEFINER RPC that returns only id/username by exact match.
 -- - Do NOT grant INSERT/UPDATE/DELETE on items to friends; SELECT-only is enough for read UI.

@@ -8,22 +8,28 @@ export type FriendRequestRow = {
   created_at: string;
 };
 
+/** Row slice used for friends / shared collections: auth UUID + public username. */
+export type ProfileByUsername = {
+  user_id: string;
+  username: string;
+};
+
 export async function fetchProfileByUsername(
   supabase: SupabaseClient,
   username: string
-): Promise<{ id: string; username: string } | null> {
+): Promise<ProfileByUsername | null> {
   const clean = username.trim().toLowerCase();
   if (!clean) return null;
   const { data, error } = await supabase
     .from("profiles")
-    .select("id, username")
+    .select("user_id, username")
     .eq("username", clean)
     .maybeSingle();
   if (error || !data) return null;
-  return data as { id: string; username: string };
+  return data as ProfileByUsername;
 }
 
-/** True if there is an accepted friend_requests row between the two user ids (profiles.id). */
+/** True if there is an accepted friend_requests row between the two auth user ids (profiles.user_id). */
 export async function areFriends(
   supabase: SupabaseClient,
   a: string,

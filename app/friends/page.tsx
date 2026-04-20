@@ -21,7 +21,7 @@ import {
 } from "../ui/dv-visual";
 import { FullPageLoading } from "../components/FullPageLoading";
 
-type ProfileMini = { id: string; username: string };
+type ProfileMini = { user_id: string; username: string };
 
 export default function FriendsPage() {
   const router = useRouter();
@@ -55,10 +55,10 @@ export default function FriendsPage() {
 
     const sids = [...new Set(incomingRows.map((r) => r.sender_id))];
     if (sids.length) {
-      const { data: profs } = await supabase.from("profiles").select("id, username").in("id", sids);
+      const { data: profs } = await supabase.from("profiles").select("user_id, username").in("user_id", sids);
       const map: Record<string, string> = {};
       (profs as ProfileMini[] | null)?.forEach((p) => {
-        map[p.id] = p.username;
+        map[p.user_id] = p.username;
       });
       setIncomingNames(map);
     } else {
@@ -76,10 +76,10 @@ export default function FriendsPage() {
 
     const rids = [...new Set(outgoingRows.map((r) => r.receiver_id))];
     if (rids.length) {
-      const { data: profs2 } = await supabase.from("profiles").select("id, username").in("id", rids);
+      const { data: profs2 } = await supabase.from("profiles").select("user_id, username").in("user_id", rids);
       const map2: Record<string, string> = {};
       (profs2 as ProfileMini[] | null)?.forEach((p) => {
-        map2[p.id] = p.username;
+        map2[p.user_id] = p.username;
       });
       setOutgoingNames(map2);
     } else {
@@ -98,10 +98,10 @@ export default function FriendsPage() {
 
     const otherIds = [...new Set(friendRows.map((r) => otherParticipantId(r, uid)))];
     if (otherIds.length) {
-      const { data: profs3 } = await supabase.from("profiles").select("id, username").in("id", otherIds);
+      const { data: profs3 } = await supabase.from("profiles").select("user_id, username").in("user_id", otherIds);
       const map3: Record<string, string> = {};
       (profs3 as ProfileMini[] | null)?.forEach((p) => {
-        map3[p.id] = p.username;
+        map3[p.user_id] = p.username;
       });
       setFriendNames(map3);
     } else {
@@ -125,7 +125,7 @@ export default function FriendsPage() {
       const { data: meProf } = await supabase
         .from("profiles")
         .select("username")
-        .eq("id", user.id)
+        .eq("user_id", user.id)
         .maybeSingle();
       if (!cancelled && meProf?.username) setMyUsername(meProf.username as string);
 
@@ -150,15 +150,15 @@ export default function FriendsPage() {
     try {
       const target = await fetchProfileByUsername(supabase, clean);
       if (!target) {
-        setMessage("User not found.");
+        setMessage("No user with that username. Check spelling and try again.");
         return;
       }
-      if (target.id === myId) {
+      if (target.user_id === myId) {
         setMessage("You cannot add yourself.");
         return;
       }
 
-      if (await areFriends(supabase, myId, target.id)) {
+      if (await areFriends(supabase, myId, target.user_id)) {
         setMessage("You are already friends with this user.");
         return;
       }
@@ -168,7 +168,7 @@ export default function FriendsPage() {
         .select("id")
         .eq("status", "pending")
         .eq("sender_id", myId)
-        .eq("receiver_id", target.id)
+        .eq("receiver_id", target.user_id)
         .maybeSingle();
       if (pend1) {
         setMessage("A request is already pending to this user.");
@@ -179,7 +179,7 @@ export default function FriendsPage() {
         .from("friend_requests")
         .select("id")
         .eq("status", "pending")
-        .eq("sender_id", target.id)
+        .eq("sender_id", target.user_id)
         .eq("receiver_id", myId)
         .maybeSingle();
       if (pend2) {
@@ -189,7 +189,7 @@ export default function FriendsPage() {
 
       const { error } = await supabase.from("friend_requests").insert({
         sender_id: myId,
-        receiver_id: target.id,
+        receiver_id: target.user_id,
         status: "pending",
       });
 
