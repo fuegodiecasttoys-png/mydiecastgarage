@@ -335,8 +335,6 @@ export default function ExperimentPage() {
                 width: 128,
                 maxWidth: "min(128px, 100%)",
                 height: "auto",
-                boxShadow: "0 0 20px rgba(255,106,0,0.12)",
-                filter: "drop-shadow(0 2px 10px rgba(0,0,0,0.35))",
               }}
             />
           </div>
