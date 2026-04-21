@@ -38,6 +38,7 @@ for (const canonical of Object.values(BRAND_ALIASES)) {
 /**
  * Resolves user or OCR text to a single canonical brand from `BRANDS`, or null.
  * Matches: exact brand (case/spacing insensitive), then `BRAND_ALIASES`.
+ * Callers that need extra OCR tolerance (e.g. `analyze-model`) may layer fallbacks only after this returns null.
  */
 export function normalizeBrand(input: string): string | null {
   if (typeof input !== "string") return null

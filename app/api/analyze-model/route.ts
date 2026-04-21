@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import OpenAI from "openai"
 import { Buffer } from "buffer"
+import { normalizeBrand } from "../../lib/brandAliases"
 import { BRANDS, COLORS } from "../../lib/constants"
 
 function getOpenAI() {
@@ -67,27 +68,24 @@ function levenshtein(a: string, b: string): number {
 
 /**
  * Maps OCR / model-reported brand text to exactly one entry in BRANDS, or null.
- * Never returns a string that is not in BRANDS.
+ * Shared alias + canonical matching first (`brandAliases.normalizeBrand`); fingerprint
+ * and Levenshtein only when that returns null. Never returns a string not in BRANDS.
  */
-function normalizeBrand(value: string | null | undefined): string | null {
+function resolveBrandFromAnalyze(value: string | null | undefined): string | null {
   if (value === null || value === undefined) return null
+  const fromShared = normalizeBrand(value)
+  if (fromShared !== null) return fromShared
+
   const collapsed = collapseWhitespace(value)
   if (!collapsed) return null
 
-  const lower = collapsed.toLowerCase()
-
-  // 1) Case-insensitive equality (trimmed + collapsed spaces vs canonical BRANDS)
-  const exactCi = BRANDS.find((b) => b.toLowerCase() === lower)
-  if (exactCi) return exactCi
-
-  // 2) Fingerprint: ignore spaces & punctuation differences only
   const fp = brandFingerprint(collapsed)
   if (fp.length < 2) return null
   const fpMatches = BRANDS.filter((b) => brandFingerprint(b) === fp)
   if (fpMatches.length === 1) return fpMatches[0]!
   if (fpMatches.length > 1) return null
 
-  // 3) At most one edit away on normalized strings (safe typo / single-char OCR slip)
+  const lower = collapsed.toLowerCase()
   if (lower.length < 3) return null
   const lev1 = BRANDS.filter((b) => levenshtein(lower, b.toLowerCase()) <= 1)
   if (lev1.length === 1) return lev1[0]!
@@ -269,7 +267,7 @@ export async function POST(req: Request) {
     console.log("[analyze-model] parsed (pre-normalize):", parsed)
 
     const result: AnalyzeResult = {
-      brand: normalizeBrand(parsed.brand),
+      brand: resolveBrandFromAnalyze(parsed.brand),
       model: normalizeModel(parsed.model),
       color: normalizeColor(parsed.color),
       series: normalizeSeries(parsed.series),
