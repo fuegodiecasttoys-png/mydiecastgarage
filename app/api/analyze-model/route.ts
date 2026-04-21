@@ -278,6 +278,8 @@ export async function POST(req: Request) {
                 type: "image_url",
                 image_url: {
                   url: dataUrl,
+                  /* Lower vision token use than default/auto; helps tight quotas; OCR text on cards usually still readable. */
+                  detail: "low",
                 },
               },
             ],
