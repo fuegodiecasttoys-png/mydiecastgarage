@@ -59,6 +59,16 @@ function messageFromAnalyzeFailure(res: Response, bodyText: string): string {
   return `Analyze request failed (${res.status})`
 }
 
+function analyzeClientAlertMessage(err: unknown): string {
+  if (err instanceof Error && err.message.trim()) return err.message.trim()
+  if (typeof err === "object" && err !== null && "message" in err) {
+    const m = (err as { message: unknown }).message
+    if (typeof m === "string" && m.trim()) return m.trim()
+  }
+  if (typeof err === "string" && err.trim()) return err.trim()
+  return "Failed to analyze image"
+}
+
 export default function CapturePage() {
   const router = useRouter()
   const fileInputRef = useRef<HTMLInputElement | null>(null)
@@ -245,11 +255,9 @@ export default function CapturePage() {
         color: data.color ?? "(unchanged)",
         series: data.series ?? "(unchanged)",
       })
-    } catch (err) {
+    } catch (err: unknown) {
       console.error("[analyze-model] client error", err)
-      const message =
-        err instanceof Error ? err.message : "Failed to analyze image"
-      alert(message)
+      alert(analyzeClientAlertMessage(err))
     } finally {
       setLoading(false)
     }
