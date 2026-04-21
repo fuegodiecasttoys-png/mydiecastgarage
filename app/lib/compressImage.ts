@@ -2,8 +2,8 @@
  * Client-only: resize image file for upload (canvas). Preserves aspect ratio;
  * caps the longest edge for storage/bandwidth. Output JPEG.
  */
-const MAX_EDGE_PX = 1200
-const JPEG_QUALITY = 0.75
+const MAX_EDGE_PX = 1000
+const JPEG_QUALITY = 0.72
 
 export async function compressImage(file: File): Promise<File> {
   return new Promise((resolve, reject) => {
