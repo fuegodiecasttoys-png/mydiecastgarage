@@ -162,7 +162,6 @@ export default function FriendsPage() {
   }, [router, loadAll]);
 
   async function handleSendRequest() {
-    if (!myId) return;
     setMessage(null);
     const clean = normalizeUsernameInput(search);
     if (!clean) {
@@ -176,17 +175,52 @@ export default function FriendsPage() {
 
     setBusy(true);
     try {
-      const target = await fetchProfileByUsername(supabase, clean);
-      if (!target) {
+      const {
+        data: { user: currentUser },
+        error: authError,
+      } = await supabase.auth.getUser();
+      if (authError || !currentUser) {
+        setMessage("You must be signed in to send a request.");
+        return;
+      }
+
+      const senderId = currentUser.id;
+
+      const { data: senderRow, error: senderProfError } = await supabase
+        .from("profiles")
+        .select("user_id")
+        .eq("user_id", senderId)
+        .maybeSingle();
+      if (senderProfError || !senderRow?.user_id) {
+        setMessage(
+          "Your profile is not set up yet (missing profiles row). Finish signup or create your profile before adding friends."
+        );
+        return;
+      }
+
+      const foundUser = await fetchProfileByUsername(supabase, clean);
+      if (!foundUser) {
         setMessage("No user with that username.");
         return;
       }
-      if (target.user_id === myId) {
+
+      const receiverId = foundUser.user_id;
+      if (receiverId === senderId) {
         setMessage("You cannot add yourself.");
         return;
       }
 
-      if (await areFriends(supabase, myId, target.user_id)) {
+      const { data: receiverRow, error: receiverProfError } = await supabase
+        .from("profiles")
+        .select("user_id")
+        .eq("user_id", receiverId)
+        .maybeSingle();
+      if (receiverProfError || !receiverRow?.user_id) {
+        setMessage("That user does not have a profile and cannot receive requests.");
+        return;
+      }
+
+      if (await areFriends(supabase, senderId, receiverId)) {
         setMessage("You are already friends with this user.");
         return;
       }
@@ -195,8 +229,8 @@ export default function FriendsPage() {
         .from("friend_requests")
         .select("id")
         .eq("status", "pending")
-        .eq("sender_id", myId)
-        .eq("receiver_id", target.user_id)
+        .eq("sender_id", senderId)
+        .eq("receiver_id", receiverId)
         .maybeSingle();
       if (pend1) {
         setMessage("A request is already pending to this user.");
@@ -207,17 +241,22 @@ export default function FriendsPage() {
         .from("friend_requests")
         .select("id")
         .eq("status", "pending")
-        .eq("sender_id", target.user_id)
-        .eq("receiver_id", myId)
+        .eq("sender_id", receiverId)
+        .eq("receiver_id", senderId)
         .maybeSingle();
       if (pend2) {
         setMessage("This user already sent you a request — check Incoming.");
         return;
       }
 
+      console.log("[friend_requests] insert", {
+        sender_id: senderId,
+        receiver_id: receiverId,
+      });
+
       const { error } = await supabase.from("friend_requests").insert({
-        sender_id: myId,
-        receiver_id: target.user_id,
+        sender_id: senderId,
+        receiver_id: receiverId,
         status: "pending",
       });
 
@@ -232,7 +271,7 @@ export default function FriendsPage() {
 
       setSearch("");
       setMessage("Request sent.");
-      await loadAll(myId);
+      await loadAll(senderId);
     } finally {
       setBusy(false);
     }
