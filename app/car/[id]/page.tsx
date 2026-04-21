@@ -3,6 +3,8 @@
 import { useEffect, useState, type CSSProperties } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { supabase } from "../../lib/supabaseClient"
+import { BRANDS, COLORS } from "../../lib/constants"
+import { DvAutocompleteInput } from "../../components/DvAutocompleteInput"
 import { FullPageLoading } from "../../components/FullPageLoading"
 import { t } from "../../ui/dv-tokens"
 import {
@@ -424,13 +426,14 @@ export default function CarDetail() {
           <div style={rowStyle}>
             <span style={labelStyle}>Brand</span>
             {isEditing ? (
-              <input
-                type="text"
+              <DvAutocompleteInput
+                options={BRANDS}
                 value={editItem?.brand || ""}
-                onChange={(e) =>
-                  setEditItem((prev) => (prev ? { ...prev, brand: e.target.value } : prev))
+                onChange={(v) =>
+                  setEditItem((prev) => (prev ? { ...prev, brand: v } : prev))
                 }
-                style={inputStyle}
+                inputStyle={inputStyle}
+                wrapperStyle={{ flex: 1, minWidth: 0, maxWidth: 170 }}
               />
             ) : (
               <span style={valueStyle}>{item.brand ?? "-"}</span>
@@ -440,13 +443,14 @@ export default function CarDetail() {
           <div style={rowStyle}>
             <span style={labelStyle}>Model</span>
             {isEditing ? (
-              <input
-                type="text"
+              <DvAutocompleteInput
+                options={[]}
                 value={editItem?.name || ""}
-                onChange={(e) =>
-                  setEditItem((prev) => (prev ? { ...prev, name: e.target.value } : prev))
+                onChange={(v) =>
+                  setEditItem((prev) => (prev ? { ...prev, name: v } : prev))
                 }
-                style={inputStyle}
+                inputStyle={inputStyle}
+                wrapperStyle={{ flex: 1, minWidth: 0, maxWidth: 170 }}
               />
             ) : (
               <span style={valueStyle}>{item.name ?? "-"}</span>
@@ -456,13 +460,14 @@ export default function CarDetail() {
           <div style={rowStyle}>
             <span style={labelStyle}>Color</span>
             {isEditing ? (
-              <input
-                type="text"
+              <DvAutocompleteInput
+                options={COLORS}
                 value={editItem?.color || ""}
-                onChange={(e) =>
-                  setEditItem((prev) => (prev ? { ...prev, color: e.target.value } : prev))
+                onChange={(v) =>
+                  setEditItem((prev) => (prev ? { ...prev, color: v } : prev))
                 }
-                style={inputStyle}
+                inputStyle={inputStyle}
+                wrapperStyle={{ flex: 1, minWidth: 0, maxWidth: 170 }}
               />
             ) : (
               <span style={valueStyle}>{item.color ?? "-"}</span>

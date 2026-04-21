@@ -11,7 +11,8 @@ import {
 import { supabase } from "../lib/supabaseClient";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { COLORS } from "../lib/constants"
+import { BRANDS, COLORS } from "../lib/constants"
+import { DvAutocompleteInput } from "../components/DvAutocompleteInput"
 import { FullPageLoading } from "../components/FullPageLoading"
 import { t } from "../ui/dv-tokens"
 import {
@@ -81,12 +82,6 @@ export default function CapturePage() {
   const [name, setName] = useState("")
   const [brand, setBrand] = useState("")
   const [color, setColor] = useState("")
-  const filteredColors = COLORS.filter((c) =>
-  c
-    .toLowerCase()
-    .split(" ")
-    .some((word) => word.startsWith(color.toLowerCase().trim()))
-)
   const [scale, setScale] = useState("1:64")
   const [customScale, setCustomScale] = useState("")
 
@@ -106,7 +101,6 @@ export default function CapturePage() {
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState<string | null>(null)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
-  const [showColorSuggestions, setShowColorSuggestions] = useState(false)
 
   const [sessionChecked, setSessionChecked] = useState(false)
 
@@ -473,83 +467,32 @@ export default function CapturePage() {
           )}
 
           <div style={{ display: "grid", gap: 12 }}>
-            <input
-            type="text"
+            <DvAutocompleteInput
+              options={BRANDS}
               placeholder="Brand"
               value={brand}
-              onChange={(e) => setBrand(e.target.value)}
+              onChange={setBrand}
               disabled={loading}
-              style={inputStyle}
-             
+              inputStyle={inputStyle}
             />
 
-            <input
-               type="text"
+            <DvAutocompleteInput
+              options={[]}
               placeholder="Model"
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={setName}
               disabled={loading}
-              style={inputStyle}
+              inputStyle={inputStyle}
             />
 
-            <div style={{ position: "relative", width: "100%" }}>
-              <input
-                type="text"
-                placeholder="Color (type 2 letters for suggestions)"
-                value={color}
-                onChange={(e) => {
-                  setColor(e.target.value)
-                  setShowColorSuggestions(true)
-                }}
-                onFocus={() => setShowColorSuggestions(true)}
-                onBlur={() => {
-                  setTimeout(() => setShowColorSuggestions(false), 150)
-                }}
-                disabled={loading}
-                style={inputStyle}
-                autoComplete="off"
-              />
-              {showColorSuggestions &&
-                color.trim().length >= 1 &&
-                filteredColors.length > 0 && (
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: "calc(100% + 6px)",
-                      left: 0,
-                      right: 0,
-                      background: t.bgSecondary,
-                      border: "1px solid rgba(255,255,255,0.1)",
-                      borderRadius: 10,
-                      maxHeight: 180,
-                      overflowY: "auto",
-                      zIndex: 20,
-                    }}
-                  >
-                    {filteredColors.slice(0, 12).map((c) => (
-                      <div
-                        key={c}
-                        onClick={() => {
-                          setColor(c)
-                          setShowColorSuggestions(false)
-                        }}
-                        style={{
-                          padding: "10px 12px",
-                          cursor: "pointer",
-                        }}
-                      >
-                        {c}
-                      </div>
-                    ))}
-                  </div>
-                )}
-            </div>
-
-<datalist id="colors-list">
-  {COLORS.map((c) => (
-    <option key={c} value={c} />
-  ))}
-</datalist>
+            <DvAutocompleteInput
+              options={COLORS}
+              placeholder="Color (type 1–2 letters for suggestions)"
+              value={color}
+              onChange={setColor}
+              disabled={loading}
+              inputStyle={inputStyle}
+            />
 
             <select
               value={scale}

@@ -10,6 +10,8 @@ import {
 import { useRouter } from "next/navigation";
 import { supabase } from "../../lib/supabaseClient";
 import Link from "next/link";
+import { DvAutocompleteInput } from "../../components/DvAutocompleteInput";
+import { BRANDS, COLORS } from "../../lib/constants";
 import { FullPageLoading } from "../../components/FullPageLoading";
 import { t } from "../../ui/dv-tokens";
 import {
@@ -468,33 +470,31 @@ export default function AddWishlistPage() {
           )}
 
           <div style={{ display: "grid", gap: 12 }}>
-            <input
-             type="text"
+            <DvAutocompleteInput
+              options={BRANDS}
               placeholder="Brand"
               value={brand}
-              onChange={(e) => setBrand(e.target.value)}
+              onChange={setBrand}
               disabled={saving}
-              style={inputStyle} 
-             
+              inputStyle={inputStyle}
             />
 
-            <input
-             type="text"
+            <DvAutocompleteInput
+              options={[]}
               placeholder="Model"
               value={model}
-              onChange={(e) => setModel(e.target.value)}
+              onChange={setModel}
               disabled={saving}
-              style={inputStyle}
-            
+              inputStyle={inputStyle}
             />
 
-            <input
-              type="text"
-              placeholder="Color"
+            <DvAutocompleteInput
+              options={COLORS}
+              placeholder="Color (type 1–2 letters for suggestions)"
               value={color}
-              onChange={(e) => setColor(e.target.value)}
+              onChange={setColor}
               disabled={saving}
-              style={inputStyle}
+              inputStyle={inputStyle}
             />
 
             <select
