@@ -9,7 +9,7 @@ import {
 } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { compressImage } from "../lib/compressImage"
+import { compressImage, compressImageForAnalyze } from "../lib/compressImage"
 import { supabase } from "../lib/supabaseClient"
 import { BRANDS, COLORS } from "../lib/constants"
 import { DvAutocompleteInput } from "../components/DvAutocompleteInput"
@@ -42,6 +42,9 @@ const inputStyle: CSSProperties = dvInput
 const buttonStyle: CSSProperties = dvPrimaryButton
 
 const disabledButtonStyle: CSSProperties = dvPrimaryButtonDisabled
+
+/** Post-compression ceiling for multipart body (Vercel function limit); leave headroom below 4.5 MB. */
+const MAX_ANALYZE_UPLOAD_BYTES = Math.floor(3.5 * 1024 * 1024)
 
 /** Prefer server { error: string }; else first 500 chars of body; else status line. */
 function messageFromAnalyzeFailure(res: Response, bodyText: string): string {
@@ -190,17 +193,37 @@ export default function CapturePage() {
       setMessage(null)
       setErrorMessage(null)
 
-      console.log("[analyze-model] client before fetch", {
-        hasFile: true,
+      console.log("[analyze-model] client original image", {
         fileName: file.name,
         fileType: file.type,
-        fileSize: file.size,
+        fileSizeBytes: file.size,
+      })
+
+      const compressedForAnalyze = await compressImageForAnalyze(file)
+
+      console.log("[analyze-model] client compressed for analyze", {
+        fileName: compressedForAnalyze.name,
+        fileType: compressedForAnalyze.type,
+        fileSizeBytes: compressedForAnalyze.size,
+        originalBytes: file.size,
+        compressedBytes: compressedForAnalyze.size,
+      })
+
+      if (compressedForAnalyze.size > MAX_ANALYZE_UPLOAD_BYTES) {
+        alert(
+          "Image is still too large. Please choose a smaller photo."
+        )
+        return
+      }
+
+      console.log("[analyze-model] client before fetch", {
+        hasFile: true,
         url: "/api/analyze-model",
         formField: "file",
       })
 
       const formData = new FormData()
-      formData.append("file", file)
+      formData.append("file", compressedForAnalyze)
 
       const res = await fetch("/api/analyze-model", {
         method: "POST",
