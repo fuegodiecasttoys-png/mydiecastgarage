@@ -216,7 +216,10 @@ export default function CapturePage() {
         return
       }
 
-      const reqId = crypto.randomUUID()
+      const reqId =
+        typeof crypto !== "undefined" && crypto.randomUUID
+          ? crypto.randomUUID()
+          : Math.random().toString(36).substring(2) + Date.now().toString(36)
       console.log("[analyze-model] client request id", reqId)
 
       console.log("[analyze-model] client before fetch", {
