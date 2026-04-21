@@ -238,12 +238,15 @@ export async function POST(req: Request) {
 
     const openai = new OpenAI({ apiKey: apiKey!.trim() })
 
-    console.log("[analyze-model] before OpenAI chat.completions (model gpt-4.1-mini, vision)")
+    /** Match Almacén default: `OPENAI_MODEL` or economical vision model. */
+    const model = process.env.OPENAI_MODEL?.trim() || "gpt-4o-mini"
+
+    console.log("[analyze-model] before OpenAI chat.completions", { model })
 
     let completion: Awaited<ReturnType<OpenAI["chat"]["completions"]["create"]>>
     try {
       completion = await openai.chat.completions.create({
-        model: "gpt-4.1-mini",
+        model,
         temperature: 0,
         max_tokens: 300,
         messages: [
