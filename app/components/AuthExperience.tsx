@@ -64,7 +64,7 @@ function EyeClosedIcon() {
 const benefits = [
   { title: "Track every model", body: "Packed or loose — your garage stays organized." },
   { title: "Build your wishlist & highlight favorites", body: "Grails and gaps, all in one place." },
-  { title: "View collector garages", body: "Friends see your shelves read-only by @username." },
+  { title: "View collector garages", body: "Friends see your shelves view only by @username." },
 ] as const;
 
 /** Same chrome as benefit cards — shared background, border, shadow, radius. */

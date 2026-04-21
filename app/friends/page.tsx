@@ -338,7 +338,7 @@ export default function FriendsPage() {
         </h1>
         <p style={{ margin: "0 0 22px", color: t.textSecondary, fontSize: 14, lineHeight: 1.5 }}>
           Add collectors by username. When they accept, you can view each other&apos;s garages
-          (read-only).
+          (view only).
         </p>
         <div style={{ margin: "0 0 20px" }}>
           <p style={{ margin: "0 0 4px", color: t.textMuted, fontSize: 13 }}>

@@ -596,7 +596,7 @@ export default function ExperimentPage() {
               Add Friends
             </h3>
             <p style={{ margin: 0, fontSize: 14, fontWeight: 500, color: t.textSecondary }}>
-              View trusted collectors&apos; garages (read-only)
+              View trusted collectors&apos; garages (view only)
             </p>
           </div>
           <span style={{ fontSize: 20, color: t.textMuted, flexShrink: 0 }} aria-hidden>

@@ -262,7 +262,7 @@ export default function UserCarReadOnlyPage({
               borderRadius: 999,
             }}
           >
-            Read-only
+            View only
           </span>
         </div>
 
@@ -275,7 +275,7 @@ export default function UserCarReadOnlyPage({
             </>
           ) : null}
           <br />
-          <span style={{ opacity: 0.85 }}>Read-only</span>
+          <span style={{ opacity: 0.85 }}>View only</span>
         </p>
 
         <div

@@ -441,7 +441,7 @@ export default function Home() {
                 lineHeight: 1.35,
               }}
             >
-              View each other&apos;s garages (read-only)
+              View each other&apos;s garages (view only)
             </div>
           </div>
           <span style={{ ...chevronStyle, color: t.textMuted }} aria-hidden>

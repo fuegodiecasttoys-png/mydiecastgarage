@@ -269,7 +269,7 @@ export default function UserCollectionPage({
         {ownerDisplayName ? (
           <p style={{ margin: "0 0 6px", color: t.textMuted, fontSize: 14 }}>{ownerDisplayName}</p>
         ) : null}
-        <p style={{ margin: "0 0 18px", color: t.textMuted, fontSize: 13 }}>Read-only collection</p>
+        <p style={{ margin: "0 0 18px", color: t.textMuted, fontSize: 13 }}>View only collection</p>
 
         <div style={{ display: "flex", gap: 8, marginBottom: 10 }}>
           <input
