@@ -345,16 +345,35 @@ export default function UserCollectionPage({
       <div style={{ textAlign: "center", marginBottom: 18 }}>
         {ownerDisplayName ? (
           <p style={{ margin: "4px 0 4px", color: t.textMuted, fontSize: 14 }}>{ownerDisplayName}</p>
-        ) : (
-          <p style={{ margin: "4px 0 4px", color: t.textMuted, fontSize: 14 }}>@{displayUser}</p>
-        )}
-        <p style={{ margin: "0 0 10px", color: t.textMuted, fontSize: 13 }}>View only collection</p>
+        ) : null}
+        <p
+          style={{
+            margin: ownerDisplayName ? "0 0 0" : "4px 0 0",
+            color: t.textMuted,
+            fontSize: 13,
+          }}
+        >
+          View only collection
+        </p>
+        <p
+          style={{
+            marginTop: 6,
+            marginBottom: 10,
+            fontSize: 12,
+            fontWeight: 400,
+            color: t.orange300,
+            opacity: 0.78,
+            letterSpacing: "0.02em",
+          }}
+        >
+          @{displayUser}
+        </p>
 
         <div
           style={{
             display: "flex",
             gap: 8,
-            marginTop: 10,
+            marginTop: 0,
             marginBottom: 10,
             alignItems: "stretch",
           }}
