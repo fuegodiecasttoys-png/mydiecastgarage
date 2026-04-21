@@ -57,9 +57,9 @@ export default function Home() {
           <Image
             src="/logo.png"
             alt="Diecast Vault"
-            width={170}
-            height={80}
-            style={{ width: 170, height: "auto" }}
+            width={120}
+            height={120}
+            style={{ display: "block", width: 120, height: "auto" }}
             priority
           />
         </div>

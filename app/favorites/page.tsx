@@ -170,7 +170,7 @@ export default function FavoritesPage() {
             src="/logo.png"
             alt="My Diecast Garage"
             style={{
-              width: 170,
+              width: 120,
               height: "auto",
               display: "block",
               margin: "0 auto",

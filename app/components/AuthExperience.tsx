@@ -432,13 +432,13 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
             <Image
               src="/logo.png"
               alt="My Diecast Garage"
-              width={88}
-              height={88}
+              width={120}
+              height={120}
               priority
               style={{
                 display: "block",
+                width: 120,
                 height: "auto",
-                width: "auto",
                 maxWidth: "100%",
                 margin: 0,
               }}

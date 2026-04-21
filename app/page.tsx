@@ -144,7 +144,7 @@ export default function Home() {
               src="/logo.png"
               alt="My Diecast Garage"
               style={{
-                width: 88,
+                width: 120,
                 height: "auto",
                 display: "block",
                 margin: "0 auto",

@@ -198,7 +198,14 @@ export default function ResetPasswordClient() {
               filter: "drop-shadow(0 0 18px rgba(255,106,0,0.15))",
             }}
           >
-            <Image src="/logo.png" alt="My Diecast Garage" width={72} height={72} priority />
+            <Image
+              src="/logo.png"
+              alt="My Diecast Garage"
+              width={120}
+              height={120}
+              priority
+              style={{ display: "block", width: 120, height: "auto", margin: "0 auto" }}
+            />
           </div>
           <h1
             style={{
