@@ -11,7 +11,6 @@ import {
   dvAppPageShell,
   dvDashboardInner,
   dvCardOrangeBorder,
-  dvDisplayFont,
   dvGhostButton,
   dvImageThumb,
   dvListCard,
@@ -344,21 +343,11 @@ export default function UserCollectionPage({
   return (
     <ProfilePageChrome>
       <div style={{ textAlign: "center", marginBottom: 18 }}>
-        <h1
-          style={{
-            fontSize: 28,
-            margin: "4px 0 4px 0",
-            fontWeight: 800,
-            fontFamily: dvDisplayFont,
-            color: t.orange300,
-            wordBreak: "break-word",
-          }}
-        >
-          @{displayUser}
-        </h1>
         {ownerDisplayName ? (
-          <p style={{ margin: "0 0 4px", color: t.textMuted, fontSize: 14 }}>{ownerDisplayName}</p>
-        ) : null}
+          <p style={{ margin: "4px 0 4px", color: t.textMuted, fontSize: 14 }}>{ownerDisplayName}</p>
+        ) : (
+          <p style={{ margin: "4px 0 4px", color: t.textMuted, fontSize: 14 }}>@{displayUser}</p>
+        )}
         <p style={{ margin: "0 0 10px", color: t.textMuted, fontSize: 13 }}>View only collection</p>
 
         <div
