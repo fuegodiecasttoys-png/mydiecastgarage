@@ -236,7 +236,16 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "OPENAI_API_KEY is missing" }, { status: 500 })
     }
 
-    const openai = new OpenAI({ apiKey: apiKey!.trim() })
+    /**
+     * SDK defaults read OPENAI_ORG_ID / OPENAI_PROJECT_ID and send OpenAI-Organization / OpenAI-Project.
+     * Warehouse uses raw fetch with only Bearer — no project scoping. Wrong project env on Vercel → 429
+     * insufficient_quota for that project while the same key works elsewhere.
+     */
+    const openai = new OpenAI({
+      apiKey: apiKey!.trim(),
+      organization: null,
+      project: null,
+    })
 
     /** Match Almacén default: `OPENAI_MODEL` or economical vision model. */
     const model = process.env.OPENAI_MODEL?.trim() || "gpt-4o-mini"
