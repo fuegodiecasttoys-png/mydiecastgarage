@@ -1,17 +1,7 @@
 import { NextResponse } from "next/server"
-import OpenAI, { APIError } from "openai"
 import { Buffer } from "buffer"
 import { normalizeBrand } from "../../lib/brandAliases"
 import { BRANDS, COLORS } from "../../lib/constants"
-
-function openAiErrorMessage(err: unknown): string {
-  if (err instanceof APIError) {
-    const bits = [err.status && String(err.status), err.code, err.message].filter(Boolean)
-    return bits.join(" — ") || "OpenAI API error"
-  }
-  if (err instanceof Error) return err.message
-  return String(err)
-}
 
 export const runtime = "nodejs"
 
@@ -163,7 +153,8 @@ function fieldsFromPartialParsed(
 }
 
 export async function POST(req: Request) {
-  console.log("[analyze-model] route entered POST")
+  const analyzeReqId = req.headers.get("x-analyze-request-id") ?? "(missing)"
+  console.log("[analyze-model] route entry", analyzeReqId)
 
   try {
     let formData: FormData
@@ -236,76 +227,112 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "OPENAI_API_KEY is missing" }, { status: 500 })
     }
 
-    // TEMP DEBUG: remove after verifying Vercel env (no full key logged)
-    console.log("OPENAI_API_KEY prefix:", process.env.OPENAI_API_KEY?.slice(0, 12))
-    console.log("OPENAI_ORG_ID:", process.env.OPENAI_ORG_ID || "undefined")
-    console.log("OPENAI_PROJECT_ID:", process.env.OPENAI_PROJECT_ID || "undefined")
-    console.log("OPENAI_MODEL:", process.env.OPENAI_MODEL || "undefined")
-
-    const openai = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY!.trim(),
+    const keyTrim = process.env.OPENAI_API_KEY!.trim()
+    console.log("[analyze-model] env diag", {
+      analyzeReqId,
+      OPENAI_API_KEY_prefix_8: keyTrim.slice(0, 8),
+      OPENAI_MODEL: process.env.OPENAI_MODEL || "undefined",
+      OPENAI_ORG_ID_set: Boolean(process.env.OPENAI_ORG_ID?.trim()),
+      OPENAI_PROJECT_ID_set: Boolean(process.env.OPENAI_PROJECT_ID?.trim()),
     })
 
-    /** Match Almacén default: `OPENAI_MODEL` or economical vision model. */
+    /** Match warehouse default: `OPENAI_MODEL` or economical vision model. */
     const model = process.env.OPENAI_MODEL?.trim() || "gpt-4o-mini"
 
-    console.log("[analyze-model] before OpenAI chat.completions", { model })
+    const messages = [
+      {
+        role: "system" as const,
+        content: [
+          "You read PRINTED TEXT on diecast toy packaging only. This is OCR-first text extraction, NOT object recognition.",
+          "Do NOT guess, infer from car shape, use general knowledge, or complete missing text.",
+          "Only extract clearly readable printed words from the package/card/blister.",
+          "If text is not clearly readable for a field, use JSON null for that field (not empty string, not guesses).",
+          "model is the MOST IMPORTANT field: the exact vehicle/model name as printed; no corrections; trim spaces; max 40 characters (truncate if longer).",
+          "brand: toy line brand if clearly printed (e.g. Hot Wheels, Matchbox, GreenLight).",
+          "color: only if explicitly written on the package (e.g. Red, Metallic Blue); otherwise null.",
+          "series: sub-line or collection name if clearly visible (e.g. HW Flames, Fast & Furious); otherwise null.",
+          "Reply with ONLY valid JSON, no markdown, no commentary. Exact shape:",
+          '{"brand":string|null,"model":string|null,"color":string|null,"series":string|null}',
+          `Reference lists (prefer exact spellings when text matches): brands: ${BRANDS.join(", ")}; colors: ${COLORS.join(", ")}.`,
+        ].join(" "),
+      },
+      {
+        role: "user" as const,
+        content: [
+          {
+            type: "text" as const,
+            text:
+              "Read ONLY visible printed text on this diecast package image. Return strict JSON: brand, model, color, series. Use null when not clearly readable.",
+          },
+          {
+            type: "image_url" as const,
+            image_url: {
+              url: dataUrl,
+              detail: "low" as const,
+            },
+          },
+        ],
+      },
+    ]
 
-    let completion: Awaited<ReturnType<OpenAI["chat"]["completions"]["create"]>>
-    try {
-      completion = await openai.chat.completions.create({
+    console.log("[analyze-model] before OpenAI fetch", { analyzeReqId, model })
+
+    const openaiRes = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${keyTrim}`,
+      },
+      body: JSON.stringify({
         model,
         temperature: 0,
         max_tokens: 300,
-        messages: [
-          {
-            role: "system",
-            content: [
-              "You read PRINTED TEXT on diecast toy packaging only. This is OCR-first text extraction, NOT object recognition.",
-              "Do NOT guess, infer from car shape, use general knowledge, or complete missing text.",
-              "Only extract clearly readable printed words from the package/card/blister.",
-              "If text is not clearly readable for a field, use JSON null for that field (not empty string, not guesses).",
-              "model is the MOST IMPORTANT field: the exact vehicle/model name as printed; no corrections; trim spaces; max 40 characters (truncate if longer).",
-              "brand: toy line brand if clearly printed (e.g. Hot Wheels, Matchbox, GreenLight).",
-              "color: only if explicitly written on the package (e.g. Red, Metallic Blue); otherwise null.",
-              "series: sub-line or collection name if clearly visible (e.g. HW Flames, Fast & Furious); otherwise null.",
-              "Reply with ONLY valid JSON, no markdown, no commentary. Exact shape:",
-              '{"brand":string|null,"model":string|null,"color":string|null,"series":string|null}',
-              `Reference lists (prefer exact spellings when text matches): brands: ${BRANDS.join(", ")}; colors: ${COLORS.join(", ")}.`,
-            ].join(" "),
-          },
-          {
-            role: "user",
-            content: [
-              {
-                type: "text",
-                text:
-                  "Read ONLY visible printed text on this diecast package image. Return strict JSON: brand, model, color, series. Use null when not clearly readable.",
-              },
-              {
-                type: "image_url",
-                image_url: {
-                  url: dataUrl,
-                  /* Lower vision token use than default/auto; helps tight quotas; OCR text on cards usually still readable. */
-                  detail: "low",
-                },
-              },
-            ],
-          },
-        ],
+        messages,
+      }),
+    })
+
+    const openaiBodyText = await openaiRes.text()
+    console.log("[analyze-model] OpenAI HTTP status", openaiRes.status, { analyzeReqId })
+    console.log(
+      "[analyze-model] OpenAI response body (truncated)",
+      openaiBodyText.slice(0, 1500),
+      { analyzeReqId }
+    )
+
+    console.log("[analyze-model] after OpenAI fetch", { analyzeReqId })
+
+    if (!openaiRes.ok) {
+      let detail = "unknown error"
+      try {
+        const errJson = JSON.parse(openaiBodyText) as {
+          error?: { message?: string; code?: string }
+        }
+        detail =
+          [errJson.error?.code, errJson.error?.message].filter(Boolean).join(" — ") ||
+          detail
+      } catch {
+        detail = openaiBodyText.slice(0, 500) || detail
+      }
+      console.error("[analyze-model] OpenAI request failed", openaiRes.status, detail, {
+        analyzeReqId,
       })
-    } catch (e) {
-      const detail = openAiErrorMessage(e)
-      console.error("[analyze-model] OpenAI request failed:", detail, e)
       return NextResponse.json(
-        { error: `OpenAI request failed: ${detail}` },
+        { error: `OpenAI request failed: ${openaiRes.status} — ${detail}` },
         { status: 502 }
       )
     }
 
-    console.log("[analyze-model] after OpenAI call")
+    let completion: { choices?: Array<{ message?: { content?: string } }> }
+    try {
+      completion = JSON.parse(openaiBodyText) as typeof completion
+    } catch {
+      return NextResponse.json(
+        { error: "OpenAI returned non-JSON response" },
+        { status: 502 }
+      )
+    }
 
-    const raw = completion.choices[0]?.message?.content ?? ""
+    const raw = completion.choices?.[0]?.message?.content ?? ""
     console.log("[analyze-model] OpenAI raw content length:", raw.length)
     console.log("[analyze-model] OpenAI raw (truncated):", raw.slice(0, 800))
 

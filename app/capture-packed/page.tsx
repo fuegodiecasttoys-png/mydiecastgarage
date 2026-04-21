@@ -216,6 +216,9 @@ export default function CapturePage() {
         return
       }
 
+      const reqId = crypto.randomUUID()
+      console.log("[analyze-model] client request id", reqId)
+
       console.log("[analyze-model] client before fetch", {
         hasFile: true,
         url: "/api/analyze-model",
@@ -227,6 +230,7 @@ export default function CapturePage() {
 
       const res = await fetch("/api/analyze-model", {
         method: "POST",
+        headers: { "x-analyze-request-id": reqId },
         body: formData,
       })
 
