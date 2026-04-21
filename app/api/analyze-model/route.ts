@@ -236,6 +236,12 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "OPENAI_API_KEY is missing" }, { status: 500 })
     }
 
+    // TEMP DEBUG: remove after verifying Vercel env (no full key logged)
+    console.log("OPENAI_API_KEY prefix:", process.env.OPENAI_API_KEY?.slice(0, 12))
+    console.log("OPENAI_ORG_ID:", process.env.OPENAI_ORG_ID || "undefined")
+    console.log("OPENAI_PROJECT_ID:", process.env.OPENAI_PROJECT_ID || "undefined")
+    console.log("OPENAI_MODEL:", process.env.OPENAI_MODEL || "undefined")
+
     const openai = new OpenAI({
       apiKey: process.env.OPENAI_API_KEY!.trim(),
     })
