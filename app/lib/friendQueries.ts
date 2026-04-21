@@ -13,11 +13,10 @@ export type FriendRequestRow = {
   created_at: string;
 };
 
-/** Resolved by `profiles.username` only; `name` is display-only. */
+/** Resolved by `profiles.username` only. */
 export type ProfileByUsername = {
   user_id: string;
   username: string;
-  name: string | null;
 };
 
 export async function fetchProfileByUsername(
@@ -28,16 +27,15 @@ export async function fetchProfileByUsername(
   if (!clean || !isValidUsernameFormat(clean)) return null;
   const { data, error } = await supabase
     .from("profiles")
-    .select("user_id, username, name")
+    .select("user_id, username")
     .eq("username", clean)
     .maybeSingle();
   if (error || !data) return null;
-  const row = data as { user_id: string; username: string | null; name: string | null };
+  const row = data as { user_id: string; username: string | null };
   if (!isPublicUsername(row.username)) return null;
   return {
     user_id: row.user_id,
     username: normalizeUsernameInput(row.username as string),
-    name: row.name?.trim() || null,
   };
 }
 

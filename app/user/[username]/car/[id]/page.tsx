@@ -132,7 +132,15 @@ export default function UserCarReadOnlyPage({
 
       if (!cancelled) {
         setOwnerUsername(profile.username);
-        setOwnerDisplayName(profile.name);
+      }
+
+      const { data: nameRow } = await supabase
+        .from("profiles")
+        .select("name")
+        .eq("user_id", profile.user_id)
+        .maybeSingle();
+      if (!cancelled) {
+        setOwnerDisplayName((nameRow as { name?: string | null } | null)?.name?.trim() || null);
       }
 
       const ok = await areFriends(supabase, user.id, profile.user_id);

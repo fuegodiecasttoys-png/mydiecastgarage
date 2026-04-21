@@ -204,8 +204,8 @@ export default function FriendsPage() {
         return;
       }
 
-      const receiverId = foundUser.user_id;
-      if (receiverId === senderId) {
+      const receiver_id = foundUser.user_id;
+      if (receiver_id === senderId) {
         setMessage("You cannot add yourself.");
         return;
       }
@@ -213,14 +213,14 @@ export default function FriendsPage() {
       const { data: receiverRow, error: receiverProfError } = await supabase
         .from("profiles")
         .select("user_id")
-        .eq("user_id", receiverId)
+        .eq("user_id", receiver_id)
         .maybeSingle();
       if (receiverProfError || !receiverRow?.user_id) {
         setMessage("That user does not have a profile and cannot receive requests.");
         return;
       }
 
-      if (await areFriends(supabase, senderId, receiverId)) {
+      if (await areFriends(supabase, senderId, receiver_id)) {
         setMessage("You are already friends with this user.");
         return;
       }
@@ -230,7 +230,7 @@ export default function FriendsPage() {
         .select("id")
         .eq("status", "pending")
         .eq("sender_id", senderId)
-        .eq("receiver_id", receiverId)
+        .eq("receiver_id", receiver_id)
         .maybeSingle();
       if (pend1) {
         setMessage("A request is already pending to this user.");
@@ -241,7 +241,7 @@ export default function FriendsPage() {
         .from("friend_requests")
         .select("id")
         .eq("status", "pending")
-        .eq("sender_id", receiverId)
+        .eq("sender_id", receiver_id)
         .eq("receiver_id", senderId)
         .maybeSingle();
       if (pend2) {
@@ -251,12 +251,12 @@ export default function FriendsPage() {
 
       console.log("[friend_requests] insert", {
         sender_id: senderId,
-        receiver_id: receiverId,
+        receiver_id,
       });
 
       const { error } = await supabase.from("friend_requests").insert({
         sender_id: senderId,
-        receiver_id: receiverId,
+        receiver_id,
         status: "pending",
       });
 
