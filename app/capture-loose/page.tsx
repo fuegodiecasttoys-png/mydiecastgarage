@@ -8,6 +8,7 @@ import {
   type CSSProperties,
 } from "react";
 
+import { compressImage } from "../lib/compressImage";
 import { supabase } from "../lib/supabaseClient";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -42,37 +43,7 @@ const inputStyle: CSSProperties = { ...dvInput, outline: "none" }
 const buttonStyle: CSSProperties = dvPrimaryButton
 
 const disabledButtonStyle: CSSProperties = dvPrimaryButtonDisabled
-async function compressImage(file: File) {
-  return new Promise<File>((resolve) => {
-    const img = new Image();
-    const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d")!;
 
-    img.onload = () => {
-      const maxWidth = 800;
-      const scale = Math.min(1, maxWidth / img.width);
-
-      canvas.width = Math.round(img.width * scale);
-      canvas.height = Math.round(img.height * scale);
-
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
-      canvas.toBlob(
-        (blob) => {
-          resolve(
-            new File([blob!], file.name.replace(/\.\w+$/, ".jpg"), {
-              type: "image/jpeg",
-            })
-          );
-        },
-        "image/jpeg",
-        0.7
-      );
-    };
-
-    img.src = URL.createObjectURL(file);
-  });
-}
 export default function CapturePage() {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement | null>(null)

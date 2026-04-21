@@ -9,6 +9,7 @@ import {
 } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { compressImage } from "../lib/compressImage"
 import { supabase } from "../lib/supabaseClient"
 import { BRANDS, COLORS } from "../lib/constants"
 import { DvAutocompleteInput } from "../components/DvAutocompleteInput"
@@ -41,38 +42,6 @@ const inputStyle: CSSProperties = dvInput
 const buttonStyle: CSSProperties = dvPrimaryButton
 
 const disabledButtonStyle: CSSProperties = dvPrimaryButtonDisabled
-
-async function compressImage(file: File) {
-  return new Promise<File>((resolve) => {
-    const img = new Image()
-    const canvas = document.createElement("canvas")
-    const ctx = canvas.getContext("2d")!
-
-    img.onload = () => {
-      const maxWidth = 800
-      const scale = Math.min(1, maxWidth / img.width)
-
-      canvas.width = Math.round(img.width * scale)
-      canvas.height = Math.round(img.height * scale)
-
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
-
-      canvas.toBlob(
-        (blob) => {
-          resolve(
-            new File([blob!], file.name.replace(/\.\w+$/, ".jpg"), {
-              type: "image/jpeg",
-            })
-          )
-        },
-        "image/jpeg",
-        0.7
-      )
-    }
-
-    img.src = URL.createObjectURL(file)
-  })
-}
 
 export default function CapturePage() {
   const router = useRouter()
@@ -198,22 +167,53 @@ export default function CapturePage() {
       const formData = new FormData()
       formData.append("file", file)
 
+      console.log("[add-packed] analyze: request", {
+        fileName: file.name,
+        fileType: file.type,
+        fileSize: file.size,
+      })
+
       const res = await fetch("/api/analyze-model", {
         method: "POST",
         body: formData,
       })
 
+      const responseText = await res.text()
+      console.log("[add-packed] analyze: response status", res.status, "body length", responseText.length)
+
       if (!res.ok) {
-        throw new Error("Analyze request failed")
+        console.error("[add-packed] analyze: error body", responseText.slice(0, 500))
+        throw new Error(`Analyze request failed (${res.status})`)
       }
 
-      const data = await res.json()
+      let data: {
+        brand?: string | null
+        model?: string | null
+        color?: string | null
+        series?: string | null
+      }
+      try {
+        data = JSON.parse(responseText) as typeof data
+      } catch {
+        console.error("[add-packed] analyze: invalid JSON", responseText.slice(0, 300))
+        throw new Error("Invalid analyze response")
+      }
+
+      console.log("[add-packed] analyze: parsed payload", data)
 
       if (data.brand) setBrand(data.brand)
       if (data.model) setName(data.model)
       if (data.color) setColor(data.color)
+      if (data.series) setSeries(data.series)
+
+      console.log("[add-packed] analyze: form state after apply", {
+        brand: data.brand ?? "(unchanged)",
+        model: data.model ?? "(unchanged)",
+        color: data.color ?? "(unchanged)",
+        series: data.series ?? "(unchanged)",
+      })
     } catch (err) {
-      console.error(err)
+      console.error("[add-packed] analyze:", err)
       alert("Failed to analyze image")
     } finally {
       setLoading(false)
