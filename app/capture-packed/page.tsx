@@ -43,6 +43,22 @@ const buttonStyle: CSSProperties = dvPrimaryButton
 
 const disabledButtonStyle: CSSProperties = dvPrimaryButtonDisabled
 
+/** Prefer server { error: string }; else first 500 chars of body; else status line. */
+function messageFromAnalyzeFailure(res: Response, bodyText: string): string {
+  try {
+    const parsed = JSON.parse(bodyText) as unknown
+    if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+      const err = (parsed as { error?: unknown }).error
+      if (typeof err === "string" && err.trim()) return err.trim()
+    }
+  } catch {
+    /* use fallback */
+  }
+  const t = bodyText.trim()
+  if (t) return t.length > 500 ? `${t.slice(0, 500)}…` : t
+  return `Analyze request failed (${res.status})`
+}
+
 export default function CapturePage() {
   const router = useRouter()
   const fileInputRef = useRef<HTMLInputElement | null>(null)
@@ -155,7 +171,7 @@ export default function CapturePage() {
 
   async function handleAnalyze() {
     if (!file) {
-      alert("Upload an image first")
+      alert("Select or upload an image first, then tap Analyze model.")
       return
     }
 
@@ -164,14 +180,17 @@ export default function CapturePage() {
       setMessage(null)
       setErrorMessage(null)
 
-      const formData = new FormData()
-      formData.append("file", file)
-
-      console.log("[add-packed] analyze: request", {
+      console.log("[analyze-model] client before fetch", {
+        hasFile: true,
         fileName: file.name,
         fileType: file.type,
         fileSize: file.size,
+        url: "/api/analyze-model",
+        formField: "file",
       })
+
+      const formData = new FormData()
+      formData.append("file", file)
 
       const res = await fetch("/api/analyze-model", {
         method: "POST",
@@ -179,11 +198,17 @@ export default function CapturePage() {
       })
 
       const responseText = await res.text()
-      console.log("[add-packed] analyze: response status", res.status, "body length", responseText.length)
+      console.log(
+        "[analyze-model] client response",
+        res.status,
+        "body length",
+        responseText.length
+      )
 
       if (!res.ok) {
-        console.error("[add-packed] analyze: error body", responseText.slice(0, 500))
-        throw new Error(`Analyze request failed (${res.status})`)
+        const msg = messageFromAnalyzeFailure(res, responseText)
+        console.error("[analyze-model] client non-OK:", res.status, msg)
+        throw new Error(msg)
       }
 
       let data: {
@@ -191,30 +216,40 @@ export default function CapturePage() {
         model?: string | null
         color?: string | null
         series?: string | null
+        error?: string
       }
       try {
         data = JSON.parse(responseText) as typeof data
       } catch {
-        console.error("[add-packed] analyze: invalid JSON", responseText.slice(0, 300))
-        throw new Error("Invalid analyze response")
+        console.error(
+          "[analyze-model] client invalid JSON (success status)",
+          responseText.slice(0, 300)
+        )
+        throw new Error("Invalid analyze response (not JSON)")
       }
 
-      console.log("[add-packed] analyze: parsed payload", data)
+      if (typeof data.error === "string" && data.error.trim()) {
+        throw new Error(data.error.trim())
+      }
+
+      console.log("[analyze-model] client parsed payload", data)
 
       if (data.brand) setBrand(data.brand)
       if (data.model) setName(data.model)
       if (data.color) setColor(data.color)
       if (data.series) setSeries(data.series)
 
-      console.log("[add-packed] analyze: form state after apply", {
+      console.log("[analyze-model] client form state after apply", {
         brand: data.brand ?? "(unchanged)",
         model: data.model ?? "(unchanged)",
         color: data.color ?? "(unchanged)",
         series: data.series ?? "(unchanged)",
       })
     } catch (err) {
-      console.error("[add-packed] analyze:", err)
-      alert("Failed to analyze image")
+      console.error("[analyze-model] client error", err)
+      const message =
+        err instanceof Error ? err.message : "Failed to analyze image"
+      alert(message)
     } finally {
       setLoading(false)
     }
