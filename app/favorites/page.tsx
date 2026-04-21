@@ -10,6 +10,7 @@ import {
   dvDashboardInner,
   dvGhostButton,
   dvListCard,
+  dvModelListCardHoverHandlers,
   dvInput,
   dvSelect,
 } from "../ui/dv-visual";
@@ -141,8 +142,8 @@ export default function FavoritesPage() {
   /** Same corner badge look as wishlist “high” priority — favorites are all starred picks. */
   const favoriteBadge = () => ({
     label: "★",
-    bg: "rgba(255,106,0,0.18)",
-    border: "1px solid rgba(255,106,0,0.42)",
+    bg: "rgba(255,140,0,0.16)",
+    border: "1.5px solid rgba(255, 140, 0, 0.5)",
     color: t.orange300,
   });
 
@@ -307,6 +308,7 @@ export default function FavoritesPage() {
                     }}
                   >
                     <div
+                      {...dvModelListCardHoverHandlers}
                       style={{
                         ...dvListCard,
                         padding: 10,
@@ -323,7 +325,8 @@ export default function FavoritesPage() {
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
-                          border: `1px solid ${t.borderSubtle}`,
+                          border: "1.5px solid rgba(255, 140, 0, 0.4)",
+                          boxShadow: "0 0 8px rgba(255, 140, 0, 0.18)",
                         }}
                       >
                         {item.photo_url ? (

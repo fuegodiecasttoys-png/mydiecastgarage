@@ -13,6 +13,9 @@ import {
   dvDisplayFont,
   dvGhostButton,
   dvHeroRowCard,
+  dvModelHeroRowCardHoverHandlers,
+  dvModelQuickTileHoverHandlers,
+  dvModelRowCardHoverHandlers,
   dvPageShell,
   dvQuickTile,
   dvRowCardBase,
@@ -162,6 +165,7 @@ export default function Home() {
           <button
             type="button"
             onClick={() => router.push("/capture-packed")}
+            {...dvModelQuickTileHoverHandlers}
             style={{
               ...dvQuickTile,
               flexDirection: "column",
@@ -201,6 +205,7 @@ export default function Home() {
           <button
             type="button"
             onClick={() => router.push("/capture-loose")}
+            {...dvModelQuickTileHoverHandlers}
             style={{
               ...dvQuickTile,
               flexDirection: "column",
@@ -270,6 +275,7 @@ export default function Home() {
         <button
           type="button"
           onClick={() => router.push("/mygarage")}
+          {...dvModelHeroRowCardHoverHandlers}
           style={{
             ...dvHeroRowCard,
             marginBottom: 12,
@@ -320,6 +326,7 @@ export default function Home() {
         <button
           type="button"
           onClick={() => router.push("/favorites")}
+          {...dvModelRowCardHoverHandlers}
           style={{ ...rowCardBase, marginBottom: 12 }}
         >
           <IconCircle variant="orangeSubtle">⭐</IconCircle>
@@ -354,6 +361,7 @@ export default function Home() {
         <button
           type="button"
           onClick={() => router.push("/wishlist")}
+          {...dvModelRowCardHoverHandlers}
           style={{ ...rowCardBase, marginBottom: 12 }}
         >
           <IconCircle variant="orangeSubtle">⭐</IconCircle>
@@ -387,6 +395,7 @@ export default function Home() {
         <button
           type="button"
           onClick={() => router.push("/friends")}
+          {...dvModelRowCardHoverHandlers}
           style={{ ...rowCardBase, marginBottom: 12 }}
         >
           <IconCircle variant="orangeSubtle">👥</IconCircle>

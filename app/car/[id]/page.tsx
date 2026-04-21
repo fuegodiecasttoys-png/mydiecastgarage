@@ -8,12 +8,14 @@ import { t } from "../../ui/dv-tokens"
 import {
   dvAppPageShell,
   dvBodyFont,
-  dvCardOrangeBorder,
   dvDashboardInner,
   dvDisplayFont,
   dvGhostButton,
   dvInput,
-  dvOrangeGlowSubtle,
+  dvModelCardBorder,
+  dvModelHeroImageBorder,
+  dvModelHeroImageGlow,
+  dvModelListCardShadowRest,
 } from "../../ui/dv-visual"
 
 type Item = {
@@ -42,11 +44,11 @@ const containerStyle: CSSProperties = dvDashboardInner
 
 const detailPanelStyle: CSSProperties = {
   background: t.surface,
-  border: `1px solid ${dvCardOrangeBorder}`,
+  border: dvModelCardBorder,
   borderRadius: t.radiusLg,
   padding: 16,
   marginBottom: 16,
-  boxShadow: `0 0 18px ${dvOrangeGlowSubtle}, 0 10px 28px rgba(0,0,0,0.35)`,
+  boxShadow: dvModelListCardShadowRest,
 }
 
 const topBarStyle: CSSProperties = {
@@ -317,9 +319,8 @@ export default function CarDetail() {
             overflow: "hidden",
             background: t.bgSecondary,
             margin: "0 auto 20px",
-            boxShadow:
-              "0 0 20px rgba(255,106,0,0.13), 0 10px 28px rgba(0,0,0,0.35)",
-            border: "1px solid rgba(255,106,0,0.44)",
+            boxShadow: `${dvModelHeroImageGlow}, 0 10px 28px rgba(0,0,0,0.35)`,
+            border: dvModelHeroImageBorder,
           }}
         >
           {item.photo_url && (
@@ -657,8 +658,8 @@ export default function CarDetail() {
                 background: t.surface,
                 padding: 20,
                 borderRadius: t.radiusLg,
-                border: `1px solid ${dvCardOrangeBorder}`,
-                boxShadow: `0 0 18px ${dvOrangeGlowSubtle}, 0 10px 28px rgba(0,0,0,0.35)`,
+                border: dvModelCardBorder,
+                boxShadow: dvModelListCardShadowRest,
                 textAlign: "center",
                 maxWidth: 300,
                 width: "100%",

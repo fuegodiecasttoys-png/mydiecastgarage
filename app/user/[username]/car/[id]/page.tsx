@@ -9,11 +9,13 @@ import { isValidUsernameFormat, normalizeUsernameInput } from "../../../../lib/p
 import { t } from "../../../../ui/dv-tokens";
 import {
   dvAppPageShell,
-  dvCardOrangeBorder,
   dvDashboardInner,
   dvDisplayFont,
   dvGhostButton,
-  dvOrangeGlowSubtle,
+  dvModelCardBorder,
+  dvModelHeroImageBorder,
+  dvModelHeroImageGlow,
+  dvModelListCardShadowRest,
 } from "../../../../ui/dv-visual";
 import { FullPageLoading } from "../../../../components/FullPageLoading";
 
@@ -65,11 +67,11 @@ const valueStyle: CSSProperties = {
 
 const panelStyle: CSSProperties = {
   background: t.surface,
-  border: `1px solid ${dvCardOrangeBorder}`,
+  border: dvModelCardBorder,
   borderRadius: t.radiusLg,
   padding: 16,
   marginBottom: 16,
-  boxShadow: `0 0 18px ${dvOrangeGlowSubtle}, 0 10px 28px rgba(0,0,0,0.35)`,
+  boxShadow: dvModelListCardShadowRest,
 };
 
 export default function UserCarReadOnlyPage({
@@ -277,8 +279,8 @@ export default function UserCarReadOnlyPage({
             overflow: "hidden",
             background: t.bgSecondary,
             margin: "0 auto 20px",
-            boxShadow: "0 10px 30px rgba(0,0,0,0.35)",
-            border: `1px solid ${t.borderSubtle}`,
+            boxShadow: `${dvModelHeroImageGlow}, 0 10px 28px rgba(0,0,0,0.35)`,
+            border: dvModelHeroImageBorder,
           }}
         >
           {item.photo_url ? (

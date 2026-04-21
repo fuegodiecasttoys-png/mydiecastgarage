@@ -33,9 +33,9 @@ export function IconCircle({
           }
         : variant === "orangeQuick"
           ? {
-              border: "1px solid rgba(255,106,0,0.14)",
-              bg: `linear-gradient(165deg, rgba(255,106,0,0.07) 0%, rgba(18,23,34,0.92) 42%, ${t.surface} 100%)`,
-              glow: "0 0 18px rgba(255,106,0,0.05)",
+              border: "1.5px solid rgba(255, 140, 0, 0.42)",
+              bg: `linear-gradient(165deg, rgba(255,140,0,0.1) 0%, rgba(18,23,34,0.92) 42%, ${t.surface} 100%)`,
+              glow: "0 0 12px rgba(255, 140, 0, 0.28)",
             }
           : variant === "muted"
             ? {

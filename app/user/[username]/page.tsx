@@ -13,6 +13,7 @@ import {
   dvGhostButton,
   dvImageThumb,
   dvListCard,
+  dvModelListCardHoverHandlers,
   dvInput,
   dvSelect,
   dvDisplayFont,
@@ -51,7 +52,7 @@ const searchButtonStyle = {
   fontSize: 16,
 } as const;
 const sortSelectStyle = { ...dvSelect, marginBottom: 10 };
-const cardStyle = { ...dvListCard, transition: "all 0.2s ease" as const };
+const cardStyle = { ...dvListCard, ...dvModelListCardHoverHandlers, transition: "all 0.2s ease" as const };
 const imageWrapStyle = { ...dvImageThumb };
 const scaleBadgeStyle = {
   position: "absolute" as const,
@@ -61,8 +62,8 @@ const scaleBadgeStyle = {
   fontWeight: 600,
   padding: "4px 10px",
   borderRadius: 10,
-  border: "1px solid rgba(255,106,0,0.25)",
-  background: "rgba(255,106,0,0.08)",
+  border: "1.5px solid rgba(255, 140, 0, 0.38)",
+  background: "rgba(255,140,0,0.1)",
   color: t.textSecondary,
 } as const;
 
@@ -296,12 +297,12 @@ export default function UserCollectionPage({
                   {item.type === "packed" ? (
                     <span
                       style={{
-                        background: "rgba(255,106,0,0.14)",
+                        background: "rgba(255,140,0,0.14)",
                         color: t.textPrimary,
                         padding: "4px 10px",
                         borderRadius: 8,
                         fontSize: 12,
-                        border: "1px solid rgba(255,106,0,0.28)",
+                        border: "1.5px solid rgba(255, 140, 0, 0.42)",
                       }}
                     >
                       📦 Packed

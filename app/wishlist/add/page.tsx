@@ -17,6 +17,8 @@ import {
   dvDashboardInner,
   dvGhostButton,
   dvInput,
+  dvModelHeroImageBorder,
+  dvModelHeroImageGlow,
   dvPrimaryButton,
   dvPrimaryButtonDisabled,
 } from "../../ui/dv-visual";
@@ -412,14 +414,23 @@ export default function AddWishlistPage() {
           )}
 
           {previewUrl && (
-            <div style={{ marginBottom: 20 }}>
+            <div
+              style={{
+                marginBottom: 20,
+                maxWidth: 320,
+                marginLeft: "auto",
+                marginRight: "auto",
+                borderRadius: 14,
+                overflow: "hidden",
+                border: dvModelHeroImageBorder,
+                boxShadow: `${dvModelHeroImageGlow}, 0 10px 28px rgba(0,0,0,0.35)`,
+              }}
+            >
               <img
                 src={previewUrl}
                 alt="Preview"
                 style={{
                   width: "100%",
-                  maxWidth: 320,
-                  borderRadius: 14,
                   display: "block",
                 }}
               />

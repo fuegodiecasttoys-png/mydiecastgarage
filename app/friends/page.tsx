@@ -21,6 +21,7 @@ import {
   dvDashboardInner,
   dvGhostButton,
   dvListCard,
+  dvModelListCardHoverHandlers,
   dvInput,
   dvPrimaryButton,
   dvDisplayFont,
@@ -345,7 +346,11 @@ export default function FriendsPage() {
                 name: peer?.name ?? null,
               });
               return (
-                <div key={row.id} style={{ ...dvListCard, flexDirection: "column", alignItems: "stretch" }}>
+                <div
+                  key={row.id}
+                  {...dvModelListCardHoverHandlers}
+                  style={{ ...dvListCard, flexDirection: "column", alignItems: "stretch" }}
+                >
                   <div style={{ marginBottom: 10 }}>
                     <div style={{ fontWeight: 700, color: t.textPrimary }}>{label.primary}</div>
                     {label.secondary ? (
@@ -390,7 +395,11 @@ export default function FriendsPage() {
                   name: peer?.name ?? null,
                 });
                 return (
-                  <div key={row.id} style={{ ...dvListCard, justifyContent: "space-between", alignItems: "center" }}>
+                  <div
+                    key={row.id}
+                    {...dvModelListCardHoverHandlers}
+                    style={{ ...dvListCard, justifyContent: "space-between", alignItems: "center" }}
+                  >
                     <div style={{ minWidth: 0 }}>
                       <div style={{ color: t.textPrimary, fontWeight: 600 }}>{label.primary}</div>
                       {label.secondary ? (
@@ -434,6 +443,7 @@ export default function FriendsPage() {
                 <Link
                   key={row.id}
                   href={href}
+                  {...dvModelListCardHoverHandlers}
                   style={{
                     ...dvListCard,
                     textDecoration: "none",
@@ -444,7 +454,7 @@ export default function FriendsPage() {
                   {inner}
                 </Link>
               ) : (
-                <div key={row.id} style={{ ...dvListCard, opacity: 0.85 }}>
+                <div key={row.id} {...dvModelListCardHoverHandlers} style={{ ...dvListCard, opacity: 0.85 }}>
                   {inner}
                 </div>
               );

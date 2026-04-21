@@ -8,11 +8,13 @@ import { FullPageLoading } from "../../components/FullPageLoading"
 import { t } from "../../ui/dv-tokens"
 import {
   dvAppPageShell,
-  dvCardOrangeBorder,
   dvDashboardInner,
   dvDisplayFont,
   dvGhostButton,
-  dvOrangeGlowSubtle,
+  dvModelCardBorder,
+  dvModelHeroImageBorder,
+  dvModelHeroImageGlow,
+  dvModelListCardShadowRest,
 } from "../../ui/dv-visual"
 
 type WishlistItem = {
@@ -36,11 +38,11 @@ const containerStyle: CSSProperties = dvDashboardInner
 
 const detailPanelStyle: CSSProperties = {
   background: t.surface,
-  border: `1px solid ${dvCardOrangeBorder}`,
+  border: dvModelCardBorder,
   borderRadius: t.radiusLg,
   padding: 16,
   marginBottom: 16,
-  boxShadow: `0 0 18px ${dvOrangeGlowSubtle}, 0 10px 28px rgba(0,0,0,0.35)`,
+  boxShadow: dvModelListCardShadowRest,
 }
 
 const rowStyle: CSSProperties = {
@@ -254,8 +256,8 @@ export default function WishlistDetailPage() {
             overflow: "hidden",
             background: t.bgSecondary,
             margin: "0 auto 20px",
-            border: `1px solid ${dvCardOrangeBorder}`,
-            boxShadow: `0 0 18px ${dvOrangeGlowSubtle}, 0 10px 28px rgba(0,0,0,0.35)`,
+            border: dvModelHeroImageBorder,
+            boxShadow: `${dvModelHeroImageGlow}, 0 10px 28px rgba(0,0,0,0.35)`,
           }}
         >
           {item.photo_url ? (
@@ -391,8 +393,8 @@ export default function WishlistDetailPage() {
               background: t.surface,
               padding: 20,
               borderRadius: t.radiusLg,
-              border: `1px solid ${dvCardOrangeBorder}`,
-              boxShadow: `0 0 18px ${dvOrangeGlowSubtle}, 0 10px 28px rgba(0,0,0,0.35)`,
+              border: dvModelCardBorder,
+              boxShadow: dvModelListCardShadowRest,
               textAlign: "center",
               maxWidth: 300,
               width: "100%",
