@@ -1,10 +1,11 @@
 "use client";
 
+/** Superdeportivo moderno, tonos oscuros (Porsche 911, vista lateral) — Unsplash, solo /experiment. */
 const CAR_SRC =
-  "https://images.unsplash.com/photo-1542362567-b07d54358753?w=800&q=80&auto=format&fit=crop";
+  "https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=1200&q=85&auto=format&fit=crop";
 
 /**
- * Dark car photo, right side — `img` keeps /experiment self-contained (no `next.config`).
+ * Silueta de auto al fondo de “My Garage”: anclada abajo-derecha, baja en la jerarquía, sin capturar clicks.
  */
 export function ExperimentCarDeco() {
   return (
@@ -12,16 +13,22 @@ export function ExperimentCarDeco() {
       aria-hidden
       style={{
         position: "absolute",
-        top: 0,
-        right: 0,
         bottom: 0,
-        width: "min(58%, 210px)",
+        right: 0,
+        top: 0,
+        width: "60%",
+        maxWidth: "100%",
         pointerEvents: "none",
-        zIndex: 1,
+        zIndex: 0,
         overflow: "hidden",
-        maskImage: "linear-gradient(90deg, transparent 0%, black 20%, black 100%)",
-        WebkitMaskImage: "linear-gradient(90deg, transparent 0%, black 20%, black 100%)",
-        opacity: 0.48,
+        opacity: 0.15,
+        maskImage: "linear-gradient(to left, black 40%, transparent 100%)",
+        WebkitMaskImage: "linear-gradient(to left, black 40%, transparent 100%)",
+        maskSize: "100% 100%",
+        WebkitMaskSize: "100% 100%",
+        maskRepeat: "no-repeat",
+        WebkitMaskRepeat: "no-repeat",
+        borderRadius: "inherit",
       }}
     >
       <img
@@ -31,11 +38,13 @@ export function ExperimentCarDeco() {
         decoding="async"
         style={{
           position: "absolute",
-          inset: 0,
+          bottom: 0,
+          right: 0,
           width: "100%",
           height: "100%",
           objectFit: "cover",
-          objectPosition: "right center",
+          objectPosition: "100% 50%",
+          filter: "brightness(0.6) contrast(1.2)",
         }}
       />
     </div>
