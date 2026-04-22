@@ -106,6 +106,49 @@ function normalizeMainSubNumber(value: string | null | undefined): string | null
   return t.length > 32 ? t.slice(0, 32) : t
 }
 
+/** e.g. "9/10", "157/250" — not words like "F&F" */
+const FRACTION_ONLY = /^\s*(\d+)\s*\/\s*(\d+)\s*$/i
+
+/**
+ * The model often puts 9/10 in `series` by mistake. `series` must be a theme name, not a fraction.
+ * - Denominator &gt;= 50 (e.g. 157/250) → main_number
+ * - Smaller (e.g. 9/10) → sub_number
+ */
+function relocateFractionsFromSeries(
+  seriesRaw: string | null,
+  mainRaw: string | null,
+  subRaw: string | null
+): { series: string | null; main_number: string | null; sub_number: string | null } {
+  let series = seriesRaw
+  let main = mainRaw
+  let sub = subRaw
+
+  const s = series?.trim()
+  if (!s) {
+    return { series, main_number: main, sub_number: sub }
+  }
+
+  const m = s.match(FRACTION_ONLY)
+  if (!m) {
+    return { series, main_number: main, sub_number: sub }
+  }
+
+  const b = parseInt(m[2]!, 10)
+  const value = s.replace(/\s*\/\s*/i, "/")
+  if (Number.isNaN(b)) {
+    return { series, main_number: main, sub_number: sub }
+  }
+
+  if (b >= 50) {
+    if (!main?.trim()) main = value
+  } else {
+    if (!sub?.trim()) sub = value
+  }
+
+  series = null
+  return { series, main_number: main, sub_number: sub }
+}
+
 function tryParseAnalyzeJson(raw: string): Partial<Record<keyof AnalyzeResult, unknown>> | null {
   const trimmed = raw.trim()
   if (!trimmed) return null
@@ -249,7 +292,7 @@ export async function POST(req: Request) {
           "If text is not clearly readable for a field, use JSON null for that field (not empty string, not guesses).",
           "model is the MOST IMPORTANT field: the exact vehicle/model name as printed; no corrections; trim spaces; max 40 characters (truncate if longer).",
           "brand: toy line brand if clearly printed (e.g. Hot Wheels, Matchbox, GreenLight).",
-          "series: sub-line or collection name if clearly visible (e.g. HW Flames, Fast & Furious); otherwise null.",
+          "series: ONLY a theme/collection name in WORDS (e.g. HW Flames, Fast and Furious). NEVER put numeric fractions in series. A string like 9/10 or 157/250 is never series — use sub_number or main_number.",
           "main_number: ONLY the printed fraction in the UPPER RIGHT of the card (e.g. 157/250 in the top corner/ribbon). Never confuse with the mid-right box.",
           "sub_number: ONLY the printed fraction in a SMALL BOX or banner on the MIDDLE-RIGHT of the art (e.g. 9/10). It is a different number than main_number. If not clearly separate/readable, null.",
           "Reply with ONLY valid JSON, no markdown, no commentary. Exact shape:",
@@ -263,7 +306,7 @@ export async function POST(req: Request) {
           {
             type: "text" as const,
             text:
-              "Read ONLY visible printed text on this diecast package. Return JSON: brand, model, series, main_number (top-right fraction, e.g. 157/250), sub_number (mid-right small box, e.g. 9/10 if present). null when not readable.",
+              "Read ONLY visible printed text. series = theme name in words if any, never 9/10 or 157/250. main_number = top-right fraction (e.g. 157/250). sub_number = mid-right box (e.g. 9/10). JSON: brand, model, series, main_number, sub_number. null if unreadable.",
           },
           {
             type: "image_url" as const,
@@ -356,12 +399,25 @@ export async function POST(req: Request) {
     const parsed = fieldsFromPartialParsed(partial)
     console.log("[analyze-model] parsed (pre-normalize):", parsed)
 
+    const relocated = relocateFractionsFromSeries(
+      parsed.series,
+      parsed.main_number,
+      parsed.sub_number
+    )
+    if (
+      relocated.series !== parsed.series ||
+      relocated.main_number !== parsed.main_number ||
+      relocated.sub_number !== parsed.sub_number
+    ) {
+      console.log("[analyze-model] relocated fraction out of series:", relocated)
+    }
+
     const result: AnalyzeResult = {
       brand: resolveBrandFromAnalyze(parsed.brand),
       model: normalizeModel(parsed.model),
-      series: normalizeSeries(parsed.series),
-      main_number: normalizeMainSubNumber(parsed.main_number),
-      sub_number: normalizeMainSubNumber(parsed.sub_number),
+      series: normalizeSeries(relocated.series),
+      main_number: normalizeMainSubNumber(relocated.main_number),
+      sub_number: normalizeMainSubNumber(relocated.sub_number),
     }
 
     console.log("[analyze-model] response JSON (normalized):", result)
