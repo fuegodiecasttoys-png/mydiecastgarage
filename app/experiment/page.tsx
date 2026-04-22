@@ -25,9 +25,7 @@ import {
   experimentHeroChevron,
   experimentHeroIconBorder,
   experimentHeroIconBoxShadow,
-  experimentIconNeutral,
   experimentIconPrimary,
-  experimentIconSofter,
   experimentListChevron,
   experimentListIconFrame,
   experimentListRowOrangeAccent,
@@ -415,7 +413,7 @@ export default function ExperimentPage() {
         >
           <div style={experimentListIconFrame}>
             <IconCircle variant="orangeSubtle">
-              <ExpIconStarFilled color={experimentIconSofter} size={24} />
+              <ExpIconStarFilled color={experimentIconPrimary} size={24} />
             </IconCircle>
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
@@ -460,7 +458,7 @@ export default function ExperimentPage() {
         >
           <div style={experimentListIconFrame}>
             <IconCircle variant="orangeSubtle">
-              <ExpIconHeart color={experimentIconNeutral} size={24} />
+              <ExpIconHeart color={experimentIconPrimary} size={24} />
             </IconCircle>
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
@@ -504,7 +502,7 @@ export default function ExperimentPage() {
         >
           <div style={experimentListIconFrame}>
             <IconCircle variant="orangeSubtle">
-              <ExpIconUsers color={experimentIconNeutral} size={24} />
+              <ExpIconUsers color={experimentIconPrimary} size={24} />
             </IconCircle>
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
@@ -572,7 +570,7 @@ export default function ExperimentPage() {
         >
           <div style={experimentListIconFrame}>
             <IconCircle variant="orangeSubtle">
-              <ExpIconCamera color={experimentIconNeutral} size={24} />
+              <ExpIconCamera color={experimentIconPrimary} size={24} />
             </IconCircle>
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
