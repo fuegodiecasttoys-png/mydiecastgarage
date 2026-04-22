@@ -67,15 +67,16 @@ export function ExperimentFeaturedGarageCard({ onClick, title, lead, subline, di
       <ExperimentCarDeco />
       <div className="experimentMyGarageGlint" aria-hidden />
       {/*
-        Un solo hijo en el flex externo: la fila interna. Así el centrado vertical es de todo el pack (texto + chevron).
+        Columna + justifyContent: center: el cuerpo a flujo mide 124 (border-box) y un solo hijo
+        (fila) se coloca en el eje vertical; fiable aunque el nodo <button> herede raros del UA.
       */}
       <div
         style={{
           position: "relative",
           zIndex: 1,
           display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
+          flexDirection: "column",
+          justifyContent: "center",
           minHeight: 124,
           width: "100%",
           boxSizing: "border-box",
@@ -90,8 +91,10 @@ export function ExperimentFeaturedGarageCard({ onClick, title, lead, subline, di
             alignItems: "center",
             width: "100%",
             minWidth: 0,
+            minHeight: 0,
             gap: 12,
             boxSizing: "border-box",
+            flex: "0 0 auto",
           }}
         >
           <div
