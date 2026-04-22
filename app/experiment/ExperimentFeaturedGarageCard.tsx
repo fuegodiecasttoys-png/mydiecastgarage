@@ -25,9 +25,9 @@ type Props = {
 };
 
 /**
- * “My Garage” — contenedor (minHeight 124, flex fila) con un solo hijo al flujo: la fila texto+›.
- * alignItems: center en ese contenedor centra el bloque entero; no usar dos hijos sueltos (desalinean el ›).
- * <button> reenvuelve; la barra naranja/metal del CSS aplica a .experimentMyGarageCard.
+ * “My Garage” — cuerpo en columna; fila interior (100% altura útil) con alignItems center;
+ * bloque título|badge|sub: flex col + justifyContent center, texto a la izquierda (alignItems start).
+ * Coche/glow sin cambios.
  */
 export function ExperimentFeaturedGarageCard({ onClick, title, lead, subline, displayFont }: Props) {
   return (
@@ -57,7 +57,7 @@ export function ExperimentFeaturedGarageCard({ onClick, title, lead, subline, di
         WebkitTapHighlightColor: "transparent",
         overflow: "hidden",
         fontFamily: "inherit",
-        lineHeight: 0,
+        lineHeight: "normal",
         boxSizing: "border-box",
         WebkitAppearance: "none" as const,
         appearance: "none",
@@ -67,8 +67,9 @@ export function ExperimentFeaturedGarageCard({ onClick, title, lead, subline, di
       <ExperimentCarDeco />
       <div className="experimentMyGarageGlint" aria-hidden />
       {/*
-        Columna + justifyContent: center: el cuerpo a flujo mide 124 (border-box) y un solo hijo
-        (fila) se coloca en el eje vertical; fiable aunque el nodo <button> herede raros del UA.
+        Padre: columna, min 124, sin justifyContent: center en el cuerpo (el centrado vive en la fila
+        y en el bloque título+lead+sub).
+        Último hijo a flujo: fila (display flex, align-items: center, flex 1) llena el alto.
       */}
       <div
         style={{
@@ -76,7 +77,6 @@ export function ExperimentFeaturedGarageCard({ onClick, title, lead, subline, di
           zIndex: 1,
           display: "flex",
           flexDirection: "column",
-          justifyContent: "center",
           minHeight: 124,
           width: "100%",
           boxSizing: "border-box",
@@ -84,6 +84,9 @@ export function ExperimentFeaturedGarageCard({ onClick, title, lead, subline, di
           lineHeight: "normal",
         }}
       >
+        {/*
+          Padre inmediato del bloque izquierdo: fila, altura del área útil, alinea a media altura.
+        */}
         <div
           style={{
             display: "flex",
@@ -92,21 +95,28 @@ export function ExperimentFeaturedGarageCard({ onClick, title, lead, subline, di
             width: "100%",
             minWidth: 0,
             minHeight: 0,
+            height: "100%",
+            flex: 1,
             gap: 12,
             boxSizing: "border-box",
-            flex: "0 0 auto",
           }}
         >
+          {/*
+            Bloque: título + badge + sublínea; a la izquierda; el grupo se centra en el eje de la fila
+            (alignSelf center) y justify center si la columna tuviera alto extra.
+          */}
           <div
             style={{
               position: "relative",
               display: "flex",
               flex: 1,
               minWidth: 0,
+              minHeight: 0,
               flexDirection: "column",
+              justifyContent: "center",
               alignItems: "flex-start",
+              alignSelf: "center",
               boxSizing: "border-box",
-              gap: 0,
             }}
           >
             <div
@@ -115,6 +125,7 @@ export function ExperimentFeaturedGarageCard({ onClick, title, lead, subline, di
                 fontSize: 20,
                 fontWeight: 800,
                 letterSpacing: "-0.03em",
+                marginTop: 0,
                 marginBottom: 8,
                 lineHeight: 1.04,
                 color: experimentTextStrong,
@@ -122,9 +133,10 @@ export function ExperimentFeaturedGarageCard({ onClick, title, lead, subline, di
             >
               {title}
             </div>
-            <div style={{ marginBottom: 7 }}>{lead}</div>
+            <div style={{ marginTop: 0, marginBottom: 7 }}>{lead}</div>
             <div
               style={{
+                marginTop: 0,
                 fontSize: 13,
                 fontWeight: 500,
                 color: experimentHeroSubline,
