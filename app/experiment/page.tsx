@@ -22,6 +22,7 @@ import {
   experimentHeroBackground,
   experimentHeroBadge,
   experimentHeroBorder,
+  experimentOrange,
   experimentHeroBoxShadow,
   experimentHeroBoxShadowHover,
   experimentHeroChevron,
@@ -40,11 +41,9 @@ import {
   experimentQuickTileBorder,
   experimentQuickTileShadowHover,
   experimentQuickTileShadowRest,
-  experimentScrollBottomSpace,
   experimentTextMuted,
   experimentTextStrong,
 } from "./experimentHeroStyle";
-import { ExperimentBottomNav } from "./ExperimentBottomNav";
 import { ExperimentHeroCarDeco } from "./ExperimentHeroCarDeco";
 import {
   ExpIconCamera,
@@ -184,7 +183,7 @@ export default function ExperimentPage() {
         background: experimentAppBackground,
         color: experimentTextStrong,
         fontFamily: dvBodyFont,
-        padding: `20px 18px calc(32px + ${experimentScrollBottomSpace}px)`,
+        padding: "20px 18px 32px",
         position: "relative",
         boxSizing: "border-box",
       }}
@@ -194,15 +193,41 @@ export default function ExperimentPage() {
           type="button"
           onClick={handleLogout}
           style={{
-            ...dvGhostButton,
             position: "absolute",
             top: 0,
             right: 0,
             zIndex: 2,
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 6,
+            padding: "6px 12px",
+            borderRadius: 10,
             fontSize: 12,
-            letterSpacing: "0.02em",
+            fontWeight: 600,
+            letterSpacing: "0.04em",
+            color: experimentTextStrong,
+            background: "rgba(8, 12, 20, 0.65)",
+            border: "1px solid rgba(255, 154, 31, 0.38)",
+            boxShadow: "0 0 0 1px rgba(0,0,0,0.2)",
+            cursor: "pointer",
+            fontFamily: "inherit",
           }}
         >
+          <svg
+            width={14}
+            height={14}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden
+          >
+            <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
+            <path d="M16 17l5-5-5-5" />
+            <path d="M21 12H9" />
+          </svg>
           Logout
         </button>
 
@@ -219,6 +244,44 @@ export default function ExperimentPage() {
                 margin: "0 auto",
               }}
             />
+          </div>
+          <div style={{ marginTop: 10 }}>
+            <div
+              style={{
+                fontFamily: dvDisplayFont,
+                fontSize: 12,
+                fontWeight: 800,
+                letterSpacing: "0.2em",
+                color: experimentTextStrong,
+                textTransform: "uppercase",
+              }}
+            >
+              My diecast
+            </div>
+            <div
+              style={{
+                marginTop: 6,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 8,
+                fontSize: 10,
+                fontWeight: 600,
+                letterSpacing: "0.12em",
+                color: "rgba(255,255,255,0.42)",
+              }}
+            >
+              <span>—</span>
+              <span
+                style={{
+                  color: experimentOrange,
+                  letterSpacing: "0.22em",
+                }}
+              >
+                GARAGE
+              </span>
+              <span>—</span>
+            </div>
           </div>
         </div>
 
@@ -640,7 +703,6 @@ export default function ExperimentPage() {
           </span>
         </button>
       </div>
-      <ExperimentBottomNav router={router} userId={userId} />
     </div>
   );
 }

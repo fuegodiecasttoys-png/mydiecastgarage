@@ -160,6 +160,3 @@ export const experimentListRowShadowHoverWarm =
 export const experimentLogoHalo: CSSProperties = {
   filter: "drop-shadow(0 0 14px " + experimentOrangeGlow + ")",
 };
-
-/** Bottom dock clearance */
-export const experimentScrollBottomSpace = 88;
