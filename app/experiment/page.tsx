@@ -25,6 +25,9 @@ import {
   experimentHeroChevron,
   experimentHeroIconBorder,
   experimentHeroIconBoxShadow,
+  experimentIconNeutral,
+  experimentIconPrimary,
+  experimentIconSofter,
   experimentListChevron,
   experimentListIconFrame,
   experimentListRowOrangeAccent,
@@ -32,12 +35,21 @@ import {
   experimentListRowShadowRestWarm,
   experimentListTitle,
   experimentLogoHalo,
-  experimentQuickEmojiStyle,
+  experimentQuickIconWrap,
   experimentQuickTileBackground,
   experimentQuickTileBorder,
   experimentQuickTileShadowHover,
   experimentQuickTileShadowRest,
 } from "./experimentHeroStyle";
+import {
+  ExpIconCamera,
+  ExpIconCar,
+  ExpIconHeart,
+  ExpIconHouse,
+  ExpIconPackage,
+  ExpIconStarFilled,
+  ExpIconUsers,
+} from "./experimentIcons";
 
 function garageCountLabel(count: number) {
   if (count === 0) return "No models yet";
@@ -73,10 +85,10 @@ function ExperimentHeroIcon() {
         background: "rgba(255,255,255,0.04)",
         border: experimentHeroIconBorder,
         boxShadow: experimentHeroIconBoxShadow,
-        fontSize: 22,
+        lineHeight: 0,
       }}
     >
-      🏠
+      <ExpIconHouse color={experimentIconPrimary} size={24} />
     </div>
   );
 }
@@ -223,8 +235,10 @@ export default function ExperimentPage() {
               boxShadow: experimentQuickTileShadowRest,
             }}
           >
-            <div style={experimentQuickEmojiStyle}>
-              <IconCircle variant="orangeQuick">📦</IconCircle>
+            <div style={experimentQuickIconWrap}>
+              <IconCircle variant="orangeQuick">
+                <ExpIconPackage color={experimentIconPrimary} size={24} />
+              </IconCircle>
             </div>
             <div style={{ textAlign: "center" }}>
               <div
@@ -271,8 +285,10 @@ export default function ExperimentPage() {
               boxShadow: experimentQuickTileShadowRest,
             }}
           >
-            <div style={experimentQuickEmojiStyle}>
-              <IconCircle variant="orangeQuick">🚗</IconCircle>
+            <div style={experimentQuickIconWrap}>
+              <IconCircle variant="orangeQuick">
+                <ExpIconCar color={experimentIconPrimary} size={24} />
+              </IconCircle>
             </div>
             <div style={{ textAlign: "center" }}>
               <div
@@ -362,8 +378,8 @@ export default function ExperimentPage() {
             <div style={{ marginBottom: 8 }}>
               <AccentBadge style={garageCountError ? undefined : experimentHeroBadge}>
                 {garageCountError ? null : garageCount > 0 ? (
-                  <span style={{ fontSize: 11, opacity: 0.95 }} aria-hidden>
-                    📦
+                  <span style={{ display: "inline-flex", lineHeight: 0, marginRight: 4 }} aria-hidden>
+                    <ExpIconPackage size={12} color={experimentHeroBadge.color} />
                   </span>
                 ) : null}
                 {garageCountError ? "Count unavailable" : garageCountLabel(garageCount)}
@@ -398,7 +414,9 @@ export default function ExperimentPage() {
           style={{ ...rowCardBase, marginBottom: 12, ...experimentListRowOrangeAccent }}
         >
           <div style={experimentListIconFrame}>
-            <IconCircle variant="orangeSubtle">⭐</IconCircle>
+            <IconCircle variant="orangeSubtle">
+              <ExpIconStarFilled color={experimentIconSofter} size={24} />
+            </IconCircle>
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div
@@ -441,7 +459,9 @@ export default function ExperimentPage() {
           style={{ ...rowCardBase, marginBottom: 12, ...experimentListRowOrangeAccent }}
         >
           <div style={experimentListIconFrame}>
-            <IconCircle variant="orangeSubtle">⭐</IconCircle>
+            <IconCircle variant="orangeSubtle">
+              <ExpIconHeart color={experimentIconNeutral} size={24} />
+            </IconCircle>
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div
@@ -483,7 +503,9 @@ export default function ExperimentPage() {
           style={{ ...rowCardBase, marginBottom: 12, ...experimentListRowOrangeAccent }}
         >
           <div style={experimentListIconFrame}>
-            <IconCircle variant="orangeSubtle">👥</IconCircle>
+            <IconCircle variant="orangeSubtle">
+              <ExpIconUsers color={experimentIconNeutral} size={24} />
+            </IconCircle>
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div
@@ -549,7 +571,9 @@ export default function ExperimentPage() {
           style={{ ...rowCardBase, marginBottom: 0, ...experimentListRowOrangeAccent }}
         >
           <div style={experimentListIconFrame}>
-            <IconCircle variant="orangeSubtle">📖</IconCircle>
+            <IconCircle variant="orangeSubtle">
+              <ExpIconCamera color={experimentIconNeutral} size={24} />
+            </IconCircle>
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div

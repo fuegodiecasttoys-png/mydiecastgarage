@@ -40,6 +40,11 @@ export const experimentHeroIconBoxShadow =
 
 export const experimentHeroChevron = "#FFAB52";
 
+/** /experiment icon palette (SVG stroke/fill) — top row + hero: primary; list: calmer. */
+export const experimentIconPrimary = "#FF9A3D";
+export const experimentIconSofter = "#E58A2E";
+export const experimentIconNeutral = "rgba(245,247,250,0.82)";
+
 /* —— Quick add tiles —— */
 export const experimentQuickTileShadowRest =
   "0 0 0 1px rgba(255,255,255,0.1)," +
@@ -58,11 +63,11 @@ export const experimentQuickTileBackground =
 
 export const experimentQuickTileBorder = "1px solid rgba(255,122,24,0.24)";
 
-export const experimentQuickEmojiStyle: CSSProperties = {
+/** Quick-tile icon row (SVG, centered) */
+export const experimentQuickIconWrap: CSSProperties = {
   display: "flex",
   justifyContent: "center",
-  filter: "saturate(1.18) contrast(1.04)",
-  WebkitFilter: "saturate(1.18) contrast(1.04)",
+  alignItems: "center",
 };
 
 /* —— Secondary list rows (Favorites, Wishlist, Add Friends, How To only) —— */
