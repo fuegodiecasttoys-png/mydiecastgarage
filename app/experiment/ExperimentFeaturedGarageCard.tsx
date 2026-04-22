@@ -25,9 +25,8 @@ type Props = {
 };
 
 /**
- * “My Garage” — cuerpo en columna; fila interior (100% altura útil) con alignItems center;
- * bloque título|badge|sub: height 100% + flex col + justifyContent center, texto a la izquierda.
- * Coche/glow sin cambios.
+ * “My Garage” — cuerpo con height: 124 (px reales) para que la fila y el bloque
+ * izquierdo tengan altura definida; justifyContent center en la columna de textos. Coche/glow sin cambios.
  */
 export function ExperimentFeaturedGarageCard({ onClick, title, lead, subline, displayFont }: Props) {
   return (
@@ -67,9 +66,8 @@ export function ExperimentFeaturedGarageCard({ onClick, title, lead, subline, di
       <ExperimentCarDeco />
       <div className="experimentMyGarageGlint" aria-hidden />
       {/*
-        Padre: columna, min 124, sin justifyContent: center en el cuerpo (el centrado vive en la fila
-        y en el bloque título+lead+sub).
-        Último hijo a flujo: fila (display flex, align-items: center, flex 1) llena el alto.
+        Altura fija 124 (border-box) = altura real; la fila al 100% del cuerpo útil y
+        el bloque izquierdo rellena + justifyContent center.
       */}
       <div
         style={{
@@ -77,41 +75,31 @@ export function ExperimentFeaturedGarageCard({ onClick, title, lead, subline, di
           zIndex: 1,
           display: "flex",
           flexDirection: "column",
-          minHeight: 124,
+          height: 124,
           width: "100%",
           boxSizing: "border-box",
           padding: "17px 20px 17px 20px",
           lineHeight: "normal",
         }}
       >
-        {/*
-          Padre inmediato del bloque izquierdo: fila, altura del área útil, alinea a media altura.
-        */}
         <div
           style={{
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
+            height: "100%",
             width: "100%",
             minWidth: 0,
-            minHeight: 0,
-            height: "100%",
-            flex: 1,
             gap: 12,
             boxSizing: "border-box",
           }}
         >
-          {/*
-            Bloque: título + badge + sublínea; a la izquierda; el grupo se centra en el eje de la fila
-            (height 100% + justifyContent center en la columna de texto).
-          */}
           <div
             style={{
               position: "relative",
               display: "flex",
               flex: 1,
               minWidth: 0,
-              minHeight: 0,
               height: "100%",
               flexDirection: "column",
               justifyContent: "center",
