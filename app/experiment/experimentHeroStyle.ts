@@ -65,12 +65,21 @@ export const experimentQuickEmojiStyle: CSSProperties = {
   WebkitFilter: "saturate(1.18) contrast(1.04)",
 };
 
-/* —— Secondary list rows —— */
-/** Icon halo + ring (How To); use on all 4 list rows for identical icon frames. */
+/* —— Secondary list rows (Favorites, Wishlist, Add Friends, How To only) —— */
+const LIST_AMBIENT_BG =
+  "linear-gradient(270deg, " +
+  "rgba(255,122,24,0.162) 0%, " +
+  "rgba(255,122,24,0.09) 25%, " +
+  "rgba(255,122,24,0.036) 45%, " +
+  "rgba(0,0,0,0) 65%)" +
+  ", #101725";
+
+/** Coherent with list cards; no outer glow, subtle right-side accent ring only. */
 export const experimentListIconFrame: CSSProperties = {
   lineHeight: 0,
   borderRadius: 14,
-  boxShadow: "0 0 0 1px rgba(255,255,255,0.1), 0 0 10px rgba(255,122,24,0.05)",
+  border: "1px solid rgba(255,122,24,0.162)",
+  boxShadow: "inset 0 1px 0 rgba(255,255,255,0.05)",
 };
 
 export const experimentListTitle = "rgba(252,252,255,0.98)";
@@ -85,27 +94,19 @@ export const experimentListRowPolish: CSSProperties = {
   border: "1px solid rgba(255,255,255,0.1)",
 };
 
-/** Favorites / Friends / HowTo: feint warm second edge */
+/**
+ * Right edge ambient light, long fade left; no orange in shadow (hover handlers use strings below).
+ * Opacities ≈10% under reference values (premium, not neon).
+ */
 export const experimentListRowOrangeAccent: CSSProperties = {
-  boxShadow:
-    "0 0 0 1px rgba(255,255,255,0.1)," +
-    "0 0 0 1px rgba(255,122,24,0.1)," +
-    "0 6px 16px rgba(0,0,0,0.4)," +
-    "inset 0 1px 0 rgba(255,255,255,0.05)",
-  border: "1px solid rgba(255,255,255,0.1)",
+  background: LIST_AMBIENT_BG,
+  border: "1px solid rgba(255,122,24,0.198)",
+  boxShadow: "0 6px 18px rgba(0,0,0,0.6)",
 };
 
-export const experimentListRowShadowRestWarm =
-  "0 0 0 1px rgba(255,255,255,0.1)," +
-  "0 0 0 1px rgba(255,122,24,0.1)," +
-  "0 6px 16px rgba(0,0,0,0.4)," +
-  "inset 0 1px 0 rgba(255,255,255,0.05)";
+export const experimentListRowShadowRestWarm = "0 6px 18px rgba(0,0,0,0.6)";
 
-export const experimentListRowShadowHoverWarm =
-  "0 0 0 1px rgba(255,255,255,0.1)," +
-  "0 0 0 1px rgba(255,122,24,0.2)," +
-  "0 8px 20px rgba(0,0,0,0.48)," +
-  "inset 0 1px 0 rgba(255,255,255,0.07)";
+export const experimentListRowShadowHoverWarm = "0 8px 22px rgba(0,0,0,0.58)";
 
 export const experimentLogoHalo: CSSProperties = {
   filter: "drop-shadow(0 0 12px rgba(255,122,24,0.1))",
