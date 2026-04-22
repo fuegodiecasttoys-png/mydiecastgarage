@@ -2,7 +2,6 @@
 
 import type { ReactNode } from "react";
 import { t } from "./dv-tokens";
-import { dvOrangeBorderSubtle, dvOrangeGlowSubtle } from "./dv-visual";
 
 export type IconCircleVariant =
   | "accent"
@@ -21,21 +20,21 @@ export function IconCircle({
   const ring =
     variant === "accent"
       ? {
-          border: `1px solid ${t.borderMedium}`,
-          bg: `linear-gradient(160deg, ${t.surfaceElevated} 0%, ${t.surface} 100%)`,
-          glow: "0 8px 22px rgba(0,0,0,0.42)",
+          border: `1px solid ${t.borderAccent}`,
+          bg: "rgba(255,255,255,0.04)",
+          glow: "0 6px 16px rgba(0,0,0,0.4)",
         }
       : variant === "orangeSubtle"
         ? {
-            border: `1px solid ${dvOrangeBorderSubtle}`,
-            bg: `linear-gradient(165deg, ${t.surfaceElevated} 0%, ${t.surface} 100%)`,
-            glow: `0 0 22px ${dvOrangeGlowSubtle}`,
+            border: `1px solid ${t.borderAccent}`,
+            bg: "rgba(255,255,255,0.04)",
+            glow: "0 4px 14px rgba(0,0,0,0.35), 0 0 0 1px rgba(0,0,0,0.2)",
           }
         : variant === "orangeQuick"
           ? {
-              border: "1.5px solid rgba(255, 140, 0, 0.42)",
-              bg: `linear-gradient(165deg, rgba(255,140,0,0.1) 0%, rgba(18,23,34,0.92) 42%, ${t.surface} 100%)`,
-              glow: "0 0 12px rgba(255, 140, 0, 0.28)",
+              border: `1px solid ${t.borderAccent}`,
+              bg: "rgba(255,255,255,0.04)",
+              glow: "0 4px 14px rgba(0,0,0,0.35), 0 0 0 1px rgba(0,0,0,0.2)",
             }
           : variant === "muted"
             ? {
@@ -45,8 +44,8 @@ export function IconCircle({
               }
             : {
                 border: `1px solid ${t.borderSubtle}`,
-                bg: `linear-gradient(165deg, ${t.surfaceElevated} 0%, ${t.surface} 100%)`,
-                glow: "0 8px 22px rgba(0,0,0,0.35)",
+                bg: "rgba(255,255,255,0.04)",
+                glow: "0 6px 16px rgba(0,0,0,0.4)",
               };
 
   return (
@@ -61,7 +60,7 @@ export function IconCircle({
         flexShrink: 0,
         background: ring.bg,
         border: ring.border,
-        boxShadow: `${ring.glow === "none" ? "" : `${ring.glow}, `}inset 0 1px 0 rgba(255,255,255,0.06)`,
+        boxShadow: `${ring.glow === "none" ? "" : `${ring.glow}, `}inset 0 1px 0 rgba(255,255,255,0.04)`,
         fontSize: 22,
       }}
     >

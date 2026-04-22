@@ -4,26 +4,36 @@ import { t } from "./dv-tokens";
 export const dvDisplayFont = `var(--dv-font-display), var(--dv-font-body), system-ui, sans-serif`;
 export const dvBodyFont = `var(--dv-font-body), system-ui, sans-serif`;
 
+const O = "255, 122, 24";
+
 export function shellBackground(): string {
-  return "linear-gradient(180deg, #0B1018 0%, #090D14 32%, #07090D 62%, #050608 100%)";
+  return "linear-gradient(180deg, #0B0F17 0%, #07090D 45%, #07090D 100%)";
 }
 
-/** Signature orange (dark-canvas premium accent). */
-export const dvSignatureOrange = "255, 140, 0" as const;
+/** Signature orange (automotive accent) */
+export const dvSignatureOrange = `${O}` as const;
 
-export const dvModelCardBorder = `1.5px solid rgba(${dvSignatureOrange}, 0.5)`;
-export const dvModelCardAmbientGlow = `0 0 10px rgba(${dvSignatureOrange}, 0.25)`;
-export const dvModelCardHoverGlow = `0 0 14px rgba(${dvSignatureOrange}, 0.7)`;
+const cardEdge = `0 0 0 1px ${t.borderSubtle}`;
+const cardDepth = "0 8px 24px rgba(0,0,0,0.45)";
+const cardInset = "inset 0 1px 0 rgba(255,255,255,0.05)";
 
-/** Main diecast hero photo — brighter ring + visible glow. */
-export const dvModelHeroImageBorder = "1.5px solid rgba(255, 165, 0, 0.82)";
-export const dvModelHeroImageGlow = `0 0 12px rgba(${dvSignatureOrange}, 0.6)`;
+const orangeFrame = `0 0 0 1px rgba(${O}, 0.18)`;
+const orangeLift = "0 8px 24px rgba(255,122,24,0.14)";
+const orangeHoverLift = "0 10px 28px rgba(255,122,24,0.12)";
 
-export const dvModelListCardShadowRest = `${dvModelCardAmbientGlow}, 0 10px 28px rgba(0,0,0,0.35)`;
-export const dvModelListCardShadowHover = `${dvModelCardHoverGlow}, 0 10px 28px rgba(0,0,0,0.35)`;
+export const dvModelCardBorder = `1px solid ${t.borderSubtle}`;
 
-export const dvModelRowCardShadowRest = `${dvModelCardAmbientGlow}, 0 12px 32px rgba(0,0,0,0.38), inset 0 1px 0 rgba(255,255,255,0.05)`;
-export const dvModelRowCardShadowHover = `${dvModelCardHoverGlow}, 0 12px 32px rgba(0,0,0,0.38), inset 0 1px 0 rgba(255,255,255,0.05)`;
+export const dvModelCardAmbientGlow = orangeLift;
+export const dvModelCardHoverGlow = `${orangeFrame}, ${orangeHoverLift}`;
+
+export const dvModelHeroImageBorder = "1.5px solid rgba(255, 154, 61, 0.55)";
+export const dvModelHeroImageGlow = `0 0 10px rgba(${O}, 0.35), 0 0 0 1px rgba(${O}, 0.12)`;
+
+export const dvModelListCardShadowRest = `${cardEdge}, ${cardDepth}, ${cardInset}`;
+export const dvModelListCardShadowHover = `${orangeFrame}, ${cardDepth}, ${cardInset}, ${orangeHoverLift}`;
+
+export const dvModelRowCardShadowRest = `${cardEdge}, 0 12px 32px rgba(0,0,0,0.4), ${cardInset}`;
+export const dvModelRowCardShadowHover = `${orangeFrame}, 0 12px 32px rgba(0,0,0,0.4), ${cardInset}, 0 0 16px rgba(255,122,24,0.1)`;
 
 export const dvModelListCardHoverHandlers = {
   onMouseEnter(e: MouseEvent<HTMLElement>) {
@@ -43,22 +53,26 @@ export const dvModelRowCardHoverHandlers = {
   },
 };
 
-export const dvOrangeBorderSubtle = `rgba(${dvSignatureOrange}, 0.28)`;
-export const dvOrangeGlowSubtle = `rgba(${dvSignatureOrange}, 0.12)`;
-export const dvIconOrangeMuted = "#FF8124";
+const heroBase = [
+  orangeFrame,
+  "0 10px 32px rgba(0,0,0,0.48)",
+  "0 4px 16px rgba(0,0,0,0.3)",
+  orangeLift,
+  "inset 0 1px 0 rgba(255,255,255,0.06)",
+  "inset 0 -1px 0 rgba(0,0,0,0.32)",
+].join(", ");
 
-/** Color when border width is set separately (e.g. `2px solid ${dvCardOrangeBorder}`). */
-export const dvCardOrangeBorder = `rgba(${dvSignatureOrange}, 0.5)`;
+const heroHover = [
+  "0 0 0 1px rgba(255,122,24,0.26)",
+  "0 12px 36px rgba(0,0,0,0.48)",
+  "0 4px 16px rgba(0,0,0,0.3)",
+  "0 10px 32px rgba(255,122,24,0.12)",
+  "inset 0 1px 0 rgba(255,255,255,0.07)",
+  "inset 0 -1px 0 rgba(0,0,0,0.3)",
+].join(", ");
 
-/** @deprecated Prefer `dvCardOrangeBorder`; kept as alias for older imports. */
-export const dvQuickBorder = dvCardOrangeBorder;
-export const dvQuickBoxShadow = `${dvModelCardAmbientGlow}, 0 10px 30px rgba(0,0,0,0.32)`;
-
-/** @deprecated Prefer `dvCardOrangeBorder`; kept as alias for older imports. */
-export const dvHeroBorder = dvCardOrangeBorder;
-export const dvHeroShadow = `${dvModelCardAmbientGlow}, 0 14px 36px rgba(0,0,0,0.42), 0 6px 16px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.07), inset 0 -1px 0 rgba(0,0,0,0.32)`;
-
-export const dvHeroRowCardShadowHover = `${dvModelCardHoverGlow}, 0 14px 36px rgba(0,0,0,0.42), 0 6px 16px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.07), inset 0 -1px 0 rgba(0,0,0,0.32)`;
+export const dvHeroShadow = heroBase;
+export const dvHeroRowCardShadowHover = heroHover;
 
 export const dvModelHeroRowCardHoverHandlers = {
   onMouseEnter(e: MouseEvent<HTMLElement>) {
@@ -69,8 +83,8 @@ export const dvModelHeroRowCardHoverHandlers = {
   },
 };
 
-const dvQuickTileShadowRest = `${dvQuickBoxShadow}, inset 0 1px 0 rgba(255,255,255,0.05)`;
-const dvQuickTileShadowHover = `${dvModelCardHoverGlow}, 0 10px 30px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.05)`;
+const dvQuickTileShadowRest = `${cardEdge}, ${cardDepth}, ${cardInset}, ${orangeLift.replace("0.14", "0.08")}`;
+const dvQuickTileShadowHover = `${orangeFrame}, 0 10px 30px rgba(0,0,0,0.4), ${cardInset}, 0 0 14px rgba(255,122,24,0.09)`;
 
 export const dvModelQuickTileHoverHandlers = {
   onMouseEnter(e: MouseEvent<HTMLElement>) {
@@ -80,6 +94,15 @@ export const dvModelQuickTileHoverHandlers = {
     e.currentTarget.style.boxShadow = dvQuickTileShadowRest;
   },
 };
+
+export const dvOrangeBorderSubtle = t.borderAccent;
+export const dvOrangeGlowSubtle = t.orangeGlow;
+export const dvIconOrangeMuted = t.orange400;
+
+export const dvCardOrangeBorder = `rgba(${O}, 0.4)`;
+export const dvQuickBorder = dvCardOrangeBorder;
+export const dvQuickBoxShadow = `${cardEdge}, ${cardDepth}, ${cardInset}, ${orangeLift.replace("0.14", "0.1")}`;
+export const dvHeroBorder = dvCardOrangeBorder;
 
 export const dvPageShell: CSSProperties = {
   minHeight: "100vh",
@@ -91,10 +114,8 @@ export const dvPageShell: CSSProperties = {
   background: shellBackground(),
 };
 
-/** Home (`/`) inner column width — default for list / tool pages. */
 export const dvDashboardContentMaxPx = 400;
 
-/** Centered column matching the home dashboard hub. */
 export const dvDashboardInner: CSSProperties = {
   position: "relative",
   width: "100%",
@@ -103,7 +124,6 @@ export const dvDashboardInner: CSSProperties = {
   boxSizing: "border-box",
 };
 
-/** `dvPageShell` + `position: relative` for absolute corner controls (🏠, etc.). */
 export const dvAppPageShell: CSSProperties = {
   ...dvPageShell,
   position: "relative",
@@ -142,13 +162,13 @@ export const dvPrimaryButton: CSSProperties = {
   width: "100%",
   padding: "14px 16px",
   borderRadius: t.radiusMd,
-  border: `1px solid rgba(${dvSignatureOrange}, 0.58)`,
+  border: `1px solid ${t.borderAccent}`,
   background: `linear-gradient(180deg, ${t.orange400} 0%, ${t.orange500} 100%)`,
   color: "#fff",
   cursor: "pointer",
   fontSize: 16,
   fontWeight: 700,
-  boxShadow: `0 0 12px rgba(${dvSignatureOrange}, 0.22), 0 10px 28px rgba(0,0,0,0.35)`,
+  boxShadow: `0 4px 20px rgba(${O}, 0.18), 0 8px 24px rgba(0,0,0,0.35)`,
 };
 
 export const dvPrimaryButtonDisabled: CSSProperties = {
@@ -179,7 +199,7 @@ export const dvRowCardBase: CSSProperties = {
 export const dvHeroRowCard: CSSProperties = {
   ...dvRowCardBase,
   padding: "18px 16px",
-  border: dvModelCardBorder,
+  border: `1px solid ${t.borderAccent}`,
   background: t.surfaceElevated,
   boxShadow: dvHeroShadow,
 };
@@ -197,7 +217,7 @@ export const dvListCard: CSSProperties = {
   padding: 12,
   borderRadius: t.radiusLg,
   background: t.surface,
-  border: dvModelCardBorder,
+  border: `1px solid ${t.borderSubtle}`,
   position: "relative",
   boxShadow: dvModelListCardShadowRest,
 };
@@ -212,8 +232,8 @@ export const dvImageThumb: CSSProperties = {
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  border: `1.5px solid rgba(${dvSignatureOrange}, 0.42)`,
-  boxShadow: `0 0 8px rgba(${dvSignatureOrange}, 0.2)`,
+  border: `1.5px solid ${t.borderAccent}`,
+  boxShadow: `0 0 0 1px ${t.borderSubtle}, 0 6px 18px rgba(0,0,0,0.35)`,
 };
 
 export const dvTextSecondary: CSSProperties = { color: t.textSecondary };

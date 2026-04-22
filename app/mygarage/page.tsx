@@ -117,8 +117,8 @@ const scaleBadgeStyle = {
   fontWeight: 600,
   padding: "4px 10px",
   borderRadius: 10,
-  border: "1.5px solid rgba(255, 140, 0, 0.38)",
-  background: "rgba(255,140,0,0.1)",
+  border: "1px solid rgba(255, 122, 24, 0.24)",
+  background: "rgba(255, 122, 24, 0.08)",
   color: t.textSecondary,
 } as const
 
@@ -276,8 +276,8 @@ export default function MyGarage() {
               style={{
                 ...dvGhostButton,
                 borderRadius: 999,
-                border: "1.5px solid rgba(255, 140, 0, 0.42)",
-                color: t.orange300,
+                border: "1px solid rgba(255, 122, 24, 0.32)",
+                color: t.orange400,
                 fontWeight: 700,
               }}
             >
@@ -314,12 +314,12 @@ export default function MyGarage() {
                   {item.type === "packed" ? (
                     <span
                       style={{
-                        background: "rgba(255,140,0,0.14)",
+                        background: "rgba(255, 122, 24, 0.1)",
                         color: t.textPrimary,
                         padding: "4px 10px",
                         borderRadius: 8,
                         fontSize: 12,
-                        border: "1.5px solid rgba(255, 140, 0, 0.42)",
+                        border: "1px solid rgba(255, 122, 24, 0.3)",
                       }}
                     >
                       📦 Packed
@@ -327,7 +327,7 @@ export default function MyGarage() {
                   ) : (
                     <span
                       style={{
-                        background: "rgba(255,255,255,0.05)",
+                        background: "rgba(255,255,255,0.04)",
                         color: t.textSecondary,
                         padding: "4px 10px",
                         borderRadius: 8,
@@ -387,7 +387,7 @@ export default function MyGarage() {
                         marginBottom: 6,
                         wordBreak: "break-word",
                         paddingRight: 72,
-                        color: "#ffffff",
+                        color: t.textPrimary,
                         letterSpacing: "-0.02em",
                       }}
                     >
@@ -415,8 +415,9 @@ export default function MyGarage() {
                       {item.sth && (
                         <span
                           style={{
-                            background: "#f59e0b",
-                            color: "#000",
+                            background: "rgba(255, 200, 90, 0.12)",
+                            color: t.textPrimary,
+                            border: "1px solid rgba(255, 200, 100, 0.35)",
                             padding: "2px 8px",
                             borderRadius: 6,
                             fontSize: 11,
@@ -430,8 +431,9 @@ export default function MyGarage() {
                       {item.th && (
                         <span
                           style={{
-                            background: "#22c55e",
-                            color: "#000",
+                            background: "rgba(255, 122, 24, 0.14)",
+                            color: t.textPrimary,
+                            border: "1px solid rgba(255, 122, 24, 0.3)",
                             padding: "2px 8px",
                             borderRadius: 6,
                             fontSize: 11,
@@ -445,8 +447,9 @@ export default function MyGarage() {
                       {item.chase && (
                         <span
                           style={{
-                            background: "#e11d48",
-                            color: "#fff",
+                            background: "rgba(200, 50, 70, 0.2)",
+                            color: "#F5F7FA",
+                            border: "1px solid rgba(200, 70, 90, 0.4)",
                             padding: "2px 8px",
                             borderRadius: 6,
                             fontSize: 11,

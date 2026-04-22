@@ -72,7 +72,7 @@ function priorityBadgeWishlist(priority: WishlistRow["priority"]) {
   if (priority === "high") {
     return {
       label: "High",
-      bg: "rgba(255,140,0,0.16)",
+      bg: "rgba(255, 122, 24, 0.1)",
       border: `1.5px solid rgba(${dvSignatureOrange}, 0.5)`,
       color: t.orange300,
     };
@@ -87,7 +87,7 @@ function priorityBadgeWishlist(priority: WishlistRow["priority"]) {
   }
   return {
     label: "Medium",
-    bg: "rgba(255,140,0,0.08)",
+    bg: "rgba(255, 255, 255, 0.04)",
     border: `1.5px solid rgba(${dvSignatureOrange}, 0.32)`,
     color: t.textSecondary,
   };

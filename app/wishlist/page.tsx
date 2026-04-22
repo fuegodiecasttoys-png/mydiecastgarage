@@ -153,9 +153,9 @@ export default function WishlistPage() {
     if (priority === "high") {
       return {
         label: "High",
-        bg: "rgba(255,140,0,0.16)",
-        border: "1.5px solid rgba(255, 140, 0, 0.5)",
-        color: t.orange300,
+        bg: "rgba(255, 122, 24, 0.12)",
+        border: "1px solid rgba(255, 122, 24, 0.38)",
+        color: t.orange400,
       };
     }
 
@@ -170,8 +170,8 @@ export default function WishlistPage() {
 
     return {
       label: "Medium",
-      bg: "rgba(255,140,0,0.08)",
-      border: "1.5px solid rgba(255, 140, 0, 0.32)",
+      bg: "rgba(255, 255, 255, 0.05)",
+      border: "1px solid rgba(255, 255, 255, 0.12)",
       color: t.textSecondary,
     };
   };
@@ -354,8 +354,8 @@ export default function WishlistPage() {
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
-                          border: "1.5px solid rgba(255, 140, 0, 0.4)",
-                          boxShadow: "0 0 8px rgba(255, 140, 0, 0.18)",
+                          border: `1px solid ${t.borderSubtle}`,
+                          boxShadow: "0 6px 16px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.04)",
                         }}
                       >
                         {item.photo_url ? (

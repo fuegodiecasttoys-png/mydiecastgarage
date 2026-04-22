@@ -349,13 +349,13 @@ export default function UserCarReadOnlyPage({
           {item.type === "packed" ? (
             <span
               style={{
-                background: "rgba(255,106,0,0.14)",
+                background: "rgba(255, 122, 24, 0.12)",
                 color: t.orange300,
                 padding: "4px 10px",
                 borderRadius: 999,
                 fontSize: 12,
                 fontWeight: 700,
-                border: "1px solid rgba(255,106,0,0.28)",
+                border: "1px solid rgba(255, 122, 24, 0.25)",
               }}
             >
               Packed
@@ -378,7 +378,7 @@ export default function UserCarReadOnlyPage({
           {item.favorite ? (
             <span
               style={{
-                background: "rgba(255,106,0,0.12)",
+                background: "rgba(255, 122, 24, 0.1)",
                 color: t.orange300,
                 padding: "4px 10px",
                 borderRadius: 999,
@@ -392,8 +392,9 @@ export default function UserCarReadOnlyPage({
           {item.sth ? (
             <span
               style={{
-                background: "#f59e0b",
-                color: "#000",
+                background: "rgba(255, 200, 90, 0.12)",
+                color: t.textPrimary,
+                border: "1px solid rgba(255, 200, 100, 0.35)",
                 padding: "4px 10px",
                 borderRadius: 999,
                 fontSize: 12,
@@ -406,8 +407,9 @@ export default function UserCarReadOnlyPage({
           {item.th ? (
             <span
               style={{
-                background: "#22c55e",
-                color: "#000",
+                background: "rgba(255, 122, 24, 0.14)",
+                color: t.textPrimary,
+                border: "1px solid rgba(255, 122, 24, 0.3)",
                 padding: "4px 10px",
                 borderRadius: 999,
                 fontSize: 12,
@@ -420,8 +422,9 @@ export default function UserCarReadOnlyPage({
           {item.chase ? (
             <span
               style={{
-                background: "#e11d48",
-                color: "#fff",
+                background: "rgba(200, 50, 70, 0.2)",
+                color: "#F5F7FA",
+                border: "1px solid rgba(200, 70, 90, 0.4)",
                 padding: "4px 10px",
                 borderRadius: 999,
                 fontSize: 12,

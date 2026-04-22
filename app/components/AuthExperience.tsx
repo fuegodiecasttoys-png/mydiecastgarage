@@ -321,7 +321,7 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
       ? t.textMuted
       : usernameFormatOk === false || usernameInUse === true || usernameRpcError
         ? "rgba(248,113,113,0.95)"
-        : "rgba(74,222,128,0.9)";
+        : "rgba(255, 154, 61, 0.95)";
 
   const passwordsMismatchSignup = confirmPassword.length > 0 && password !== confirmPassword;
 
@@ -365,8 +365,8 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
     flex: 1,
     padding: "12px 10px",
     borderRadius: 14,
-    border: active ? `1px solid rgba(255,106,0,0.45)` : `1px solid ${t.borderSubtle}`,
-    background: active ? "rgba(255,106,0,0.12)" : "rgba(255,255,255,0.03)",
+    border: active ? `1px solid ${t.borderAccent}` : `1px solid ${t.borderSubtle}`,
+    background: active ? "rgba(255, 122, 24, 0.1)" : "rgba(255,255,255,0.03)",
     color: active ? t.textPrimary : t.textSecondary,
     fontWeight: 700,
     fontSize: 14,
@@ -426,7 +426,7 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
               margin: "0 auto 18px",
               padding: 0,
               boxSizing: "border-box",
-              filter: "drop-shadow(0 0 18px rgba(255,106,0,0.15))",
+              filter: "drop-shadow(0 0 12px rgba(255,122,24,0.1))",
             }}
           >
             <Image

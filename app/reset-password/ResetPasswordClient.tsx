@@ -195,7 +195,7 @@ export default function ResetPasswordClient() {
               display: "flex",
               justifyContent: "center",
               margin: "0 auto 16px",
-              filter: "drop-shadow(0 0 18px rgba(255,106,0,0.15))",
+              filter: "drop-shadow(0 0 12px rgba(255,122,24,0.1))",
             }}
           >
             <Image
@@ -301,7 +301,7 @@ export default function ResetPasswordClient() {
                       margin: 0,
                       fontSize: 14,
                       lineHeight: 1.45,
-                      color: banner.kind === "error" ? "rgba(248,113,113,0.95)" : "rgba(74,222,128,0.95)",
+                      color: banner.kind === "error" ? "rgba(248,113,113,0.95)" : "rgba(255, 154, 61, 0.95)",
                     }}
                   >
                     {banner.text}

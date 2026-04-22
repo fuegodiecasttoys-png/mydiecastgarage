@@ -29,17 +29,17 @@ const fontVars: CSSProperties = {
 const displayFont = dvDisplayFont;
 
 /** Subtle orange system for secondary/tertiary cards (My Garage stays stronger). */
-const expOrangeBorderSubtle = "rgba(255,106,0,0.25)";
-const expOrangeGlowSubtle = "rgba(255,106,0,0.10)";
-const expIconOrangeMuted = "#FF8124";
+const expOrangeBorderSubtle = "rgba(255,122,24,0.18)";
+const expOrangeGlowSubtle = "rgba(255,122,24,0.1)";
+const expIconOrangeMuted = "#FF9A3D";
 
 /** Quick actions: weakest orange tier (My Garage > Wishlist > Quick). */
-const expQuickBorder = "rgba(255,106,0,0.18)";
+const expQuickBorder = "rgba(255,122,24,0.18)";
 const expQuickBoxShadow =
-  "0 0 0 1px rgba(255,106,0,0.08), 0 10px 30px rgba(255,106,0,0.06)";
+  "0 0 0 1px rgba(255,255,255,0.08), 0 8px 24px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,122,24,0.1)";
 const expQuickBoxShadowHover =
-  "0 0 0 1px rgba(255,106,0,0.13), 0 12px 34px rgba(255,106,0,0.09)";
-const expQuickIconColor = "rgba(255,129,36,0.8)";
+  "0 0 0 1px rgba(255,122,24,0.2), 0 10px 28px rgba(0,0,0,0.45), 0 8px 20px rgba(255,122,24,0.1)";
+const expQuickIconColor = "rgba(255, 154, 61, 0.8)";
 
 function IconPacked() {
   return (
@@ -131,7 +131,7 @@ function IconHowTo() {
 
 function shellBackground(): string {
   return (
-    "linear-gradient(180deg, #0B1018 0%, #090D14 32%, #07090D 62%, #050608 100%)"
+    "linear-gradient(180deg, #0B0F17 0%, #07090D 45%, #07090D 100%)"
   );
 }
 
@@ -170,7 +170,7 @@ export default function ExperimentPage() {
     borderRadius: t.radiusXl,
     padding: "14px 20px 12px",
     background: t.surfaceElevated,
-    border: "1px solid rgba(255,106,0,0.4)",
+    border: "1px solid rgba(255,122,24,0.4)",
     boxShadow: HERO_SHADOW,
     marginBottom: t.spaceBlock,
     transition: "transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease",
@@ -319,7 +319,7 @@ export default function ExperimentPage() {
             href="/capture-packed"
             style={quickBase}
             onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = "rgba(255,106,0,0.26)";
+              e.currentTarget.style.borderColor = "rgba(255,122,24,0.26)";
               e.currentTarget.style.boxShadow = `${expQuickBoxShadowHover}, inset 0 1px 0 rgba(255,255,255,0.06)`;
               e.currentTarget.style.transform = "translateY(-1px)";
             }}
@@ -353,7 +353,7 @@ export default function ExperimentPage() {
             href="/capture-loose"
             style={quickBase}
             onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = "rgba(255,106,0,0.26)";
+              e.currentTarget.style.borderColor = "rgba(255,122,24,0.26)";
               e.currentTarget.style.boxShadow = `${expQuickBoxShadowHover}, inset 0 1px 0 rgba(255,255,255,0.06)`;
               e.currentTarget.style.transform = "translateY(-1px)";
             }}
@@ -445,8 +445,8 @@ export default function ExperimentPage() {
                     gap: 8,
                     padding: "4px 10px",
                     borderRadius: 999,
-                    background: `linear-gradient(90deg, rgba(255,106,0,0.2), rgba(255,129,36,0.12))`,
-                    border: `1px solid rgba(255,106,0,0.35)`,
+                    background: `linear-gradient(90deg, rgba(255,122,24,0.2), rgba(255, 154, 61,0.12))`,
+                    border: `1px solid rgba(255,122,24,0.35)`,
                     fontSize: 12,
                     fontWeight: 600,
                     letterSpacing: "0.02em",
@@ -506,7 +506,7 @@ export default function ExperimentPage() {
           href="/wishlist"
           style={secondaryCard}
           onMouseEnter={(e) => {
-            e.currentTarget.style.borderColor = "rgba(255,106,0,0.38)";
+            e.currentTarget.style.borderColor = "rgba(255,122,24,0.38)";
             e.currentTarget.style.transform = "translateY(-1px)";
           }}
           onMouseLeave={(e) => {
@@ -572,7 +572,7 @@ export default function ExperimentPage() {
           style={tertiaryLink}
           aria-label="Add friends"
           onMouseEnter={(e) => {
-            e.currentTarget.style.borderColor = "rgba(255,106,0,0.38)";
+            e.currentTarget.style.borderColor = "rgba(255,122,24,0.38)";
             e.currentTarget.style.transform = "translateY(-1px)";
           }}
           onMouseLeave={(e) => {
@@ -608,7 +608,7 @@ export default function ExperimentPage() {
           href="/howto"
           style={tertiaryLink}
           onMouseEnter={(e) => {
-            e.currentTarget.style.borderColor = "rgba(255,106,0,0.38)";
+            e.currentTarget.style.borderColor = "rgba(255,122,24,0.38)";
             e.currentTarget.style.transform = "translateY(-1px)";
           }}
           onMouseLeave={(e) => {

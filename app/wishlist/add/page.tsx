@@ -414,9 +414,9 @@ export default function AddWishlistPage() {
                 marginBottom: 16,
                 padding: "10px 12px",
                 borderRadius: 10,
-                background: "rgba(46, 160, 67, 0.15)",
-                border: "1px solid rgba(46, 160, 67, 0.35)",
-                color: "#c8ffd7",
+                background: "rgba(255, 122, 24, 0.1)",
+                border: "1px solid rgba(255, 122, 24, 0.25)",
+                color: t.textPrimary,
               }}
             >
               {message}
@@ -476,7 +476,7 @@ export default function AddWishlistPage() {
                 <option
                   key={option}
                   value={option}
-                  style={{ background: "#171717", color: "#fff" }}
+                  style={{ background: "#101725", color: "#F5F7FA" }}
                 >
                   {option}
                 </option>
@@ -508,11 +508,11 @@ export default function AddWishlistPage() {
                 style={{
                   ...priorityButtonBase,
                   background:
-                    priority === "high" ? "rgba(255,0,0,0.16)" : "#171717",
+                    priority === "high" ? "rgba(255,122,24,0.14)" : "#101725",
                   border:
                     priority === "high"
-                      ? "1px solid rgba(255,0,0,0.45)"
-                      : "1px solid rgba(255,255,255,0.12)",
+                      ? "1px solid rgba(255,122,24,0.42)"
+                      : "1px solid rgba(255,255,255,0.08)",
                 }}
               >
                 🔴 High
@@ -525,13 +525,11 @@ export default function AddWishlistPage() {
                 style={{
                   ...priorityButtonBase,
                   background:
-                    priority === "medium"
-                      ? "rgba(255,215,0,0.16)"
-                      : "#171717",
+                    priority === "medium" ? "rgba(255,255,255,0.07)" : "#101725",
                   border:
                     priority === "medium"
-                      ? "1px solid rgba(255,215,0,0.45)"
-                      : "1px solid rgba(255,255,255,0.12)",
+                      ? "1px solid rgba(255,255,255,0.16)"
+                      : "1px solid rgba(255,255,255,0.08)",
                 }}
               >
                 🟡 Medium
@@ -544,13 +542,11 @@ export default function AddWishlistPage() {
                 style={{
                   ...priorityButtonBase,
                   background:
-                    priority === "low"
-                      ? "rgba(50,205,50,0.16)"
-                      : "#171717",
+                    priority === "low" ? "rgba(0,0,0,0.2)" : "#101725",
                   border:
                     priority === "low"
-                      ? "1px solid rgba(50,205,50,0.45)"
-                      : "1px solid rgba(255,255,255,0.12)",
+                      ? "1px solid rgba(255,255,255,0.1)"
+                      : "1px solid rgba(255,255,255,0.08)",
                 }}
               >
                 🟢 Low

@@ -142,9 +142,9 @@ export default function FavoritesPage() {
   /** Same corner badge look as wishlist “high” priority — favorites are all starred picks. */
   const favoriteBadge = () => ({
     label: "★",
-    bg: "rgba(255,140,0,0.16)",
-    border: "1.5px solid rgba(255, 140, 0, 0.5)",
-    color: t.orange300,
+    bg: "rgba(255, 210, 100, 0.1)",
+    border: "1px solid rgba(255, 200, 100, 0.32)",
+    color: "rgba(255, 220, 140, 0.95)",
   });
 
   return (
@@ -325,8 +325,8 @@ export default function FavoritesPage() {
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
-                          border: "1.5px solid rgba(255, 140, 0, 0.4)",
-                          boxShadow: "0 0 8px rgba(255, 140, 0, 0.18)",
+                          border: `1px solid ${t.borderAccent}`,
+                          boxShadow: "0 0 0 1px rgba(0,0,0,0.2), 0 6px 16px rgba(0,0,0,0.35)",
                         }}
                       >
                         {item.photo_url ? (

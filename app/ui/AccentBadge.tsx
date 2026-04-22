@@ -25,10 +25,10 @@ export function AccentBadge({
         letterSpacing: "0.02em",
         border: muted
           ? `1px solid ${t.borderSubtle}`
-          : "1px solid rgba(255,106,0,0.35)",
+          : `1px solid ${t.borderAccent}`,
         background: muted
           ? "rgba(255,255,255,0.04)"
-          : "linear-gradient(90deg, rgba(255,106,0,0.2), rgba(255,129,36,0.12))",
+          : "linear-gradient(90deg, rgba(255,122,24,0.12), rgba(255,122,24,0.07))",
         color: muted ? t.textMuted : t.orange300,
         ...style,
       }}

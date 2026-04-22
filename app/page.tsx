@@ -137,7 +137,7 @@ export default function Home() {
         <div style={{ textAlign: "center", paddingTop: 4, marginBottom: 22 }}>
           <div
             style={{
-              filter: "drop-shadow(0 0 14px rgba(255,106,0,0.12))",
+              filter: "drop-shadow(0 0 10px rgba(255,122,24,0.08))",
             }}
           >
             <img
@@ -249,12 +249,12 @@ export default function Home() {
               marginBottom: 12,
               padding: "12px 14px",
               borderRadius: t.radiusMd,
-              border: "1px solid rgba(248,113,113,0.35)",
-              background: "rgba(248,113,113,0.08)",
+              border: "1px solid rgba(255,100,100,0.28)",
+              background: "rgba(200, 60, 60, 0.1)",
               boxSizing: "border-box",
             }}
           >
-            <p style={{ margin: "0 0 6px", fontSize: 13, fontWeight: 700, color: "rgba(248,113,113,0.95)", lineHeight: 1.4 }}>
+            <p style={{ margin: "0 0 6px", fontSize: 13, fontWeight: 700, color: "rgba(255,200,200,0.92)", lineHeight: 1.4 }}>
               Couldn&apos;t load your garage count.
             </p>
             <p style={{ margin: "0 0 12px", fontSize: 12, lineHeight: 1.45, color: t.textMuted }}>{garageCountError}</p>
@@ -364,7 +364,7 @@ export default function Home() {
           {...dvModelRowCardHoverHandlers}
           style={{ ...rowCardBase, marginBottom: 12 }}
         >
-          <IconCircle variant="orangeSubtle">⭐</IconCircle>
+          <IconCircle variant="neutral">⭐</IconCircle>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div
               style={{

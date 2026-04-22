@@ -32,8 +32,7 @@ export default function RootLayout({
         style={{
           margin: 0,
           minHeight: "100vh",
-          background:
-            "linear-gradient(180deg, #0B1018 0%, #090D14 32%, #07090D 62%, #050608 100%)",
+          background: "linear-gradient(180deg, #0B0F17 0%, #07090D 50%, #07090D 100%)",
           color: t.textPrimary,
           fontFamily: `var(--dv-font-body), system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji"`,
           display: "flex",

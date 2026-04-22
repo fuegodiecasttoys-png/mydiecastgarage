@@ -413,9 +413,9 @@ export default function CapturePage() {
                 marginBottom: 16,
                 padding: "10px 12px",
                 borderRadius: 10,
-                background: "rgba(46, 160, 67, 0.15)",
-                border: "1px solid rgba(46, 160, 67, 0.35)",
-                color: "#c8ffd7",
+                background: "rgba(255, 122, 24, 0.1)",
+                border: "1px solid rgba(255, 122, 24, 0.25)",
+                color: t.textPrimary,
               }}
             >
               {message}
