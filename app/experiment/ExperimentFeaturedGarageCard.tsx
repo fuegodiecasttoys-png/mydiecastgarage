@@ -47,8 +47,8 @@ export function ExperimentFeaturedGarageCard({ onClick, title, lead, subline, di
         flexDirection: "row",
         alignItems: "center",
         width: "100%",
-        minHeight: 151,
-        padding: "20px 20px 22px 20px",
+        minHeight: 124,
+        padding: "16px 20px 18px 20px",
         borderRadius: experimentRadiusFeature,
         background: experimentHeroBackground,
         border: experimentHeroBorder,
@@ -58,7 +58,7 @@ export function ExperimentFeaturedGarageCard({ onClick, title, lead, subline, di
         color: experimentTextStrong,
         WebkitTapHighlightColor: "transparent",
         overflow: "hidden",
-        gap: 16,
+        gap: 12,
         fontFamily: "inherit",
         margin: 0,
         boxSizing: "border-box",
@@ -67,8 +67,16 @@ export function ExperimentFeaturedGarageCard({ onClick, title, lead, subline, di
     >
       <ExperimentCarDeco />
       <div className="experimentMyGarageGlint" aria-hidden />
-      <div style={{ ...experimentHeroIconBox, zIndex: 1 }}>
-        <ExpIconHouse color={experimentIconPrimary} size={26} />
+      <div
+        style={{
+          ...experimentHeroIconBox,
+          zIndex: 1,
+          width: 52,
+          height: 52,
+          borderRadius: 15,
+        }}
+      >
+        <ExpIconHouse color={experimentIconPrimary} size={24} />
       </div>
       <div
         style={{
@@ -89,20 +97,20 @@ export function ExperimentFeaturedGarageCard({ onClick, title, lead, subline, di
             fontSize: 20,
             fontWeight: 800,
             letterSpacing: "-0.03em",
-            marginBottom: 14,
-            lineHeight: 1.1,
+            marginBottom: 8,
+            lineHeight: 1.04,
             color: experimentTextStrong,
           }}
         >
           {title}
         </div>
-        <div style={{ marginBottom: 12 }}>{lead}</div>
+        <div style={{ marginBottom: 7 }}>{lead}</div>
         <div
           style={{
             fontSize: 13,
             fontWeight: 500,
             color: experimentHeroSubline,
-            lineHeight: 1.45,
+            lineHeight: 1.32,
             letterSpacing: "0.01em",
           }}
         >
