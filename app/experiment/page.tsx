@@ -269,26 +269,26 @@ export default function ExperimentPage() {
             marginBottom: t.spaceSection,
             marginTop: 0,
             paddingTop: 6,
-            paddingBottom: 22,
+            paddingBottom: 18,
+            textAlign: "center",
           }}
         >
           <div
             style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
+              display: "inline-block",
+              filter: "drop-shadow(0 0 12px rgba(255,122,24,0.12))",
             }}
           >
             <img
               src="/logo.png"
               alt="My Diecast Garage"
               width={120}
+              height="auto"
               style={{
                 display: "block",
                 width: 120,
                 maxWidth: "min(120px, 100%)",
                 height: "auto",
-                filter: "brightness(0.92) saturate(0.86)",
               }}
             />
           </div>
