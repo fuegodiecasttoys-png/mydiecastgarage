@@ -8,6 +8,7 @@ import { AccentBadge } from "../ui/AccentBadge";
 import { IconCircle } from "../ui/IconCircle";
 import { t } from "../ui/dv-tokens";
 import {
+  dvBodyFont,
   dvDashboardInner,
   dvDisplayFont,
   dvGhostButton,
@@ -17,6 +18,7 @@ import {
   dvRowCardBase,
 } from "../ui/dv-visual";
 import {
+  experimentAppBackground,
   experimentHeroBackground,
   experimentHeroBadge,
   experimentHeroBorder,
@@ -38,7 +40,12 @@ import {
   experimentQuickTileBorder,
   experimentQuickTileShadowHover,
   experimentQuickTileShadowRest,
+  experimentScrollBottomSpace,
+  experimentTextMuted,
+  experimentTextStrong,
 } from "./experimentHeroStyle";
+import { ExperimentBottomNav } from "./ExperimentBottomNav";
+import { ExperimentHeroCarDeco } from "./ExperimentHeroCarDeco";
 import {
   ExpIconCamera,
   ExpIconCar,
@@ -80,7 +87,9 @@ function ExperimentHeroIcon() {
         display: "grid",
         placeItems: "center",
         flexShrink: 0,
-        background: "rgba(255,255,255,0.04)",
+        position: "relative",
+        zIndex: 2,
+        background: "linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(12,16,24,0.4) 100%)",
         border: experimentHeroIconBorder,
         boxShadow: experimentHeroIconBoxShadow,
         lineHeight: 0,
@@ -169,7 +178,17 @@ export default function ExperimentPage() {
   }
 
   return (
-    <div style={dvPageShell}>
+    <div
+      style={{
+        ...dvPageShell,
+        background: experimentAppBackground,
+        color: experimentTextStrong,
+        fontFamily: dvBodyFont,
+        padding: `20px 18px calc(32px + ${experimentScrollBottomSpace}px)`,
+        position: "relative",
+        boxSizing: "border-box",
+      }}
+    >
       <div style={dvDashboardInner}>
         <button
           type="button"
@@ -253,12 +272,12 @@ export default function ExperimentPage() {
                 style={{
                   fontSize: 12,
                   fontWeight: 500,
-                  color: t.textMuted,
-                  lineHeight: 1.35,
-                }}
-              >
-                Boxed models
-              </div>
+                color: experimentTextMuted,
+                lineHeight: 1.35,
+              }}
+            >
+              Boxed models
+            </div>
             </div>
           </button>
 
@@ -303,12 +322,12 @@ export default function ExperimentPage() {
                 style={{
                   fontSize: 12,
                   fontWeight: 500,
-                  color: t.textMuted,
-                  lineHeight: 1.35,
-                }}
-              >
-                Loose models
-              </div>
+                color: experimentTextMuted,
+                lineHeight: 1.35,
+              }}
+            >
+              Loose models
+            </div>
             </div>
           </button>
         </div>
@@ -327,7 +346,7 @@ export default function ExperimentPage() {
             <p style={{ margin: "0 0 6px", fontSize: 13, fontWeight: 700, color: "rgba(255,200,200,0.92)", lineHeight: 1.4 }}>
               Couldn&apos;t load your garage count.
             </p>
-            <p style={{ margin: "0 0 12px", fontSize: 12, lineHeight: 1.45, color: t.textMuted }}>{garageCountError}</p>
+            <p style={{ margin: "0 0 12px", fontSize: 12, lineHeight: 1.45, color: experimentTextMuted }}>{garageCountError}</p>
             <button
               type="button"
               disabled={garageCountRetrying || !userId}
@@ -353,15 +372,26 @@ export default function ExperimentPage() {
           }}
           style={{
             ...dvHeroRowCard,
+            position: "relative",
+            overflow: "hidden",
             marginBottom: 12,
             minHeight: 120,
             background: experimentHeroBackground,
             border: experimentHeroBorder,
             boxShadow: experimentHeroBoxShadow,
+            alignItems: "center",
           }}
         >
+          <ExperimentHeroCarDeco />
           <ExperimentHeroIcon />
-          <div style={{ flex: 1, minWidth: 0 }}>
+          <div
+            style={{
+              flex: 1,
+              minWidth: 0,
+              position: "relative",
+              zIndex: 2,
+            }}
+          >
             <div
               style={{
                 fontFamily: dvDisplayFont,
@@ -369,6 +399,7 @@ export default function ExperimentPage() {
                 fontWeight: 800,
                 letterSpacing: "-0.02em",
                 marginBottom: 8,
+                color: experimentTextStrong,
               }}
             >
               My Garage
@@ -387,14 +418,22 @@ export default function ExperimentPage() {
               style={{
                 fontSize: 13,
                 fontWeight: 500,
-                color: t.textSecondary,
+                color: experimentTextMuted,
                 lineHeight: 1.35,
               }}
             >
               {garageCountError ? "You can still open your collection below." : "View your collection"}
             </div>
           </div>
-          <span style={{ ...chevronStyle, color: experimentHeroChevron }} aria-hidden>
+          <span
+            style={{
+              ...chevronStyle,
+              color: experimentHeroChevron,
+              position: "relative",
+              zIndex: 3,
+            }}
+            aria-hidden
+          >
             ›
           </span>
         </button>
@@ -432,7 +471,7 @@ export default function ExperimentPage() {
               style={{
                 fontSize: 12,
                 fontWeight: 500,
-                color: t.textMuted,
+                color: experimentTextMuted,
                 lineHeight: 1.35,
               }}
             >
@@ -477,7 +516,7 @@ export default function ExperimentPage() {
               style={{
                 fontSize: 12,
                 fontWeight: 500,
-                color: t.textMuted,
+                color: experimentTextMuted,
                 lineHeight: 1.35,
               }}
             >
@@ -544,7 +583,7 @@ export default function ExperimentPage() {
               style={{
                 fontSize: 12,
                 fontWeight: 500,
-                color: t.textMuted,
+                color: experimentTextMuted,
                 lineHeight: 1.35,
               }}
             >
@@ -589,7 +628,7 @@ export default function ExperimentPage() {
               style={{
                 fontSize: 12,
                 fontWeight: 500,
-                color: t.textMuted,
+                color: experimentTextMuted,
                 lineHeight: 1.35,
               }}
             >
@@ -601,6 +640,7 @@ export default function ExperimentPage() {
           </span>
         </button>
       </div>
+      <ExperimentBottomNav router={router} userId={userId} />
     </div>
   );
 }

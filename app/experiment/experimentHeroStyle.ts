@@ -1,118 +1,165 @@
 /**
- * /experiment-only visual tokens (My Garage, quick actions, list rhythm).
+ * /experiment-only visual system (reference: dark navy, gray material, orange edge light).
  * Does not affect production `/` or shared UI package.
  */
-
 import type { CSSProperties } from "react";
 
-/* —— My Garage hero (flagship: darker + softer right wash than list rows) —— */
-const HERO_BASE_V =
-  "linear-gradient(180deg, #181C24 0%, #0E1018 52%, #0A0C12 100%)";
-const HERO_WARM_D =
+/* —— Reference palette —— */
+export const experimentAppBg = "#06090F";
+export const experimentSurface = "#0B1220";
+export const experimentSurfaceElevated = "#101827";
+export const experimentHighlight = "rgba(255,255,255,0.06)";
+export const experimentTextMuted = "rgba(255,255,255,0.58)";
+export const experimentTextStrong = "#F3F4F6";
+export const experimentOrange = "#FF9A1F";
+export const experimentOrangeEdge = "#FFB347";
+export const experimentOrangeGlow = "rgba(255,154,31,0.22)";
+
+/* —— Page background (use with { ...dvPageShell, background: experimentAppBackground }) —— */
+export const experimentAppBackground: string =
+  "radial-gradient(120% 80% at 50% -20%, rgba(30, 55, 90, 0.12) 0%, transparent 50%)," +
+  "linear-gradient(180deg, #080b12 0%, " +
+  experimentAppBg +
+  " 40%, #05060a 100%)";
+
+/* —— My Garage hero —— */
+const HERO_DARK =
+  "linear-gradient(180deg, " + experimentSurfaceElevated + " 0%, " + experimentSurface + " 48%, #080c14 100%)";
+const HERO_ORANGE_WASH =
   "linear-gradient(270deg, " +
-  "rgba(255,122,24,0.12) 0%, " +
-  "rgba(255,122,24,0.06) 28%, " +
-  "rgba(255,122,24,0.02) 48%, " +
-  "rgba(0,0,0,0) 68%)" +
+  "rgba(255,154,31,0.2) 0%, " +
+  "rgba(255,154,31,0.08) 32%, " +
+  "rgba(255,120,30,0.02) 55%, " +
+  "rgba(0,0,0,0) 72%)" +
   ", " +
-  HERO_BASE_V;
+  "linear-gradient(90deg, " +
+  "rgba(255,255,255,0.05) 0%, " +
+  "rgba(0,0,0,0) 45%)" +
+  ", " +
+  HERO_DARK;
+
+export const experimentHeroBackground = HERO_ORANGE_WASH;
 
 export const experimentHeroBoxShadow =
-  "0 8px 24px rgba(0,0,0,0.6)," + "inset 0 1px 0 rgba(255,255,255,0.03)";
+  "0 1px 0 0 rgba(255,255,255,0.04)," +
+  "0 10px 32px rgba(0,0,0,0.55)," +
+  "inset 0 1px 0 rgba(255,255,255,0.05)," +
+  "inset 0 0 0 1px rgba(120, 140, 160, 0.08)";
 
 export const experimentHeroBoxShadowHover =
-  "0 10px 32px rgba(0,0,0,0.55)," + "inset 0 1px 0 rgba(255,255,255,0.04)";
+  "0 1px 0 0 rgba(255,255,255,0.05)," +
+  "0 12px 36px rgba(0,0,0,0.5)," +
+  "inset 0 1px 0 rgba(255,255,255,0.06)," +
+  "inset 0 0 0 1px rgba(120, 140, 160, 0.1)";
 
-export const experimentHeroBackground = HERO_WARM_D;
-
-export const experimentHeroBorder = "1px solid rgba(255,122,24,0.24)";
+export const experimentHeroBorder =
+  "1px solid rgba(255, 179, 71, 0.28)";
 
 export const experimentHeroBadge = {
-  background: "rgba(255,122,24,0.14)",
-  border: "1px solid rgba(255,122,24,0.26)",
-  color: "#FFAA57" as const,
+  background: "rgba(255, 154, 31, 0.1)",
+  border: "1px solid rgba(255, 179, 71, 0.35)",
+  color: "#FFB347" as const,
 } as const;
 
-export const experimentHeroIconBorder = "1px solid rgba(255,130,64,0.3)";
+export const experimentHeroIconBorder = "1px solid rgba(255, 179, 71, 0.32)";
 
 export const experimentHeroIconBoxShadow =
-  "0 4px 16px rgba(0,0,0,0.5)," + "inset 0 1px 0 rgba(255,255,255,0.06)";
+  "inset 0 1px 0 rgba(255,255,255,0.06)," +
+  "0 2px 8px rgba(0,0,0,0.45)," +
+  "0 0 0 1px rgba(15, 25, 40, 0.5)";
 
-export const experimentHeroChevron = "#FFAB52";
+export const experimentHeroChevron = experimentOrangeEdge;
 
-/** /experiment icon palette (SVG stroke/fill) — top row + hero: primary; list: calmer. */
-export const experimentIconPrimary = "#FF9A3D";
-export const experimentIconSofter = "#E58A2E";
-export const experimentIconNeutral = "rgba(245,247,250,0.82)";
+export const experimentIconPrimary = experimentOrange;
+export const experimentIconSofter = "#E08A1A";
+export const experimentIconNeutral = "rgba(240, 244, 250, 0.88)";
 
 /* —— Quick add tiles —— */
+export const experimentQuickTileBackground =
+  "linear-gradient(160deg, " +
+  experimentSurfaceElevated +
+  " 0%, " +
+  experimentSurface +
+  " 55%, #0a0f1a 100%)";
+
+export const experimentQuickTileBorder = "1px solid rgba(120, 140, 160, 0.12)";
+
 export const experimentQuickTileShadowRest =
-  "0 0 0 1px rgba(255,255,255,0.1)," +
-  "0 4px 14px rgba(0,0,0,0.42)," +
-  "inset 0 0 0 1px rgba(255,122,24,0.12)," +
-  "inset 0 1px 0 rgba(255,140,80,0.08)";
+  "0 0 0 1px rgba(0,0,0,0.35)," +
+  "0 4px 16px rgba(0,0,0,0.5)," +
+  "inset 0 1px 0 rgba(255,255,255,0.04)," +
+  "inset 0 -1px 0 rgba(0,0,0,0.2)," +
+  "0 0 20px -2px " +
+  experimentOrangeGlow;
 
 export const experimentQuickTileShadowHover =
-  "0 0 0 1px rgba(255,255,255,0.1)," +
-  "0 0 0 1px rgba(255,122,24,0.26)," +
-  "0 6px 18px rgba(0,0,0,0.45)," +
-  "inset 0 1px 0 rgba(255,150,90,0.1)";
+  "0 0 0 1px rgba(255,154,31,0.15)," +
+  "0 6px 22px rgba(0,0,0,0.52)," +
+  "inset 0 1px 0 rgba(255,255,255,0.05)," +
+  "0 0 24px -1px " +
+  experimentOrangeGlow;
 
-export const experimentQuickTileBackground =
-  "linear-gradient(180deg, rgba(255,122,24,0.09) 0%, #10141C 45%, #0C0F16 100%)";
-
-export const experimentQuickTileBorder = "1px solid rgba(255,122,24,0.24)";
-
-/** Quick-tile icon row (SVG, centered) */
 export const experimentQuickIconWrap: CSSProperties = {
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
+  filter: "drop-shadow(0 0 4px " + experimentOrangeGlow + ")",
 };
 
-/* —— Secondary list rows (Favorites, Wishlist, Add Friends, How To only) —— */
-const LIST_AMBIENT_BG =
+/* —— List rows (Favorites … How To) —— */
+const LIST_INNER = experimentSurface;
+const LIST_AMB =
   "linear-gradient(270deg, " +
-  "rgba(255,122,24,0.162) 0%, " +
-  "rgba(255,122,24,0.09) 25%, " +
-  "rgba(255,122,24,0.036) 45%, " +
-  "rgba(0,0,0,0) 65%)" +
-  ", #101725";
+  "rgba(255, 154, 31, 0.11) 0%, " +
+  "rgba(255, 130, 50, 0.04) 30%, " +
+  "rgba(0,0,0,0) 58%)" +
+  ", " +
+  "linear-gradient(90deg, " +
+  "rgba(90, 110, 130, 0.06) 0%, " +
+  "rgba(0,0,0,0) 42%)" +
+  ", " +
+  LIST_INNER;
 
-/** Coherent with list cards; no outer glow, subtle right-side accent ring only. */
 export const experimentListIconFrame: CSSProperties = {
   lineHeight: 0,
   borderRadius: 14,
-  border: "1px solid rgba(255,122,24,0.162)",
-  boxShadow: "inset 0 1px 0 rgba(255,255,255,0.05)",
+  background: "linear-gradient(180deg, #121a2a 0%, #0c121e 100%)",
+  border: "1px solid rgba(100, 120, 150, 0.14)",
+  boxShadow:
+    "inset 0 1px 0 rgba(255,255,255,0.04)," +
+    "inset 0 -1px 0 rgba(0,0,0,0.3)," +
+    "0 0 0 1px rgba(255,154,31,0.08)",
+  filter: "drop-shadow(0 0 1px rgba(255,154,31,0.15))",
 };
 
-export const experimentListTitle = "rgba(252,252,255,0.98)";
+export const experimentListTitle = experimentTextStrong;
 
-export const experimentListChevron = "rgba(220, 228, 238, 0.7)";
+export const experimentListChevron = "rgba(255, 179, 71, 0.75)";
 
 export const experimentListRowPolish: CSSProperties = {
   boxShadow:
-    "0 0 0 1px rgba(255,255,255,0.1)," +
-    "0 6px 16px rgba(0,0,0,0.4)," +
-    "inset 0 1px 0 rgba(255,255,255,0.05)",
-  border: "1px solid rgba(255,255,255,0.1)",
+    "0 0 0 1px rgba(100, 120, 150, 0.1)," +
+    "0 6px 16px rgba(0,0,0,0.4)",
+  border: "1px solid rgba(100, 120, 150, 0.1)",
 };
 
-/**
- * Right edge ambient light, long fade left; no orange in shadow (hover handlers use strings below).
- * Opacities ≈10% under reference values (premium, not neon).
- */
 export const experimentListRowOrangeAccent: CSSProperties = {
-  background: LIST_AMBIENT_BG,
-  border: "1px solid rgba(255,122,24,0.198)",
-  boxShadow: "0 6px 18px rgba(0,0,0,0.6)",
+  background: LIST_AMB,
+  border: "1px solid rgba(255, 154, 31, 0.14)",
+  boxShadow:
+    "0 4px 20px rgba(0,0,0,0.5)," +
+    "inset 0 1px 0 rgba(255,255,255,0.03)",
 };
 
-export const experimentListRowShadowRestWarm = "0 6px 18px rgba(0,0,0,0.6)";
+export const experimentListRowShadowRestWarm =
+  "0 4px 20px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.03)";
 
-export const experimentListRowShadowHoverWarm = "0 8px 22px rgba(0,0,0,0.58)";
+export const experimentListRowShadowHoverWarm =
+  "0 8px 28px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.04)";
 
 export const experimentLogoHalo: CSSProperties = {
-  filter: "drop-shadow(0 0 12px rgba(255,122,24,0.1))",
+  filter: "drop-shadow(0 0 14px " + experimentOrangeGlow + ")",
 };
+
+/** Bottom dock clearance */
+export const experimentScrollBottomSpace = 88;

@@ -101,3 +101,36 @@ export function ExpIconCamera({ color, size, ...p }: ExpIconProps) {
     </svg>
   );
 }
+
+/** Bottom nav — collection */
+export function ExpIconWarehouse({ color, size, ...p }: ExpIconProps) {
+  const s = z(size);
+  return (
+    <svg width={s} height={s} viewBox="0 0 24 24" aria-hidden {...p} {...strk(color)}>
+      <path d="M18 21V10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1v11" />
+      <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 1.132-1.803l7.95-3.974a2 2 0 0 1 1.837 0l7.948 3.974A2 2 0 0 1 22 8z" />
+      <path d="M6 13h12" />
+      <path d="M6 17h12" />
+    </svg>
+  );
+}
+
+export function ExpIconUser({ color, size, ...p }: ExpIconProps) {
+  const s = z(size);
+  return (
+    <svg width={s} height={s} viewBox="0 0 24 24" aria-hidden {...p} {...strk(color)}>
+      <circle cx="12" cy="8" r="5" fill="none" />
+      <path d="M20 21a8 8 0 0 0-16 0" />
+    </svg>
+  );
+}
+
+export function ExpIconPlus({ color, size, ...p }: ExpIconProps) {
+  const s = z(size);
+  return (
+    <svg width={s} height={s} viewBox="0 0 24 24" aria-hidden {...p} {...strk(color)}>
+      <path d="M5 12h14" />
+      <path d="M12 5v14" />
+    </svg>
+  );
+}
