@@ -42,7 +42,7 @@ export function ExperimentFeaturedGarageCard({ onClick, title, lead, subline, di
         position: "relative",
         display: "flex",
         flexDirection: "row",
-        alignItems: "center",
+        alignItems: "stretch",
         justifyContent: "flex-start",
         width: "100%",
         minHeight: 124,
@@ -69,7 +69,8 @@ export function ExperimentFeaturedGarageCard({ onClick, title, lead, subline, di
         style={{
           flex: 1,
           minWidth: 0,
-          alignSelf: "stretch",
+          minHeight: 0,
+          height: "100%",
           position: "relative",
           zIndex: 1,
           display: "flex",
@@ -112,6 +113,7 @@ export function ExperimentFeaturedGarageCard({ onClick, title, lead, subline, di
           color: experimentFeaturedChevron,
           lineHeight: 1,
           flexShrink: 0,
+          alignSelf: "center",
           position: "relative",
           zIndex: 1,
         }}
