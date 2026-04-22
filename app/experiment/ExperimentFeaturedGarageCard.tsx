@@ -65,45 +65,65 @@ export function ExperimentFeaturedGarageCard({ onClick, title, lead, subline, di
     >
       <ExperimentCarDeco />
       <div className="experimentMyGarageGlint" aria-hidden />
+      {/*
+        Columna izq.: el padre estira (stretch) a la fila; el stack interno es 100% alto
+        y flex column + justifyContent center = centrado vertical estructural.
+      */}
       <div
         style={{
           flex: 1,
           minWidth: 0,
           minHeight: 0,
-          height: "100%",
+          alignSelf: "stretch",
           position: "relative",
           zIndex: 1,
           display: "flex",
-          flexDirection: "column",
-          alignItems: "flex-start",
-          justifyContent: "center",
-          gap: 0,
+          flexDirection: "row",
+          alignItems: "stretch",
+          justifyContent: "flex-start",
         }}
       >
         <div
           style={{
-            fontFamily: displayFont,
-            fontSize: 20,
-            fontWeight: 800,
-            letterSpacing: "-0.03em",
-            marginBottom: 8,
-            lineHeight: 1.04,
-            color: experimentTextStrong,
+            position: "relative",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "flex-start",
+            flex: 1,
+            minWidth: 0,
+            minHeight: 0,
+            width: "100%",
+            height: "100%",
+            boxSizing: "border-box",
+            gap: 0,
           }}
         >
-          {title}
-        </div>
-        <div style={{ marginBottom: 7 }}>{lead}</div>
-        <div
-          style={{
-            fontSize: 13,
-            fontWeight: 500,
-            color: experimentHeroSubline,
-            lineHeight: 1.32,
-            letterSpacing: "0.01em",
-          }}
-        >
-          {subline}
+          <div
+            style={{
+              fontFamily: displayFont,
+              fontSize: 20,
+              fontWeight: 800,
+              letterSpacing: "-0.03em",
+              marginBottom: 8,
+              lineHeight: 1.04,
+              color: experimentTextStrong,
+            }}
+          >
+            {title}
+          </div>
+          <div style={{ marginBottom: 7 }}>{lead}</div>
+          <div
+            style={{
+              fontSize: 13,
+              fontWeight: 500,
+              color: experimentHeroSubline,
+              lineHeight: 1.32,
+              letterSpacing: "0.01em",
+            }}
+          >
+            {subline}
+          </div>
         </div>
       </div>
       <span
