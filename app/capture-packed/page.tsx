@@ -216,25 +216,46 @@ export default function CapturePage() {
         return
       }
 
-      const reqId =
-        typeof crypto !== "undefined" && crypto.randomUUID
-          ? crypto.randomUUID()
-          : Math.random().toString(36).substring(2) + Date.now().toString(36)
-      console.log("[analyze-model] client request id", reqId)
+      let reqId: string
+      try {
+        reqId =
+          typeof crypto !== "undefined" &&
+          typeof crypto.randomUUID === "function"
+            ? crypto.randomUUID()
+            : Math.random().toString(36).substring(2) + Date.now().toString(36)
+      } catch {
+        reqId =
+          Math.random().toString(36).substring(2) + Date.now().toString(36)
+      }
 
+      /** Same-origin absolute URL — relative "/" can mis-resolve in some embedded/mobile contexts. */
+      const analyzeEndpoint = new URL(
+        "/api/analyze-model",
+        window.location.origin
+      ).href
+
+      console.log("[analyze-model] client request id", reqId)
       console.log("[analyze-model] client before fetch", {
-        hasFile: true,
-        url: "/api/analyze-model",
+        analyzeEndpoint,
+        reqId,
         formField: "file",
+        origin: window.location.origin,
       })
 
       const formData = new FormData()
       formData.append("file", compressedForAnalyze)
 
-      const res = await fetch("/api/analyze-model", {
+      const res = await fetch(analyzeEndpoint, {
         method: "POST",
         headers: { "x-analyze-request-id": reqId },
         body: formData,
+      })
+
+      console.log("[analyze-model] client after fetch", {
+        analyzeEndpoint,
+        reqId,
+        status: res.status,
+        ok: res.ok,
       })
 
       const responseText = await res.text()
