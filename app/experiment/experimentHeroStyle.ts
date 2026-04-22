@@ -66,6 +66,13 @@ export const experimentQuickEmojiStyle: CSSProperties = {
 };
 
 /* —— Secondary list rows —— */
+/** Icon halo + ring (How To); use on all 4 list rows for identical icon frames. */
+export const experimentListIconFrame: CSSProperties = {
+  lineHeight: 0,
+  borderRadius: 14,
+  boxShadow: "0 0 0 1px rgba(255,255,255,0.1), 0 0 10px rgba(255,122,24,0.05)",
+};
+
 export const experimentListTitle = "rgba(252,252,255,0.98)";
 
 export const experimentListChevron = "rgba(220, 228, 238, 0.7)";
@@ -88,15 +95,6 @@ export const experimentListRowOrangeAccent: CSSProperties = {
   border: "1px solid rgba(255,255,255,0.1)",
 };
 
-/** Wishlist: crisper neutral (no extra orange edge) */
-export const experimentListRowWishlist: CSSProperties = {
-  boxShadow:
-    "0 0 0 1px rgba(255,255,255,0.12)," +
-    "0 6px 16px rgba(0,0,0,0.42)," +
-    "inset 0 1px 0 rgba(255,255,255,0.06)",
-  border: "1px solid rgba(200, 210, 220, 0.12)",
-};
-
 export const experimentListRowShadowRestWarm =
   "0 0 0 1px rgba(255,255,255,0.1)," +
   "0 0 0 1px rgba(255,122,24,0.1)," +
@@ -108,16 +106,6 @@ export const experimentListRowShadowHoverWarm =
   "0 0 0 1px rgba(255,122,24,0.2)," +
   "0 8px 20px rgba(0,0,0,0.48)," +
   "inset 0 1px 0 rgba(255,255,255,0.07)";
-
-export const experimentListRowShadowRestWish =
-  "0 0 0 1px rgba(255,255,255,0.12)," +
-  "0 6px 16px rgba(0,0,0,0.42)," +
-  "inset 0 1px 0 rgba(255,255,255,0.06)";
-
-export const experimentListRowShadowHoverWish =
-  "0 0 0 1px rgba(255,255,255,0.14)," +
-  "0 8px 22px rgba(0,0,0,0.48)," +
-  "inset 0 1px 0 rgba(255,255,255,0.08)";
 
 export const experimentLogoHalo: CSSProperties = {
   filter: "drop-shadow(0 0 12px rgba(255,122,24,0.1))",

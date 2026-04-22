@@ -26,12 +26,10 @@ import {
   experimentHeroIconBorder,
   experimentHeroIconBoxShadow,
   experimentListChevron,
+  experimentListIconFrame,
   experimentListRowOrangeAccent,
   experimentListRowShadowHoverWarm,
-  experimentListRowShadowHoverWish,
   experimentListRowShadowRestWarm,
-  experimentListRowShadowRestWish,
-  experimentListRowWishlist,
   experimentListTitle,
   experimentLogoHalo,
   experimentQuickEmojiStyle,
@@ -399,13 +397,7 @@ export default function ExperimentPage() {
           }}
           style={{ ...rowCardBase, marginBottom: 12, ...experimentListRowOrangeAccent }}
         >
-          <div
-            style={{
-              lineHeight: 0,
-              borderRadius: 14,
-              boxShadow: "0 0 0 1px rgba(255,255,255,0.1), 0 0 10px rgba(255,122,24,0.05)",
-            }}
-          >
+          <div style={experimentListIconFrame}>
             <IconCircle variant="orangeSubtle">⭐</IconCircle>
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
@@ -441,21 +433,15 @@ export default function ExperimentPage() {
           type="button"
           onClick={() => router.push("/wishlist")}
           onMouseEnter={(e) => {
-            e.currentTarget.style.boxShadow = experimentListRowShadowHoverWish;
+            e.currentTarget.style.boxShadow = experimentListRowShadowHoverWarm;
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.boxShadow = experimentListRowShadowRestWish;
+            e.currentTarget.style.boxShadow = experimentListRowShadowRestWarm;
           }}
-          style={{ ...rowCardBase, marginBottom: 12, ...experimentListRowWishlist }}
+          style={{ ...rowCardBase, marginBottom: 12, ...experimentListRowOrangeAccent }}
         >
-          <div
-            style={{
-              lineHeight: 0,
-              borderRadius: 14,
-              boxShadow: "0 0 0 1px rgba(255,255,255,0.1), 0 0 10px rgba(255,122,24,0.05)",
-            }}
-          >
-            <IconCircle variant="neutral">⭐</IconCircle>
+          <div style={experimentListIconFrame}>
+            <IconCircle variant="orangeSubtle">⭐</IconCircle>
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div
@@ -496,13 +482,7 @@ export default function ExperimentPage() {
           }}
           style={{ ...rowCardBase, marginBottom: 12, ...experimentListRowOrangeAccent }}
         >
-          <div
-            style={{
-              lineHeight: 0,
-              borderRadius: 14,
-              boxShadow: "0 0 0 1px rgba(255,255,255,0.1), 0 0 10px rgba(255,122,24,0.05)",
-            }}
-          >
+          <div style={experimentListIconFrame}>
             <IconCircle variant="orangeSubtle">👥</IconCircle>
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
@@ -568,13 +548,7 @@ export default function ExperimentPage() {
           }}
           style={{ ...rowCardBase, marginBottom: 0, ...experimentListRowOrangeAccent }}
         >
-          <div
-            style={{
-              lineHeight: 0,
-              borderRadius: 14,
-              boxShadow: "0 0 0 1px rgba(255,255,255,0.1), 0 0 10px rgba(255,122,24,0.05)",
-            }}
-          >
+          <div style={experimentListIconFrame}>
             <IconCircle variant="orangeSubtle">📖</IconCircle>
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
