@@ -66,6 +66,7 @@ export function ExperimentFeaturedGarageCard({ onClick, title, lead, subline, di
       }}
     >
       <ExperimentCarDeco />
+      <div className="experimentMyGarageGlint" aria-hidden />
       <div style={{ ...experimentHeroIconBox, zIndex: 1 }}>
         <ExpIconHouse color={experimentIconPrimary} size={26} />
       </div>

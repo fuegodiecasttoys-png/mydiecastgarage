@@ -1,6 +1,6 @@
-/* Solo card “My Garage” /experiment — specular + spotlight */
+/* Solo card “My Garage” /experiment — specular, línea fina, spotlight naranja */
 
-/* Brillos metálicos sutiles (::before bajo el contenido z-1, encima del fondo) */
+/* Brillo metálico principal (reflejo fuerte, integrado) */
 .experimentMyGarageCard::before {
   content: "";
   position: absolute;
@@ -9,10 +9,31 @@
   z-index: 0;
   border-radius: inherit;
   background:
-    linear-gradient(120deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.06) 18%, transparent 35%),
-    linear-gradient(300deg, rgba(255, 255, 255, 0.05) 0%, transparent 40%);
-  filter: blur(6px);
-  opacity: 0.45;
+    linear-gradient(
+      120deg,
+      rgba(255, 255, 255, 0.22) 0%,
+      rgba(255, 255, 255, 0.12) 18%,
+      rgba(255, 255, 255, 0.06) 30%,
+      transparent 45%
+    ),
+    linear-gradient(300deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+  filter: blur(4px);
+  opacity: 0.9;
+}
+
+/*
+  Sólo puede existir un ::after (usa el spotlight naranja).
+  Línea metálica fina = capa hermana con la misma pila que los pseudos.
+*/
+.experimentMyGarageGlint {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  border-radius: inherit;
+  background: linear-gradient(100deg, transparent 20%, rgba(255, 255, 255, 0.18) 35%, transparent 50%);
+  filter: blur(2px);
+  opacity: 0.8;
 }
 
 /* Spotlight naranja desde la derecha */
