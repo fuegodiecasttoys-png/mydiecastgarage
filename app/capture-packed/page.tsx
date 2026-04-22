@@ -216,17 +216,13 @@ export default function CapturePage() {
         return
       }
 
-      let reqId: string
-      try {
-        reqId =
-          typeof crypto !== "undefined" &&
-          typeof crypto.randomUUID === "function"
-            ? crypto.randomUUID()
-            : Math.random().toString(36).substring(2) + Date.now().toString(36)
-      } catch {
-        reqId =
-          Math.random().toString(36).substring(2) + Date.now().toString(36)
-      }
+      console.log("[analyze-model] before reqId")
+      const reqId =
+        globalThis.crypto &&
+        typeof globalThis.crypto.randomUUID === "function"
+          ? globalThis.crypto.randomUUID()
+          : `req_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`
+      console.log("[analyze-model] after reqId", reqId)
 
       /** Same-origin absolute URL — relative "/" can mis-resolve in some embedded/mobile contexts. */
       const analyzeEndpoint = new URL(
