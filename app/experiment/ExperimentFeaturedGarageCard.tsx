@@ -6,14 +6,13 @@ import {
   experimentHeroBorder,
   experimentHeroBoxShadow,
   experimentHeroBoxShadowHover,
-  experimentHeroChevron,
+  experimentFeaturedChevron,
   experimentHeroIconBox,
   experimentHeroSubline,
   experimentIconPrimary,
   experimentRadiusFeature,
   experimentTextStrong,
 } from "./experimentHeroStyle";
-import { ExperimentCarDeco } from "./ExperimentCarDeco";
 import { ExpIconHouse } from "./experimentIcons";
 
 const chev = "›" as const;
@@ -27,7 +26,7 @@ type Props = {
 };
 
 /**
- * Protagonist “My Garage” card — strong rim light, right-side car, garage icon, orange chevron.
+ * “My Garage” — tarjeta protagonista: jerarquía clara, sin capa de coche (fondo limpio en experiment).
  */
 export function ExperimentFeaturedGarageCard({ onClick, title, lead, subline, displayFont }: Props) {
   return (
@@ -46,8 +45,8 @@ export function ExperimentFeaturedGarageCard({ onClick, title, lead, subline, di
         flexDirection: "row",
         alignItems: "center",
         width: "100%",
-        minHeight: 160,
-        padding: "20px 18px 20px 20px",
+        minHeight: 168,
+        padding: "22px 20px 24px 20px",
         borderRadius: experimentRadiusFeature,
         background: experimentHeroBackground,
         border: experimentHeroBorder,
@@ -64,31 +63,42 @@ export function ExperimentFeaturedGarageCard({ onClick, title, lead, subline, di
         marginBottom: 0,
       }}
     >
-      <ExperimentCarDeco />
       <div style={{ ...experimentHeroIconBox, zIndex: 2 }}>
         <ExpIconHouse color={experimentIconPrimary} size={26} />
       </div>
-      <div style={{ flex: 1, minWidth: 0, position: "relative", zIndex: 2 }}>
+      <div
+        style={{
+          flex: 1,
+          minWidth: 0,
+          position: "relative",
+          zIndex: 2,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "flex-start",
+          justifyContent: "center",
+          gap: 0,
+        }}
+      >
         <div
           style={{
             fontFamily: displayFont,
             fontSize: 20,
             fontWeight: 800,
             letterSpacing: "-0.03em",
-            marginBottom: 10,
+            marginBottom: 14,
             lineHeight: 1.1,
             color: experimentTextStrong,
           }}
         >
           {title}
         </div>
-        <div style={{ marginBottom: 8 }}>{lead}</div>
+        <div style={{ marginBottom: 12 }}>{lead}</div>
         <div
           style={{
             fontSize: 13,
             fontWeight: 500,
             color: experimentHeroSubline,
-            lineHeight: 1.4,
+            lineHeight: 1.45,
             letterSpacing: "0.01em",
           }}
         >
@@ -97,9 +107,9 @@ export function ExperimentFeaturedGarageCard({ onClick, title, lead, subline, di
       </div>
       <span
         style={{
-          fontSize: 26,
-          fontWeight: 200,
-          color: experimentHeroChevron,
+          fontSize: 30,
+          fontWeight: 300,
+          color: experimentFeaturedChevron,
           lineHeight: 1,
           flexShrink: 0,
           position: "relative",

@@ -49,7 +49,8 @@ const HERO_BASE_FILL = "linear-gradient(145deg, #121212, #050505)";
 
 export const experimentHeroBackground = HERO_LATERAL + ", " + HERO_BASE_FILL;
 
-export const experimentHeroSubline = "rgba(255, 255, 255, 0.6)";
+/** “My Garage” lead/sub copy — feature card only. */
+export const experimentHeroSubline = "rgba(255, 255, 255, 0.72)";
 
 export const experimentHeroBoxShadow =
   "0 0 16px rgba(255, 102, 0, 0.16)," +
@@ -111,6 +112,9 @@ export const experimentHeroIconBox: CSSProperties = {
 };
 
 export const experimentHeroChevron = experimentOrangeEdge;
+
+/** Featured “My Garage” chevron — ligeramente más presente, sigue sutil. */
+export const experimentFeaturedChevron = "rgba(255, 196, 128, 0.95)";
 
 /* —— Quick add (2-up) —— */
 export const experimentQuickTileBackground =
