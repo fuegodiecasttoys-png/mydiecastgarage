@@ -43,6 +43,7 @@ export function ExperimentFeaturedGarageCard({ onClick, title, lead, subline, di
         display: "flex",
         flexDirection: "row",
         alignItems: "center",
+        justifyContent: "flex-start",
         width: "100%",
         minHeight: 124,
         padding: "16px 20px 18px 20px",
@@ -68,6 +69,7 @@ export function ExperimentFeaturedGarageCard({ onClick, title, lead, subline, di
         style={{
           flex: 1,
           minWidth: 0,
+          alignSelf: "stretch",
           position: "relative",
           zIndex: 1,
           display: "flex",
