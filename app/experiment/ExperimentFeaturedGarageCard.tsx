@@ -8,6 +8,7 @@ import {
   experimentHeroBoxShadowHover,
   experimentHeroChevron,
   experimentHeroIconBox,
+  experimentHeroSubline,
   experimentIconPrimary,
   experimentRadiusFeature,
   experimentTextStrong,
@@ -86,7 +87,7 @@ export function ExperimentFeaturedGarageCard({ onClick, title, lead, subline, di
           style={{
             fontSize: 13,
             fontWeight: 500,
-            color: "#A9B0BC",
+            color: experimentHeroSubline,
             lineHeight: 1.4,
             letterSpacing: "0.01em",
           }}

@@ -43,41 +43,27 @@ export const experimentLogoHalo: CSSProperties = {
   filter: "drop-shadow(0 0 20px " + experimentOrangeGlow + ")",
 };
 
-/* —— Featured “My Garage” —— */
-const HERO_BASE =
-  "linear-gradient(105deg, " +
-  "rgba(17, 24, 39, 0.97) 0%, " +
-  "rgba(10, 15, 24, 0.99) 38%, " +
-  "rgba(15, 23, 34, 0.88) 100%)" +
-  ", " +
-  "linear-gradient(90deg, " +
-  "rgba(255,255,255,0.03) 0%, " +
-  "rgba(0,0,0,0) 50%)" +
-  ", " +
-  "linear-gradient(270deg, " +
-  "rgba(255, 159, 10, 0.14) 0%, " +
-  "rgba(255, 152, 0, 0.06) 32%, " +
-  "rgba(0,0,0,0) 62%)" +
-  ", " +
-  "linear-gradient(180deg, " + experimentSurfaceC + " 0%, " + experimentSurfaceA + " 100%)";
+/* —— Featured “My Garage” (test visuals — neutral charcoal + metal edge) —— */
+const HERO_LATERAL = "linear-gradient(to right, rgba(255, 102, 0, 0.15), transparent 40%)";
+const HERO_BASE_FILL = "linear-gradient(145deg, #121212, #050505)";
 
-export const experimentHeroBackground = HERO_BASE;
+export const experimentHeroBackground = HERO_LATERAL + ", " + HERO_BASE_FILL;
+
+export const experimentHeroSubline = "rgba(255, 255, 255, 0.6)";
 
 export const experimentHeroBoxShadow =
-  "0 1px 0 rgba(255,255,255,0.04)," +
-  "0 18px 44px rgba(0,0,0,0.55)," +
-  "0 0 0 1px rgba(255, 159, 10, 0.18)," +
-  "inset 0 1px 0 rgba(255,255,255,0.06)," +
-  "inset -1px 0 0 rgba(255, 170, 60, 0.1)";
+  "0 0 25px rgba(255, 102, 0, 0.25)," +
+  "0 0 8px rgba(255, 140, 0, 0.2)," +
+  "inset 0 0 25px rgba(255, 255, 255, 0.02)," +
+  "inset 0 0 10px rgba(0, 0, 0, 0.6)";
 
 export const experimentHeroBoxShadowHover =
-  "0 1px 0 rgba(255,255,255,0.05)," +
-  "0 20px 48px rgba(0,0,0,0.52)," +
-  "0 0 0 1px rgba(255, 180, 90, 0.22)," +
-  "inset 0 1px 0 rgba(255,255,255,0.08)," +
-  "inset -1px 0 0 rgba(255, 190, 90, 0.14)";
+  "0 0 30px rgba(255, 102, 0, 0.32)," +
+  "0 0 10px rgba(255, 140, 0, 0.26)," +
+  "inset 0 0 25px rgba(255, 255, 255, 0.025)," +
+  "inset 0 0 10px rgba(0, 0, 0, 0.55)";
 
-export const experimentHeroBorder = "1px solid rgba(255, 180, 90, 0.22)";
+export const experimentHeroBorder = "1px solid rgba(255, 140, 0, 0.15)";
 
 export const experimentHeroBadge: CSSProperties = {
   display: "inline-flex",
