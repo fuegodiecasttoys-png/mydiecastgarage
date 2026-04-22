@@ -43,26 +43,32 @@ export const experimentLogoHalo: CSSProperties = {
   filter: "drop-shadow(0 0 20px " + experimentOrangeGlow + ")",
 };
 
-/* —— Featured “My Garage” (metallic blue-gray + orange side wash; box-shadow naranja sin tocar) —— */
-const HERO_LATERAL = "linear-gradient(to right, rgba(255, 102, 0, 0.15), transparent 40%)";
-const HERO_COLD = "linear-gradient(120deg, rgba(90, 130, 180, 0.10), transparent 58%)";
-const HERO_BASE = "linear-gradient(145deg, #11151c, #06080c)";
+/* —— Featured “My Garage” — acero / metal frío; solo esta card usa esto —— */
+const HERO_OVERLAY =
+  "linear-gradient(120deg, rgba(90, 120, 160, 0.12) 18%, transparent 55%)";
+const HERO_BASE =
+  "linear-gradient(90deg, " +
+  "rgba(255, 120, 0, 0.12) 0%, " +
+  "rgba(40, 50, 65, 0.30) 24%, " +
+  "rgba(14, 18, 24, 0.92) 56%, " +
+  "rgba(10, 12, 16, 0.98) 100%)";
 
-export const experimentHeroBackground = HERO_COLD + ", " + HERO_LATERAL + ", " + HERO_BASE;
+export const experimentHeroBackground = HERO_OVERLAY + ", " + HERO_BASE;
 
 /** “My Garage” lead/sub copy — feature card only. */
 export const experimentHeroSubline = "rgba(255, 255, 255, 0.72)";
 
 export const experimentHeroBoxShadow =
-  "0 0 16px rgba(255, 102, 0, 0.16)," +
-  "0 0 5px rgba(255, 140, 0, 0.18)," +
-  "inset 0 0 25px rgba(255, 255, 255, 0.02)," +
-  "inset 0 0 10px rgba(0, 0, 0, 0.6)";
+  "inset 0 0 24px rgba(255, 255, 255, 0.02)," +
+  "inset 0 0 12px rgba(0, 0, 0, 0.45)," +
+  "0 0 16px rgba(255, 115, 0, 0.14)," +
+  "0 0 5px rgba(255, 140, 0, 0.14)";
 
 export const experimentHeroBoxShadowHover =
-  "0 0 28px rgba(255, 102, 0, 0.30)," +
-  "inset 0 0 25px rgba(255, 255, 255, 0.03)," +
-  "inset 0 0 10px rgba(0, 0, 0, 0.55)";
+  "inset 0 0 24px rgba(255, 255, 255, 0.03)," +
+  "inset 0 0 12px rgba(0, 0, 0, 0.42)," +
+  "0 0 24px rgba(255, 115, 0, 0.22)," +
+  "0 0 6px rgba(255, 140, 0, 0.20)";
 
 export const experimentHeroBorder = "1px solid rgba(255, 140, 0, 0.12)";
 
