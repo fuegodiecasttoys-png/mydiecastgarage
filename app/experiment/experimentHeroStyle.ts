@@ -1,162 +1,193 @@
 /**
- * /experiment-only visual system (reference: dark navy, gray material, orange edge light).
- * Does not affect production `/` or shared UI package.
+ * /experiment — premium automotive UI tokens (MY DIECAST GARAGE mock).
+ * Edit only this file in /experiment for palette; page shell stays app-agnostic.
  */
 import type { CSSProperties } from "react";
 
-/* —— Reference palette —— */
-export const experimentAppBg = "#06090F";
-export const experimentSurface = "#0B1220";
-export const experimentSurfaceElevated = "#101827";
-export const experimentHighlight = "rgba(255,255,255,0.06)";
-export const experimentTextMuted = "rgba(255,255,255,0.58)";
-export const experimentTextStrong = "#F3F4F6";
-export const experimentOrange = "#FF9A1F";
+/* —— Palette (mock) —— */
+export const experimentAppBg = "#05070B";
+export const experimentSurfaceA = "#0A0F18";
+export const experimentSurfaceB = "#0F1722";
+export const experimentSurfaceC = "#111827";
+export const experimentTextStrong = "#FFFFFF";
+export const experimentTextMuted = "#A9B0BC";
+export const experimentOrange = "#FF9F0A";
 export const experimentOrangeEdge = "#FFB347";
-export const experimentOrangeGlow = "rgba(255,154,31,0.22)";
+export const experimentOrangeSoft = "rgba(255, 159, 10, 0.12)";
+export const experimentOrangeGlow = "rgba(255, 152, 0, 0.16)";
 
-/* —— Page background (use with { ...dvPageShell, background: experimentAppBackground }) —— */
+export const experimentRadiusFeature = 24;
+export const experimentRadiusMenu = 20;
+export const experimentRadiusIcon = 16;
+export const experimentPagePaddingX = 20;
+export const experimentPagePaddingY = 24;
+export const experimentListGap = 12;
+export const experimentFeatureBottomMargin = 20;
+
+/* —— Page —— */
 export const experimentAppBackground: string =
-  "radial-gradient(120% 80% at 50% -20%, rgba(30, 55, 90, 0.12) 0%, transparent 50%)," +
-  "linear-gradient(180deg, #080b12 0%, " +
+  "radial-gradient(100% 60% at 50% 0%, rgba(25, 40, 65, 0.2) 0%, transparent 52%)," +
+  "linear-gradient(180deg, #06080e 0%, " +
   experimentAppBg +
-  " 40%, #05060a 100%)";
+  " 35%, #020305 100%)";
 
-/* —— My Garage hero —— */
-const HERO_DARK =
-  "linear-gradient(180deg, " + experimentSurfaceElevated + " 0%, " + experimentSurface + " 48%, #080c14 100%)";
-const HERO_ORANGE_WASH =
-  "linear-gradient(270deg, " +
-  "rgba(255,154,31,0.2) 0%, " +
-  "rgba(255,154,31,0.08) 32%, " +
-  "rgba(255,120,30,0.02) 55%, " +
-  "rgba(0,0,0,0) 72%)" +
+export const experimentContentMax: CSSProperties = {
+  maxWidth: 480,
+  margin: "0 auto",
+  position: "relative" as const,
+  width: "100%",
+  boxSizing: "border-box",
+};
+
+export const experimentLogoHalo: CSSProperties = {
+  filter: "drop-shadow(0 0 20px " + experimentOrangeGlow + ")",
+};
+
+/* —— Featured “My Garage” —— */
+const HERO_BASE =
+  "linear-gradient(105deg, " +
+  "rgba(17, 24, 39, 0.97) 0%, " +
+  "rgba(10, 15, 24, 0.99) 38%, " +
+  "rgba(15, 23, 34, 0.88) 100%)" +
   ", " +
   "linear-gradient(90deg, " +
-  "rgba(255,255,255,0.05) 0%, " +
-  "rgba(0,0,0,0) 45%)" +
+  "rgba(255,255,255,0.03) 0%, " +
+  "rgba(0,0,0,0) 50%)" +
   ", " +
-  HERO_DARK;
+  "linear-gradient(270deg, " +
+  "rgba(255, 159, 10, 0.14) 0%, " +
+  "rgba(255, 152, 0, 0.06) 32%, " +
+  "rgba(0,0,0,0) 62%)" +
+  ", " +
+  "linear-gradient(180deg, " + experimentSurfaceC + " 0%, " + experimentSurfaceA + " 100%)";
 
-export const experimentHeroBackground = HERO_ORANGE_WASH;
+export const experimentHeroBackground = HERO_BASE;
 
 export const experimentHeroBoxShadow =
-  "0 1px 0 0 rgba(255,255,255,0.04)," +
-  "0 10px 32px rgba(0,0,0,0.55)," +
-  "inset 0 1px 0 rgba(255,255,255,0.05)," +
-  "inset 0 0 0 1px rgba(120, 140, 160, 0.08)";
+  "0 1px 0 rgba(255,255,255,0.04)," +
+  "0 18px 44px rgba(0,0,0,0.55)," +
+  "0 0 0 1px rgba(255, 159, 10, 0.18)," +
+  "inset 0 1px 0 rgba(255,255,255,0.06)," +
+  "inset -1px 0 0 rgba(255, 170, 60, 0.1)";
 
 export const experimentHeroBoxShadowHover =
-  "0 1px 0 0 rgba(255,255,255,0.05)," +
-  "0 12px 36px rgba(0,0,0,0.5)," +
-  "inset 0 1px 0 rgba(255,255,255,0.06)," +
-  "inset 0 0 0 1px rgba(120, 140, 160, 0.1)";
+  "0 1px 0 rgba(255,255,255,0.05)," +
+  "0 20px 48px rgba(0,0,0,0.52)," +
+  "0 0 0 1px rgba(255, 180, 90, 0.22)," +
+  "inset 0 1px 0 rgba(255,255,255,0.08)," +
+  "inset -1px 0 0 rgba(255, 190, 90, 0.14)";
 
-export const experimentHeroBorder =
-  "1px solid rgba(255, 179, 71, 0.28)";
+export const experimentHeroBorder = "1px solid rgba(255, 180, 90, 0.22)";
 
-export const experimentHeroBadge = {
-  background: "rgba(255, 154, 31, 0.1)",
-  border: "1px solid rgba(255, 179, 71, 0.35)",
-  color: "#FFB347" as const,
-} as const;
+export const experimentHeroBadge: CSSProperties = {
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: 6,
+  padding: "5px 12px",
+  minHeight: 28,
+  fontSize: 12,
+  fontWeight: 700,
+  letterSpacing: "0.02em",
+  borderRadius: 999,
+  color: "#FFB85C",
+  background: "linear-gradient(180deg, rgba(40, 28, 8, 0.65) 0%, rgba(25, 16, 4, 0.8) 100%)",
+  border: "1px solid rgba(255, 197, 120, 0.3)",
+  boxShadow:
+    "inset 0 1px 0 rgba(255, 220, 160, 0.1)," + "0 0 0 1px rgba(0,0,0,0.2)," + "0 2px 8px rgba(0,0,0,0.4)",
+};
 
-export const experimentHeroIconBorder = "1px solid rgba(255, 179, 71, 0.32)";
+export const experimentHeroBadgeMuted: CSSProperties = {
+  display: "inline-flex",
+  alignItems: "center",
+  padding: "5px 12px",
+  minHeight: 28,
+  fontSize: 12,
+  fontWeight: 600,
+  borderRadius: 999,
+  color: "rgba(255, 200, 200, 0.9)",
+  background: "rgba(30, 12, 12, 0.45)",
+  border: "1px solid rgba(255, 100, 100, 0.2)",
+};
 
-export const experimentHeroIconBoxShadow =
-  "inset 0 1px 0 rgba(255,255,255,0.06)," +
-  "0 2px 8px rgba(0,0,0,0.45)," +
-  "0 0 0 1px rgba(15, 25, 40, 0.5)";
+export const experimentHeroIconBox: CSSProperties = {
+  width: 56,
+  height: 56,
+  borderRadius: experimentRadiusIcon,
+  display: "grid",
+  placeItems: "center",
+  flexShrink: 0,
+  position: "relative" as const,
+  zIndex: 2,
+  background: "linear-gradient(165deg, #151d2e 0%, #0b101c 100%)",
+  border: "1px solid rgba(255, 170, 90, 0.28)",
+  boxShadow:
+    "inset 0 1px 0 rgba(255,255,255,0.05)," + "0 4px 14px rgba(0,0,0,0.45)" + ", 0 0 0 1px rgba(0,0,0,0.35)",
+};
 
 export const experimentHeroChevron = experimentOrangeEdge;
 
-export const experimentIconPrimary = experimentOrange;
-export const experimentIconSofter = "#E08A1A";
-export const experimentIconNeutral = "rgba(240, 244, 250, 0.88)";
-
-/* —— Quick add tiles —— */
+/* —— Quick add (2-up) —— */
 export const experimentQuickTileBackground =
-  "linear-gradient(160deg, " +
-  experimentSurfaceElevated +
-  " 0%, " +
-  experimentSurface +
-  " 55%, #0a0f1a 100%)";
+  "linear-gradient(155deg, " + experimentSurfaceC + " 0%, " + experimentSurfaceA + " 100%)";
 
-export const experimentQuickTileBorder = "1px solid rgba(120, 140, 160, 0.12)";
+export const experimentQuickTileBorder = "1px solid rgba(95, 115, 140, 0.18)";
 
 export const experimentQuickTileShadowRest =
-  "0 0 0 1px rgba(0,0,0,0.35)," +
-  "0 4px 16px rgba(0,0,0,0.5)," +
+  "0 0 0 1px rgba(0,0,0,0.4)," +
+  "0 6px 20px rgba(0,0,0,0.5)," +
   "inset 0 1px 0 rgba(255,255,255,0.04)," +
-  "inset 0 -1px 0 rgba(0,0,0,0.2)," +
-  "0 0 20px -2px " +
+  "0 0 24px -4px " +
   experimentOrangeGlow;
 
 export const experimentQuickTileShadowHover =
-  "0 0 0 1px rgba(255,154,31,0.15)," +
-  "0 6px 22px rgba(0,0,0,0.52)," +
+  "0 0 0 1px rgba(255, 159, 10, 0.16)," +
+  "0 8px 24px rgba(0,0,0,0.5)," +
   "inset 0 1px 0 rgba(255,255,255,0.05)," +
-  "0 0 24px -1px " +
+  "0 0 28px -2px " +
   experimentOrangeGlow;
 
 export const experimentQuickIconWrap: CSSProperties = {
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
-  filter: "drop-shadow(0 0 4px " + experimentOrangeGlow + ")",
+  filter: "drop-shadow(0 0 6px rgba(255, 159, 10, 0.18))",
 };
 
-/* —— List rows (Favorites … How To) —— */
-const LIST_INNER = experimentSurface;
-const LIST_AMB =
-  "linear-gradient(270deg, " +
-  "rgba(255, 154, 31, 0.11) 0%, " +
-  "rgba(255, 130, 50, 0.04) 30%, " +
-  "rgba(0,0,0,0) 58%)" +
+/* —— Standard menu rows —— */
+const LIST_CORE =
+  "linear-gradient(98deg, " + experimentSurfaceB + " 0%, " + experimentSurfaceA + " 55%, rgba(17, 24, 39, 0.92) 100%)" +
   ", " +
-  "linear-gradient(90deg, " +
-  "rgba(90, 110, 130, 0.06) 0%, " +
-  "rgba(0,0,0,0) 42%)" +
-  ", " +
-  LIST_INNER;
+  "linear-gradient(270deg, rgba(255, 160, 40, 0.05) 0%, transparent 50%)";
 
-export const experimentListIconFrame: CSSProperties = {
+export const experimentListRowBase: CSSProperties = {
+  background: LIST_CORE,
+  border: "1px solid rgba(120, 135, 160, 0.14)",
+  boxShadow:
+    "0 2px 0 rgba(255,255,255,0.02), 0 8px 20px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.04)",
+};
+
+export const experimentListRowShadowRest = experimentListRowBase.boxShadow as string;
+export const experimentListRowShadowHover =
+  "0 2px 0 rgba(255,255,255,0.03), 0 10px 26px rgba(0,0,0,0.48), inset 0 1px 0 rgba(255,255,255,0.05)";
+
+export const experimentMenuIconFrame: CSSProperties = {
+  width: 48,
+  height: 48,
   lineHeight: 0,
   borderRadius: 14,
-  background: "linear-gradient(180deg, #121a2a 0%, #0c121e 100%)",
-  border: "1px solid rgba(100, 120, 150, 0.14)",
-  boxShadow:
-    "inset 0 1px 0 rgba(255,255,255,0.04)," +
-    "inset 0 -1px 0 rgba(0,0,0,0.3)," +
-    "0 0 0 1px rgba(255,154,31,0.08)",
-  filter: "drop-shadow(0 0 1px rgba(255,154,31,0.15))",
+  display: "grid",
+  placeItems: "center",
+  flexShrink: 0,
+  background: "linear-gradient(180deg, #121a2a 0%, #0a101c 100%)",
+  border: "1px solid rgba(100, 120, 150, 0.16)",
+  boxShadow: "inset 0 1px 0 rgba(255,255,255,0.04), inset 0 -1px 0 rgba(0,0,0,0.35)",
 };
 
 export const experimentListTitle = experimentTextStrong;
+export const experimentListChevron = "rgba(255, 191, 120, 0.9)";
 
-export const experimentListChevron = "rgba(255, 179, 71, 0.75)";
+export const experimentIconPrimary = experimentOrange;
 
-export const experimentListRowPolish: CSSProperties = {
-  boxShadow:
-    "0 0 0 1px rgba(100, 120, 150, 0.1)," +
-    "0 6px 16px rgba(0,0,0,0.4)",
-  border: "1px solid rgba(100, 120, 150, 0.1)",
-};
-
-export const experimentListRowOrangeAccent: CSSProperties = {
-  background: LIST_AMB,
-  border: "1px solid rgba(255, 154, 31, 0.14)",
-  boxShadow:
-    "0 4px 20px rgba(0,0,0,0.5)," +
-    "inset 0 1px 0 rgba(255,255,255,0.03)",
-};
-
-export const experimentListRowShadowRestWarm =
-  "0 4px 20px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.03)";
-
-export const experimentListRowShadowHoverWarm =
-  "0 8px 28px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.04)";
-
-export const experimentLogoHalo: CSSProperties = {
-  filter: "drop-shadow(0 0 14px " + experimentOrangeGlow + ")",
-};
+/** Merged into menu `button` styles (same as list row system). */
+export const experimentListRowOrangeAccent: CSSProperties = { ...experimentListRowBase };
