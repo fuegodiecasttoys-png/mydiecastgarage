@@ -45,7 +45,7 @@ import {
   ExpIconHeart,
   ExpIconHouse,
   ExpIconPackage,
-  ExpIconStarFilled,
+  ExpIconStar,
   ExpIconUsers,
 } from "./experimentIcons";
 
@@ -413,7 +413,7 @@ export default function ExperimentPage() {
         >
           <div style={experimentListIconFrame}>
             <IconCircle variant="orangeSubtle">
-              <ExpIconStarFilled color={experimentIconPrimary} size={24} />
+              <ExpIconStar color={experimentIconPrimary} size={24} />
             </IconCircle>
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
