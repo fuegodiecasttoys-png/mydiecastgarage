@@ -4,8 +4,13 @@
 const CAR_SRC =
   "https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=1200&q=85&auto=format&fit=crop";
 
+const CAR_FILTER =
+  "brightness(0.4) contrast(1.1) saturate(0.6) grayscale(0.3) sepia(0.2)";
+
+const CAR_MASK = "linear-gradient(to left, black 30%, transparent 85%)";
+
 /**
- * Silueta de auto al fondo de “My Garage”: anclada abajo-derecha, baja en la jerarquía, sin capturar clicks.
+ * Sombra elegante al fondo de “My Garage”: poco protagonismo, bajo en la pila, sin interacción.
  */
 export function ExperimentCarDeco() {
   return (
@@ -13,17 +18,17 @@ export function ExperimentCarDeco() {
       aria-hidden
       style={{
         position: "absolute",
-        bottom: 0,
-        right: 0,
         top: 0,
-        width: "60%",
+        right: 0,
+        bottom: -10,
+        width: "50%",
         maxWidth: "100%",
         pointerEvents: "none",
         zIndex: 0,
         overflow: "hidden",
-        opacity: 0.15,
-        maskImage: "linear-gradient(to left, black 40%, transparent 100%)",
-        WebkitMaskImage: "linear-gradient(to left, black 40%, transparent 100%)",
+        opacity: 0.12,
+        maskImage: CAR_MASK,
+        WebkitMaskImage: CAR_MASK,
         maskSize: "100% 100%",
         WebkitMaskSize: "100% 100%",
         maskRepeat: "no-repeat",
@@ -44,7 +49,7 @@ export function ExperimentCarDeco() {
           height: "100%",
           objectFit: "cover",
           objectPosition: "100% 50%",
-          filter: "brightness(0.6) contrast(1.2)",
+          filter: CAR_FILTER,
         }}
       />
     </div>
