@@ -1,16 +1,17 @@
 "use client";
 
-/** Superdeportivo moderno, tonos oscuros (Porsche 911, vista lateral) — Unsplash, solo /experiment. */
+/** Superdeportivo — referencia sutil; /experiment. */
 const CAR_SRC =
   "https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=1200&q=85&auto=format&fit=crop";
 
+/** Blur leve + oscurecido: atmósfera, no objeto. */
 const CAR_FILTER =
-  "brightness(0.4) contrast(1.1) saturate(0.6) grayscale(0.3) sepia(0.2)";
+  "blur(1.5px) brightness(0.35) contrast(1.05) saturate(0.5) grayscale(0.4)";
 
-const CAR_MASK = "linear-gradient(to left, black 30%, transparent 85%)";
+const CAR_MASK = "linear-gradient(to left, black 20%, transparent 90%)";
 
 /**
- * Sombra elegante al fondo de “My Garage”: poco protagonismo, bajo en la pila, sin interacción.
+ * Capa de “aire” bajo el contenido: muy tenue, sin clics, z-index bajo.
  */
 export function ExperimentCarDeco() {
   return (
@@ -26,7 +27,7 @@ export function ExperimentCarDeco() {
         pointerEvents: "none",
         zIndex: 0,
         overflow: "hidden",
-        opacity: 0.12,
+        opacity: 0.08,
         maskImage: CAR_MASK,
         WebkitMaskImage: CAR_MASK,
         maskSize: "100% 100%",
