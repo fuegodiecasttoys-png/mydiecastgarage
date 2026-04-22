@@ -105,6 +105,7 @@ export function ExperimentFeaturedGarageCard({ onClick, title, lead, subline, di
               justifyContent: "center",
               alignItems: "flex-start",
               boxSizing: "border-box",
+              paddingTop: 4,
             }}
           >
             <div
