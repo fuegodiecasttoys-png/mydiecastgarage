@@ -5,40 +5,40 @@
 
 import type { CSSProperties } from "react";
 
-/* —— My Garage hero —— */
+/* —— My Garage hero (flagship: darker + softer right wash than list rows) —— */
+const HERO_BASE_V =
+  "linear-gradient(180deg, #181C24 0%, #0E1018 52%, #0A0C12 100%)";
+const HERO_WARM_D =
+  "linear-gradient(270deg, " +
+  "rgba(255,122,24,0.12) 0%, " +
+  "rgba(255,122,24,0.06) 28%, " +
+  "rgba(255,122,24,0.02) 48%, " +
+  "rgba(0,0,0,0) 68%)" +
+  ", " +
+  HERO_BASE_V;
+
 export const experimentHeroBoxShadow =
-  "0 0 0 1px rgba(255,122,24,0.3)," +
-  "0 6px 20px rgba(0,0,0,0.58)," +
-  "inset 0 1px 0 rgba(255,160,100,0.1)," +
-  "inset 0 -1px 0 rgba(0,0,0,0.25)," +
-  "inset 0 0 0 1px rgba(255,122,24,0.04)";
+  "0 8px 24px rgba(0,0,0,0.6)," + "inset 0 1px 0 rgba(255,255,255,0.03)";
 
 export const experimentHeroBoxShadowHover =
-  "0 0 0 1px rgba(255,122,24,0.38)," +
-  "0 8px 24px rgba(0,0,0,0.52)," +
-  "inset 0 1px 0 rgba(255,170,110,0.12)," +
-  "inset 0 -1px 0 rgba(0,0,0,0.2)," +
-  "inset 0 0 0 1px rgba(255,122,24,0.07)";
+  "0 10px 32px rgba(0,0,0,0.55)," + "inset 0 1px 0 rgba(255,255,255,0.04)";
 
-export const experimentHeroBackground =
-  "linear-gradient(180deg, #1A1F2A 0%, #0F1218 55%, #0C0F16 100%)";
+export const experimentHeroBackground = HERO_WARM_D;
 
-export const experimentHeroBorder = "1px solid rgba(255,122,24,0.38)";
+export const experimentHeroBorder = "1px solid rgba(255,122,24,0.24)";
 
 export const experimentHeroBadge = {
-  background: "rgba(255,122,24,0.2)",
-  border: "1px solid rgba(255,150,60,0.4)",
-  color: "#FFBC70" as const,
+  background: "rgba(255,122,24,0.14)",
+  border: "1px solid rgba(255,122,24,0.26)",
+  color: "#FFAA57" as const,
 } as const;
 
-export const experimentHeroIconBorder = "1px solid rgba(255,150,60,0.4)";
+export const experimentHeroIconBorder = "1px solid rgba(255,130,64,0.3)";
 
 export const experimentHeroIconBoxShadow =
-  "0 4px 12px rgba(0,0,0,0.4)," +
-  "inset 0 1px 0 rgba(255,170,120,0.14)," +
-  "inset 0 0 8px rgba(255,122,24,0.06)";
+  "0 4px 16px rgba(0,0,0,0.5)," + "inset 0 1px 0 rgba(255,255,255,0.06)";
 
-export const experimentHeroChevron = "#FF9A3D";
+export const experimentHeroChevron = "#FFAB52";
 
 /* —— Quick add tiles —— */
 export const experimentQuickTileShadowRest =
