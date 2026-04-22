@@ -12,8 +12,6 @@ import {
   dvDisplayFont,
   dvGhostButton,
   dvHeroRowCard,
-  dvModelQuickTileHoverHandlers,
-  dvModelRowCardHoverHandlers,
   dvPageShell,
   dvQuickTile,
   dvRowCardBase,
@@ -24,7 +22,23 @@ import {
   experimentHeroBorder,
   experimentHeroBoxShadow,
   experimentHeroBoxShadowHover,
+  experimentHeroChevron,
   experimentHeroIconBorder,
+  experimentHeroIconBoxShadow,
+  experimentListChevron,
+  experimentListRowOrangeAccent,
+  experimentListRowShadowHoverWarm,
+  experimentListRowShadowHoverWish,
+  experimentListRowShadowRestWarm,
+  experimentListRowShadowRestWish,
+  experimentListRowWishlist,
+  experimentListTitle,
+  experimentLogoHalo,
+  experimentQuickEmojiStyle,
+  experimentQuickTileBackground,
+  experimentQuickTileBorder,
+  experimentQuickTileShadowHover,
+  experimentQuickTileShadowRest,
 } from "./experimentHeroStyle";
 
 function garageCountLabel(count: number) {
@@ -60,7 +74,7 @@ function ExperimentHeroIcon() {
         flexShrink: 0,
         background: "rgba(255,255,255,0.04)",
         border: experimentHeroIconBorder,
-        boxShadow: "0 6px 16px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.04)",
+        boxShadow: experimentHeroIconBoxShadow,
         fontSize: 22,
       }}
     >
@@ -167,11 +181,7 @@ export default function ExperimentPage() {
 
         {/* Branding */}
         <div style={{ textAlign: "center", paddingTop: 4, marginBottom: 22 }}>
-          <div
-            style={{
-              filter: "drop-shadow(0 0 10px rgba(255,122,24,0.08))",
-            }}
-          >
+          <div style={experimentLogoHalo}>
             <img
               src="/logo.png"
               alt="My Diecast Garage"
@@ -197,7 +207,12 @@ export default function ExperimentPage() {
           <button
             type="button"
             onClick={() => router.push("/capture-packed")}
-            {...dvModelQuickTileHoverHandlers}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.boxShadow = experimentQuickTileShadowHover;
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.boxShadow = experimentQuickTileShadowRest;
+            }}
             style={{
               ...dvQuickTile,
               flexDirection: "column",
@@ -205,9 +220,12 @@ export default function ExperimentPage() {
               padding: "16px 12px 14px",
               gap: 10,
               minHeight: 118,
+              background: experimentQuickTileBackground,
+              border: experimentQuickTileBorder,
+              boxShadow: experimentQuickTileShadowRest,
             }}
           >
-            <div style={{ display: "flex", justifyContent: "center" }}>
+            <div style={experimentQuickEmojiStyle}>
               <IconCircle variant="orangeQuick">📦</IconCircle>
             </div>
             <div style={{ textAlign: "center" }}>
@@ -237,7 +255,12 @@ export default function ExperimentPage() {
           <button
             type="button"
             onClick={() => router.push("/capture-loose")}
-            {...dvModelQuickTileHoverHandlers}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.boxShadow = experimentQuickTileShadowHover;
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.boxShadow = experimentQuickTileShadowRest;
+            }}
             style={{
               ...dvQuickTile,
               flexDirection: "column",
@@ -245,9 +268,12 @@ export default function ExperimentPage() {
               padding: "16px 12px 14px",
               gap: 10,
               minHeight: 118,
+              background: experimentQuickTileBackground,
+              border: experimentQuickTileBorder,
+              boxShadow: experimentQuickTileShadowRest,
             }}
           >
-            <div style={{ display: "flex", justifyContent: "center" }}>
+            <div style={experimentQuickEmojiStyle}>
               <IconCircle variant="orangeQuick">🚗</IconCircle>
             </div>
             <div style={{ textAlign: "center" }}>
@@ -356,7 +382,7 @@ export default function ExperimentPage() {
               {garageCountError ? "You can still open your collection below." : "View your collection"}
             </div>
           </div>
-          <span style={{ ...chevronStyle, color: t.orange400 }} aria-hidden>
+          <span style={{ ...chevronStyle, color: experimentHeroChevron }} aria-hidden>
             ›
           </span>
         </button>
@@ -365,10 +391,23 @@ export default function ExperimentPage() {
         <button
           type="button"
           onClick={() => router.push("/favorites")}
-          {...dvModelRowCardHoverHandlers}
-          style={{ ...rowCardBase, marginBottom: 12 }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.boxShadow = experimentListRowShadowHoverWarm;
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.boxShadow = experimentListRowShadowRestWarm;
+          }}
+          style={{ ...rowCardBase, marginBottom: 12, ...experimentListRowOrangeAccent }}
         >
-          <IconCircle variant="orangeSubtle">⭐</IconCircle>
+          <div
+            style={{
+              lineHeight: 0,
+              borderRadius: 14,
+              boxShadow: "0 0 0 1px rgba(255,255,255,0.1), 0 0 10px rgba(255,122,24,0.05)",
+            }}
+          >
+            <IconCircle variant="orangeSubtle">⭐</IconCircle>
+          </div>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div
               style={{
@@ -376,6 +415,7 @@ export default function ExperimentPage() {
                 fontWeight: 800,
                 marginBottom: 4,
                 letterSpacing: "-0.02em",
+                color: experimentListTitle,
               }}
             >
               Favorites
@@ -391,7 +431,7 @@ export default function ExperimentPage() {
               Your top picks
             </div>
           </div>
-          <span style={{ ...chevronStyle, color: t.textMuted }} aria-hidden>
+          <span style={{ ...chevronStyle, color: experimentListChevron }} aria-hidden>
             ›
           </span>
         </button>
@@ -400,10 +440,23 @@ export default function ExperimentPage() {
         <button
           type="button"
           onClick={() => router.push("/wishlist")}
-          {...dvModelRowCardHoverHandlers}
-          style={{ ...rowCardBase, marginBottom: 12 }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.boxShadow = experimentListRowShadowHoverWish;
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.boxShadow = experimentListRowShadowRestWish;
+          }}
+          style={{ ...rowCardBase, marginBottom: 12, ...experimentListRowWishlist }}
         >
-          <IconCircle variant="neutral">⭐</IconCircle>
+          <div
+            style={{
+              lineHeight: 0,
+              borderRadius: 14,
+              boxShadow: "0 0 0 1px rgba(255,255,255,0.12)",
+            }}
+          >
+            <IconCircle variant="neutral">⭐</IconCircle>
+          </div>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div
               style={{
@@ -411,6 +464,7 @@ export default function ExperimentPage() {
                 fontWeight: 800,
                 marginBottom: 4,
                 letterSpacing: "-0.02em",
+                color: experimentListTitle,
               }}
             >
               Wishlist
@@ -426,7 +480,7 @@ export default function ExperimentPage() {
               Models you want next
             </div>
           </div>
-          <span style={{ ...chevronStyle, color: t.textMuted }} aria-hidden>
+          <span style={{ ...chevronStyle, color: experimentListChevron }} aria-hidden>
             ›
           </span>
         </button>
@@ -434,10 +488,23 @@ export default function ExperimentPage() {
         <button
           type="button"
           onClick={() => router.push("/friends")}
-          {...dvModelRowCardHoverHandlers}
-          style={{ ...rowCardBase, marginBottom: 12 }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.boxShadow = experimentListRowShadowHoverWarm;
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.boxShadow = experimentListRowShadowRestWarm;
+          }}
+          style={{ ...rowCardBase, marginBottom: 12, ...experimentListRowOrangeAccent }}
         >
-          <IconCircle variant="orangeSubtle">👥</IconCircle>
+          <div
+            style={{
+              lineHeight: 0,
+              borderRadius: 14,
+              boxShadow: "0 0 0 1px rgba(255,255,255,0.1), 0 0 10px rgba(255,122,24,0.05)",
+            }}
+          >
+            <IconCircle variant="orangeSubtle">👥</IconCircle>
+          </div>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div
               style={{
@@ -453,6 +520,7 @@ export default function ExperimentPage() {
                   fontSize: 16,
                   fontWeight: 800,
                   letterSpacing: "-0.02em",
+                  color: experimentListTitle,
                 }}
               >
                 Add Friends
@@ -483,7 +551,7 @@ export default function ExperimentPage() {
               View each other&apos;s garages (view only)
             </div>
           </div>
-          <span style={{ ...chevronStyle, color: t.textMuted }} aria-hidden>
+          <span style={{ ...chevronStyle, color: experimentListChevron }} aria-hidden>
             ›
           </span>
         </button>
@@ -492,9 +560,23 @@ export default function ExperimentPage() {
         <button
           type="button"
           onClick={() => router.push("/howto")}
-          style={{ ...rowCardBase, marginBottom: 0 }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.boxShadow = experimentListRowShadowHoverWarm;
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.boxShadow = experimentListRowShadowRestWarm;
+          }}
+          style={{ ...rowCardBase, marginBottom: 0, ...experimentListRowOrangeAccent }}
         >
-          <IconCircle variant="orangeSubtle">📖</IconCircle>
+          <div
+            style={{
+              lineHeight: 0,
+              borderRadius: 14,
+              boxShadow: "0 0 0 1px rgba(255,255,255,0.1), 0 0 10px rgba(255,122,24,0.05)",
+            }}
+          >
+            <IconCircle variant="orangeSubtle">📖</IconCircle>
+          </div>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div
               style={{
@@ -502,6 +584,7 @@ export default function ExperimentPage() {
                 fontWeight: 800,
                 marginBottom: 4,
                 letterSpacing: "-0.02em",
+                color: experimentListTitle,
               }}
             >
               How To
@@ -517,7 +600,7 @@ export default function ExperimentPage() {
               Tips for great photos
             </div>
           </div>
-          <span style={{ ...chevronStyle, color: t.textMuted }} aria-hidden>
+          <span style={{ ...chevronStyle, color: experimentListChevron }} aria-hidden>
             ›
           </span>
         </button>
