@@ -4,14 +4,14 @@
 const CAR_SRC =
   "https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=1200&q=85&auto=format&fit=crop";
 
-/** Blur leve + oscurecido: atmósfera, no objeto. */
+/** Sutil pero presente: blur mínimo + desaturado. */
 const CAR_FILTER =
-  "blur(1.5px) brightness(0.35) contrast(1.05) saturate(0.5) grayscale(0.4)";
+  "blur(0.8px) brightness(0.42) contrast(1.08) saturate(0.55) grayscale(0.35)";
 
-const CAR_MASK = "linear-gradient(to left, black 20%, transparent 90%)";
+const CAR_MASK = "linear-gradient(to left, black 25%, transparent 88%)";
 
 /**
- * Capa de “aire” bajo el contenido: muy tenue, sin clics, z-index bajo.
+ * Fondo de atmósfera: legible, sin robar el foco. Sin clics, z-index bajo.
  */
 export function ExperimentCarDeco() {
   return (
@@ -27,7 +27,7 @@ export function ExperimentCarDeco() {
         pointerEvents: "none",
         zIndex: 0,
         overflow: "hidden",
-        opacity: 0.08,
+        opacity: 0.11,
         maskImage: CAR_MASK,
         WebkitMaskImage: CAR_MASK,
         maskSize: "100% 100%",
