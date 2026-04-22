@@ -25,13 +25,15 @@ type Props = {
 };
 
 /**
- * “My Garage” — coche + textos; button en grid con placeItems: center stretch: el bloque repite
- * ancho y altura de contenido, y queda centrado en vertical respecto a minHeight.
+ * “My Garage” — contenedor (minHeight 124, flex fila) con un solo hijo al flujo: la fila texto+›.
+ * alignItems: center en ese contenedor centra el bloque entero; no usar dos hijos sueltos (desalinean el ›).
+ * <button> reenvuelve; la barra naranja/metal del CSS aplica a .experimentMyGarageCard.
  */
 export function ExperimentFeaturedGarageCard({ onClick, title, lead, subline, displayFont }: Props) {
   return (
     <button
       type="button"
+      className="experimentMyGarageCard"
       onClick={onClick}
       onMouseEnter={(e) => {
         e.currentTarget.style.boxShadow = experimentHeroBoxShadowHover;
@@ -41,11 +43,10 @@ export function ExperimentFeaturedGarageCard({ onClick, title, lead, subline, di
       }}
       style={{
         position: "relative",
-        display: "grid",
-        placeItems: "center stretch",
+        display: "block",
         width: "100%",
-        minHeight: 124,
-        padding: "16px 20px 18px 20px",
+        padding: 0,
+        margin: 0,
         borderRadius: experimentRadiusFeature,
         background: experimentHeroBackground,
         border: experimentHeroBorder,
@@ -56,15 +57,17 @@ export function ExperimentFeaturedGarageCard({ onClick, title, lead, subline, di
         WebkitTapHighlightColor: "transparent",
         overflow: "hidden",
         fontFamily: "inherit",
-        margin: 0,
+        lineHeight: 0,
         boxSizing: "border-box",
+        WebkitAppearance: "none" as const,
+        appearance: "none",
         marginBottom: 0,
       }}
     >
       <ExperimentCarDeco />
       <div className="experimentMyGarageGlint" aria-hidden />
       {/*
-        Coche y glint van absolute; un solo hijo en grid. placeItems centra en vertical y estira a lo ancho.
+        Un solo hijo en el flex externo: la fila interna. Así el centrado vertical es de todo el pack (texto + chevron).
       */}
       <div
         style={{
@@ -73,62 +76,77 @@ export function ExperimentFeaturedGarageCard({ onClick, title, lead, subline, di
           display: "flex",
           flexDirection: "row",
           alignItems: "center",
+          minHeight: 124,
           width: "100%",
-          gap: 12,
+          boxSizing: "border-box",
+          padding: "16px 20px 18px 20px",
+          lineHeight: "normal",
         }}
       >
         <div
           style={{
-            position: "relative",
             display: "flex",
-            flex: 1,
+            flexDirection: "row",
+            alignItems: "center",
+            width: "100%",
             minWidth: 0,
-            flexDirection: "column",
-            alignItems: "flex-start",
+            gap: 12,
             boxSizing: "border-box",
-            gap: 0,
           }}
         >
           <div
             style={{
-              fontFamily: displayFont,
-              fontSize: 20,
-              fontWeight: 800,
-              letterSpacing: "-0.03em",
-              marginBottom: 8,
-              lineHeight: 1.04,
-              color: experimentTextStrong,
+              position: "relative",
+              display: "flex",
+              flex: 1,
+              minWidth: 0,
+              flexDirection: "column",
+              alignItems: "flex-start",
+              boxSizing: "border-box",
+              gap: 0,
             }}
           >
-            {title}
+            <div
+              style={{
+                fontFamily: displayFont,
+                fontSize: 20,
+                fontWeight: 800,
+                letterSpacing: "-0.03em",
+                marginBottom: 8,
+                lineHeight: 1.04,
+                color: experimentTextStrong,
+              }}
+            >
+              {title}
+            </div>
+            <div style={{ marginBottom: 7 }}>{lead}</div>
+            <div
+              style={{
+                fontSize: 13,
+                fontWeight: 500,
+                color: experimentHeroSubline,
+                lineHeight: 1.32,
+                letterSpacing: "0.01em",
+              }}
+            >
+              {subline}
+            </div>
           </div>
-          <div style={{ marginBottom: 7 }}>{lead}</div>
-          <div
+          <span
             style={{
-              fontSize: 13,
-              fontWeight: 500,
-              color: experimentHeroSubline,
-              lineHeight: 1.32,
-              letterSpacing: "0.01em",
+              fontSize: 30,
+              fontWeight: 300,
+              color: experimentFeaturedChevron,
+              lineHeight: 1,
+              flexShrink: 0,
+              position: "relative",
+              zIndex: 1,
             }}
+            aria-hidden
           >
-            {subline}
-          </div>
+            {chev}
+          </span>
         </div>
-        <span
-          style={{
-            fontSize: 30,
-            fontWeight: 300,
-            color: experimentFeaturedChevron,
-            lineHeight: 1,
-            flexShrink: 0,
-            position: "relative",
-            zIndex: 1,
-          }}
-          aria-hidden
-        >
-          {chev}
-        </span>
       </div>
     </button>
   );
