@@ -15,6 +15,7 @@ import {
 } from "./experimentHeroStyle";
 import { ExperimentCarDeco } from "./ExperimentCarDeco";
 import { ExpIconHouse } from "./experimentIcons";
+import "./experimentMyGarageCard.css";
 
 const chev = "›" as const;
 
@@ -65,7 +66,7 @@ export function ExperimentFeaturedGarageCard({ onClick, title, lead, subline, di
       }}
     >
       <ExperimentCarDeco />
-      <div style={{ ...experimentHeroIconBox, zIndex: 2 }}>
+      <div style={{ ...experimentHeroIconBox, zIndex: 1 }}>
         <ExpIconHouse color={experimentIconPrimary} size={26} />
       </div>
       <div
@@ -73,7 +74,7 @@ export function ExperimentFeaturedGarageCard({ onClick, title, lead, subline, di
           flex: 1,
           minWidth: 0,
           position: "relative",
-          zIndex: 2,
+          zIndex: 1,
           display: "flex",
           flexDirection: "column",
           alignItems: "flex-start",
@@ -115,7 +116,7 @@ export function ExperimentFeaturedGarageCard({ onClick, title, lead, subline, di
           lineHeight: 1,
           flexShrink: 0,
           position: "relative",
-          zIndex: 2,
+          zIndex: 1,
         }}
         aria-hidden
       >
