@@ -7,14 +7,11 @@ import {
   experimentHeroBoxShadow,
   experimentHeroBoxShadowHover,
   experimentFeaturedChevron,
-  experimentHeroIconBox,
   experimentHeroSubline,
-  experimentIconPrimary,
   experimentRadiusFeature,
   experimentTextStrong,
 } from "./experimentHeroStyle";
 import { ExperimentCarDeco } from "./ExperimentCarDeco";
-import { ExpIconHouse } from "./experimentIcons";
 import "./experimentMyGarageCard.css";
 
 const chev = "›" as const;
@@ -28,7 +25,7 @@ type Props = {
 };
 
 /**
- * “My Garage” — tarjeta protagonista: coche de ambiente a la derecha, contenido e icono por encima.
+ * “My Garage” — tarjeta protagonista: texto y chevron, coche de ambiente a la derecha.
  */
 export function ExperimentFeaturedGarageCard({ onClick, title, lead, subline, displayFont }: Props) {
   return (
@@ -67,17 +64,6 @@ export function ExperimentFeaturedGarageCard({ onClick, title, lead, subline, di
     >
       <ExperimentCarDeco />
       <div className="experimentMyGarageGlint" aria-hidden />
-      <div
-        style={{
-          ...experimentHeroIconBox,
-          zIndex: 1,
-          width: 52,
-          height: 52,
-          borderRadius: 15,
-        }}
-      >
-        <ExpIconHouse color={experimentIconPrimary} size={24} />
-      </div>
       <div
         style={{
           flex: 1,
