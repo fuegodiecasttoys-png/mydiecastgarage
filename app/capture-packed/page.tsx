@@ -1,5 +1,7 @@
 "use client"
 
+console.log("BUILD VERSION: 99f6bf8")
+
 import {
   useEffect,
   useRef,
