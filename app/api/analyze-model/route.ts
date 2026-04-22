@@ -9,6 +9,10 @@ type AnalyzeResult = {
   brand: string | null
   model: string | null
   series: string | null
+  /** e.g. 157/250 — printed top-right on the card (mainline / series run). */
+  main_number: string | null
+  /** e.g. 9/10 — printed mid-right, often in a small colored box (subset of a theme). */
+  sub_number: string | null
 }
 
 function pickNullableString(v: unknown): string | null {
@@ -94,6 +98,14 @@ function normalizeSeries(value: string | null | undefined): string | null {
   return trimmed || null
 }
 
+/** Hot Wheels–style NNN/MMM on card; no guessing beyond printed text. */
+function normalizeMainSubNumber(value: string | null | undefined): string | null {
+  if (value === null || value === undefined) return null
+  const t = value.trim()
+  if (!t) return null
+  return t.length > 32 ? t.slice(0, 32) : t
+}
+
 function tryParseAnalyzeJson(raw: string): Partial<Record<keyof AnalyzeResult, unknown>> | null {
   const trimmed = raw.trim()
   if (!trimmed) return null
@@ -130,11 +142,13 @@ function tryParseAnalyzeJson(raw: string): Partial<Record<keyof AnalyzeResult, u
 
 function fieldsFromPartialParsed(
   parsed: Partial<Record<keyof AnalyzeResult, unknown>>
-): Pick<AnalyzeResult, "brand" | "model" | "series"> {
+): Pick<AnalyzeResult, "brand" | "model" | "series" | "main_number" | "sub_number"> {
   return {
     brand: pickNullableString(parsed.brand),
     model: pickNullableString(parsed.model),
     series: pickNullableString(parsed.series),
+    main_number: pickNullableString(parsed.main_number),
+    sub_number: pickNullableString(parsed.sub_number),
   }
 }
 
@@ -236,8 +250,10 @@ export async function POST(req: Request) {
           "model is the MOST IMPORTANT field: the exact vehicle/model name as printed; no corrections; trim spaces; max 40 characters (truncate if longer).",
           "brand: toy line brand if clearly printed (e.g. Hot Wheels, Matchbox, GreenLight).",
           "series: sub-line or collection name if clearly visible (e.g. HW Flames, Fast & Furious); otherwise null.",
+          "main_number: ONLY the printed fraction in the UPPER RIGHT of the card (e.g. 157/250 in the top corner/ribbon). Never confuse with the mid-right box.",
+          "sub_number: ONLY the printed fraction in a SMALL BOX or banner on the MIDDLE-RIGHT of the art (e.g. 9/10). It is a different number than main_number. If not clearly separate/readable, null.",
           "Reply with ONLY valid JSON, no markdown, no commentary. Exact shape:",
-          '{"brand":string|null,"model":string|null,"series":string|null}',
+          '{"brand":string|null,"model":string|null,"series":string|null,"main_number":string|null,"sub_number":string|null}',
           `Reference list (prefer exact spellings when text matches): brands: ${BRANDS.join(", ")}.`,
         ].join(" "),
       },
@@ -247,7 +263,7 @@ export async function POST(req: Request) {
           {
             type: "text" as const,
             text:
-              "Read ONLY visible printed text on this diecast package image. Return strict JSON: brand, model, series. Use null when not clearly readable.",
+              "Read ONLY visible printed text on this diecast package. Return JSON: brand, model, series, main_number (top-right fraction, e.g. 157/250), sub_number (mid-right small box, e.g. 9/10 if present). null when not readable.",
           },
           {
             type: "image_url" as const,
@@ -271,7 +287,7 @@ export async function POST(req: Request) {
       body: JSON.stringify({
         model,
         temperature: 0,
-        max_tokens: 300,
+        max_tokens: 380,
         messages,
       }),
     })
@@ -344,6 +360,8 @@ export async function POST(req: Request) {
       brand: resolveBrandFromAnalyze(parsed.brand),
       model: normalizeModel(parsed.model),
       series: normalizeSeries(parsed.series),
+      main_number: normalizeMainSubNumber(parsed.main_number),
+      sub_number: normalizeMainSubNumber(parsed.sub_number),
     }
 
     console.log("[analyze-model] response JSON (normalized):", result)

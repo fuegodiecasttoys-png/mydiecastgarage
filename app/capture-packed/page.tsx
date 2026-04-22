@@ -274,6 +274,8 @@ export default function CapturePage() {
         brand?: string | null
         model?: string | null
         series?: string | null
+        main_number?: string | null
+        sub_number?: string | null
         error?: string
       }
       try {
@@ -295,11 +297,15 @@ export default function CapturePage() {
       if (data.brand) setBrand(data.brand)
       if (data.model) setName(data.model)
       if (data.series) setSeries(data.series)
+      if (data.main_number) setMainNumber(data.main_number)
+      if (data.sub_number) setSubNumber(data.sub_number)
 
       console.log("[analyze-model] client form state after apply", {
         brand: data.brand ?? "(unchanged)",
         model: data.model ?? "(unchanged)",
         series: data.series ?? "(unchanged)",
+        main_number: data.main_number ?? "(unchanged)",
+        sub_number: data.sub_number ?? "(unchanged)",
       })
     } catch (err: unknown) {
       console.error("[analyze-model] client error", err)
@@ -750,7 +756,7 @@ export default function CapturePage() {
 
             <input
               type="text"
-              placeholder="Main number"
+              placeholder="Main # — top right (e.g. 157/250)"
               value={mainNumber}
               onChange={(e) => setMainNumber(e.target.value)}
               disabled={loading}
@@ -759,7 +765,7 @@ export default function CapturePage() {
 
             <input
               type="text"
-              placeholder="Sub number"
+              placeholder="Sub # — mid-right box (e.g. 9/10)"
               value={subNumber}
               onChange={(e) => setSubNumber(e.target.value)}
               disabled={loading}
