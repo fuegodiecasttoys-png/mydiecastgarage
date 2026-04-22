@@ -4,7 +4,19 @@ import Link from "next/link";
 import type { CSSProperties } from "react";
 import { t } from "./tokens";
 import { IconCircle } from "../ui/IconCircle";
-import { dvBodyFont, dvDisplayFont } from "../ui/dv-visual";
+import { AccentBadge } from "../ui/AccentBadge";
+import {
+  dvAppPageShell,
+  dvCardOrangeBorder,
+  dvDashboardInner,
+  dvDisplayFont,
+  dvHeroRowCard,
+  dvModelHeroRowCardHoverHandlers,
+  dvModelQuickTileHoverHandlers,
+  dvModelRowCardHoverHandlers,
+  dvQuickTile,
+  dvRowCardBase,
+} from "../ui/dv-visual";
 
 const MOCK_GARAGE_COUNT = 12;
 const MOCK_WISHLIST_COUNT = 5;
@@ -21,24 +33,17 @@ function wishlistLabel(count: number) {
   return `${count} items`;
 }
 
-const fontVars: CSSProperties = {
-  fontFamily: dvBodyFont,
-  color: t.textPrimary,
+const chevronStyle: CSSProperties = {
+  fontSize: 20,
+  fontWeight: 300,
+  opacity: 0.85,
+  marginLeft: 8,
+  flexShrink: 0,
 };
 
-const displayFont = dvDisplayFont;
+const rowCardBase = dvRowCardBase;
 
-/** Subtle orange system for secondary/tertiary cards (My Garage stays stronger). */
-const expOrangeBorderSubtle = "rgba(255,122,24,0.18)";
-const expOrangeGlowSubtle = "rgba(255,122,24,0.1)";
 const expIconOrangeMuted = "#FF9A3D";
-
-/** Quick actions: weakest orange tier (My Garage > Wishlist > Quick). */
-const expQuickBorder = "rgba(255,122,24,0.18)";
-const expQuickBoxShadow =
-  "0 0 0 1px rgba(255,255,255,0.08), 0 8px 24px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,122,24,0.1)";
-const expQuickBoxShadowHover =
-  "0 0 0 1px rgba(255,122,24,0.2), 0 10px 28px rgba(0,0,0,0.45), 0 8px 20px rgba(255,122,24,0.1)";
 const expQuickIconColor = "rgba(255, 154, 61, 0.8)";
 
 function IconPacked() {
@@ -129,392 +134,207 @@ function IconHowTo() {
   );
 }
 
-function shellBackground(): string {
-  return (
-    "linear-gradient(180deg, #0B0F17 0%, #07090D 45%, #07090D 100%)"
-  );
-}
-
-const HERO_SHADOW =
-  "0 14px 36px rgba(0,0,0,0.42)," +
-  "0 6px 16px rgba(0,0,0,0.28)," +
-  "inset 0 1px 0 rgba(255,255,255,0.07)," +
-  "inset 0 -1px 0 rgba(0,0,0,0.32)";
-
-const HERO_SHADOW_HOVER =
-  "0 18px 44px rgba(0,0,0,0.46)," +
-  "0 8px 20px rgba(0,0,0,0.3)," +
-  "inset 0 1px 0 rgba(255,255,255,0.09)," +
-  "inset 0 -1px 0 rgba(0,0,0,0.3)";
-
 export default function ExperimentPage() {
   const garageCount = MOCK_GARAGE_COUNT;
   const wishlistCount = MOCK_WISHLIST_COUNT;
 
-  const quickBase: CSSProperties = {
-    borderRadius: t.radiusLg,
-    padding: "18px 14px 16px",
-    textAlign: "center",
-    textDecoration: "none",
-    color: t.textPrimary,
-    background: t.surface,
-    border: `1px solid ${expQuickBorder}`,
-    boxShadow: `${expQuickBoxShadow}, inset 0 1px 0 rgba(255,255,255,0.05)`,
-    transition: "border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease",
-  };
-
-  const heroCard: CSSProperties = {
-    display: "block",
-    textDecoration: "none",
-    color: t.textPrimary,
-    borderRadius: t.radiusXl,
-    padding: "14px 20px 12px",
-    background: t.surfaceElevated,
-    border: "1px solid rgba(255,122,24,0.4)",
-    boxShadow: HERO_SHADOW,
-    marginBottom: t.spaceBlock,
-    transition: "transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease",
-  };
-
-  const secondaryCard: CSSProperties = {
-    display: "flex",
-    alignItems: "center",
-    gap: 14,
-    padding: "18px 18px",
-    borderRadius: t.radiusLg,
-    textDecoration: "none",
-    color: t.textPrimary,
-    background: t.surface,
-    border: `1px solid ${expOrangeBorderSubtle}`,
-    boxShadow: `
-      0 0 22px ${expOrangeGlowSubtle},
-      0 12px 32px rgba(0,0,0,0.38),
-      inset 0 1px 0 rgba(255,255,255,0.05)
-    `,
-    marginBottom: t.spaceTight,
-    transition: "transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease",
-  };
-
-  const tertiaryCard: CSSProperties = {
-    display: "flex",
-    alignItems: "center",
-    gap: 14,
-    padding: "16px 16px",
-    borderRadius: t.radiusLg,
-    background: t.bgSecondary,
-    border: `1px solid ${expOrangeBorderSubtle}`,
-    boxShadow: `
-      0 0 22px ${expOrangeGlowSubtle},
-      inset 0 1px 0 rgba(255,255,255,0.04)
-    `,
-    marginBottom: t.spaceTight,
-  };
-
-  const tertiaryLink: CSSProperties = {
-    ...tertiaryCard,
-    textDecoration: "none",
-    color: t.textPrimary,
-    cursor: "pointer",
-    transition: "transform 0.15s ease, border-color 0.2s ease",
-  };
-
   return (
-    <div
-      style={{
-        ...fontVars,
-        minHeight: "100vh",
-        width: "100%",
-        padding: "24px 20px 32px",
-        boxSizing: "border-box",
-        background: shellBackground(),
-      }}
-    >
-      <div style={{ maxWidth: 400, margin: "0 auto" }}>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: t.spaceSection,
-          }}
-        >
-          <Link
-            href="/"
-            style={{
-              fontSize: 12,
-              fontWeight: 600,
-              letterSpacing: "0.06em",
-              textTransform: "uppercase",
-              color: t.textSecondary,
-              textDecoration: "none",
-            }}
-          >
-            ← Home
-          </Link>
-          <span
-            style={{
-              fontSize: 10,
-              fontWeight: 700,
-              letterSpacing: "0.14em",
-              textTransform: "uppercase",
-              color: t.textMuted,
-            }}
-          >
-            Preview
-          </span>
-        </div>
+    <div style={dvAppPageShell}>
+      <Link
+        href="/"
+        style={{
+          position: "absolute",
+          top: 20,
+          left: 20,
+          textDecoration: "none",
+          color: t.textPrimary,
+          fontSize: 20,
+          zIndex: 10,
+        }}
+      >
+        🏠
+      </Link>
 
-        <header
-          style={{
-            marginBottom: t.spaceSection,
-            marginTop: 0,
-            paddingTop: 6,
-            paddingBottom: 18,
-            textAlign: "center",
-          }}
-        >
+      <div style={dvDashboardInner}>
+        <div style={{ textAlign: "center", marginBottom: 4 }}>
           <div
             style={{
               display: "inline-block",
-              filter: "drop-shadow(0 0 12px rgba(255,122,24,0.12))",
+              filter: "drop-shadow(0 0 10px rgba(255,122,24,0.08))",
             }}
           >
             <img
               src="/logo.png"
               alt="My Diecast Garage"
               width={120}
-              height="auto"
               style={{
-                display: "block",
                 width: 120,
-                maxWidth: "min(120px, 100%)",
                 height: "auto",
+                display: "block",
+                margin: "0 auto",
               }}
             />
           </div>
-        </header>
-
-        <p
-          style={{
-            margin: "0 0 14px",
-            fontFamily: displayFont,
-            fontSize: 18,
-            fontWeight: 700,
-            letterSpacing: "-0.02em",
-            color: t.textPrimary,
-          }}
-        >
-          Quick add
-        </p>
+          <p
+            style={{
+              margin: "8px 0 0",
+              fontSize: 11,
+              fontWeight: 600,
+              letterSpacing: "0.1em",
+              textTransform: "uppercase",
+              color: t.textMuted,
+            }}
+          >
+            UI preview
+          </p>
+        </div>
 
         <div
           style={{
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
-            gap: t.spaceTight,
-            marginBottom: t.spaceSection,
+            gap: 12,
+            marginBottom: 14,
+            marginTop: 18,
           }}
         >
           <Link
             href="/capture-packed"
-            style={quickBase}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = "rgba(255,122,24,0.26)";
-              e.currentTarget.style.boxShadow = `${expQuickBoxShadowHover}, inset 0 1px 0 rgba(255,255,255,0.06)`;
-              e.currentTarget.style.transform = "translateY(-1px)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = expQuickBorder;
-              e.currentTarget.style.boxShadow = `${expQuickBoxShadow}, inset 0 1px 0 rgba(255,255,255,0.05)`;
-              e.currentTarget.style.transform = "translateY(0)";
+            {...dvModelQuickTileHoverHandlers}
+            style={{
+              ...dvQuickTile,
+              flexDirection: "column",
+              alignItems: "stretch",
+              padding: "16px 12px 14px",
+              gap: 10,
+              minHeight: 118,
             }}
           >
-            <div style={{ display: "flex", justifyContent: "center", marginBottom: 10 }}>
+            <div style={{ display: "flex", justifyContent: "center" }}>
               <IconCircle variant="orangeQuick">
                 <IconPacked />
               </IconCircle>
             </div>
-            <div
-              style={{
-                fontFamily: displayFont,
-                fontSize: 16,
-                fontWeight: 700,
-                marginBottom: 4,
-                color: t.textPrimary,
-              }}
-            >
-              Add Packed
-            </div>
-            <div style={{ fontSize: 12, fontWeight: 500, color: t.textMuted }}>
-              Carded & blister
+            <div style={{ textAlign: "center" }}>
+              <div
+                style={{
+                  fontSize: 15,
+                  fontWeight: 800,
+                  marginBottom: 4,
+                  letterSpacing: "-0.02em",
+                }}
+              >
+                Add Packed
+              </div>
+              <div
+                style={{
+                  fontSize: 12,
+                  fontWeight: 500,
+                  color: t.textMuted,
+                  lineHeight: 1.35,
+                }}
+              >
+                Carded & blister
+              </div>
             </div>
           </Link>
           <Link
             href="/capture-loose"
-            style={quickBase}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = "rgba(255,122,24,0.26)";
-              e.currentTarget.style.boxShadow = `${expQuickBoxShadowHover}, inset 0 1px 0 rgba(255,255,255,0.06)`;
-              e.currentTarget.style.transform = "translateY(-1px)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = expQuickBorder;
-              e.currentTarget.style.boxShadow = `${expQuickBoxShadow}, inset 0 1px 0 rgba(255,255,255,0.05)`;
-              e.currentTarget.style.transform = "translateY(0)";
+            {...dvModelQuickTileHoverHandlers}
+            style={{
+              ...dvQuickTile,
+              flexDirection: "column",
+              alignItems: "stretch",
+              padding: "16px 12px 14px",
+              gap: 10,
+              minHeight: 118,
             }}
           >
-            <div style={{ display: "flex", justifyContent: "center", marginBottom: 10 }}>
+            <div style={{ display: "flex", justifyContent: "center" }}>
               <IconCircle variant="orangeQuick">
                 <IconLoose />
               </IconCircle>
             </div>
-            <div
-              style={{
-                fontFamily: displayFont,
-                fontSize: 16,
-                fontWeight: 700,
-                marginBottom: 4,
-                color: t.textPrimary,
-              }}
-            >
-              Add Loose
-            </div>
-            <div style={{ fontSize: 12, fontWeight: 500, color: t.textMuted }}>
-              Runners & displays
+            <div style={{ textAlign: "center" }}>
+              <div
+                style={{
+                  fontSize: 15,
+                  fontWeight: 800,
+                  marginBottom: 4,
+                  letterSpacing: "-0.02em",
+                }}
+              >
+                Add Loose
+              </div>
+              <div
+                style={{
+                  fontSize: 12,
+                  fontWeight: 500,
+                  color: t.textMuted,
+                  lineHeight: 1.35,
+                }}
+              >
+                Runners & displays
+              </div>
             </div>
           </Link>
         </div>
 
         <Link
           href="/mygarage"
-          style={heroCard}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.transform = "translateY(-2px)";
-            e.currentTarget.style.boxShadow = HERO_SHADOW_HOVER;
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = "translateY(0)";
-            e.currentTarget.style.boxShadow = HERO_SHADOW;
+          {...dvModelHeroRowCardHoverHandlers}
+          style={{
+            ...dvHeroRowCard,
+            marginBottom: 12,
+            minHeight: 120,
+            border: `2px solid ${dvCardOrangeBorder}`,
           }}
         >
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "flex-start",
-              gap: 0,
-            }}
-          >
+          <IconCircle variant="accent">
+            <IconGarage />
+          </IconCircle>
+          <div style={{ flex: 1, minWidth: 0 }}>
             <div
               style={{
-                flexShrink: 0,
-                display: "flex",
-                alignItems: "flex-start",
-                justifyContent: "flex-start",
+                fontFamily: dvDisplayFont,
+                fontSize: 17,
+                fontWeight: 800,
+                letterSpacing: "-0.02em",
+                marginBottom: 8,
               }}
             >
-              <IconCircle variant="accent">
-                <IconGarage />
-              </IconCircle>
+              My Garage
+            </div>
+            <div style={{ marginBottom: 8 }}>
+              <AccentBadge>
+                <span style={{ fontSize: 11, opacity: 0.95 }} aria-hidden>
+                  📦
+                </span>
+                {pieceLabel(garageCount)}
+              </AccentBadge>
             </div>
             <div
               style={{
-                flex: 1,
-                minWidth: 0,
-                marginLeft: 28,
-                paddingLeft: 20,
-                paddingRight: 4,
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "flex-start",
-                alignItems: "stretch",
+                fontSize: 13,
+                fontWeight: 500,
+                color: t.textSecondary,
+                lineHeight: 1.35,
               }}
             >
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "flex-start",
-                  gap: 5,
-                }}
-              >
-                <div
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: 8,
-                    padding: "4px 10px",
-                    borderRadius: 999,
-                    background: `linear-gradient(90deg, rgba(255,122,24,0.2), rgba(255, 154, 61,0.12))`,
-                    border: `1px solid rgba(255,122,24,0.35)`,
-                    fontSize: 12,
-                    fontWeight: 600,
-                    letterSpacing: "0.02em",
-                    color: t.orange300,
-                    lineHeight: 1.2,
-                  }}
-                >
-                  {pieceLabel(garageCount)}
-                </div>
-                <h2
-                  style={{
-                    margin: 0,
-                    fontFamily: displayFont,
-                    fontSize: 22,
-                    fontWeight: 700,
-                    letterSpacing: "-0.02em",
-                    color: t.textPrimary,
-                    lineHeight: 1.05,
-                  }}
-                >
-                  My Garage
-                </h2>
-              </div>
-              <p
-                style={{
-                  margin: "5px 0 0",
-                  fontSize: 14,
-                  fontWeight: 500,
-                  lineHeight: 1.32,
-                  color: t.textSecondary,
-                }}
-              >
-                Track every piece
-              </p>
-              <span
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 8,
-                  marginTop: 9,
-                  fontSize: 13,
-                  fontWeight: 600,
-                  color: t.orange400,
-                  lineHeight: 1.2,
-                }}
-              >
-                Open collection
-                <span aria-hidden style={{ fontSize: 18, fontWeight: 300 }}>
-                  →
-                </span>
-              </span>
+              View your collection
             </div>
           </div>
+          <span style={{ ...chevronStyle, color: t.orange400 }} aria-hidden>
+            ›
+          </span>
         </Link>
 
         <Link
           href="/wishlist"
-          style={secondaryCard}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.borderColor = "rgba(255,122,24,0.38)";
-            e.currentTarget.style.transform = "translateY(-1px)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.borderColor = expOrangeBorderSubtle;
-            e.currentTarget.style.transform = "translateY(0)";
-          }}
+          {...dvModelRowCardHoverHandlers}
+          style={{ ...rowCardBase, marginBottom: 12 }}
         >
-          <IconCircle variant="orangeSubtle">
+          <IconCircle variant="neutral">
             <IconWishlist />
           </IconCircle>
           <div style={{ flex: 1, minWidth: 0 }}>
@@ -524,118 +344,120 @@ export default function ExperimentPage() {
                 alignItems: "center",
                 gap: 8,
                 flexWrap: "wrap",
-                marginBottom: 6,
+                marginBottom: 4,
               }}
             >
-              <h3
+              <span
                 style={{
-                  margin: 0,
-                  fontFamily: displayFont,
                   fontSize: 16,
-                  fontWeight: 700,
-                  color: t.textPrimary,
+                  fontWeight: 800,
+                  letterSpacing: "-0.02em",
                 }}
               >
                 Wishlist
-              </h3>
+              </span>
               <span
                 style={{
                   fontSize: 12,
                   fontWeight: 600,
-                  letterSpacing: "0.04em",
-                  textTransform: "uppercase",
                   color: t.textMuted,
                 }}
               >
                 {wishlistLabel(wishlistCount)}
               </span>
             </div>
-            <p
+            <div
               style={{
-                margin: 0,
-                fontSize: 14,
+                fontSize: 12,
                 fontWeight: 500,
-                lineHeight: 1.45,
-                color: t.textSecondary,
+                color: t.textMuted,
+                lineHeight: 1.35,
               }}
             >
               Grails & missing casts
-            </p>
+            </div>
           </div>
-          <span style={{ fontSize: 20, color: t.textMuted, flexShrink: 0 }} aria-hidden>
+          <span style={{ ...chevronStyle, color: t.textMuted }} aria-hidden>
             ›
           </span>
         </Link>
 
         <Link
           href="/friends"
-          style={tertiaryLink}
           aria-label="Add friends"
-          onMouseEnter={(e) => {
-            e.currentTarget.style.borderColor = "rgba(255,122,24,0.38)";
-            e.currentTarget.style.transform = "translateY(-1px)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.borderColor = expOrangeBorderSubtle;
-            e.currentTarget.style.transform = "translateY(0)";
-          }}
+          {...dvModelRowCardHoverHandlers}
+          style={{ ...rowCardBase, marginBottom: 12 }}
         >
           <IconCircle variant="orangeSubtle">
             <IconFriends />
           </IconCircle>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <h3
+            <div
               style={{
-                margin: "0 0 6px",
-                fontFamily: displayFont,
-                fontSize: 16,
-                fontWeight: 700,
-                color: t.textPrimary,
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+                flexWrap: "wrap",
+                marginBottom: 4,
               }}
             >
-              Add Friends
-            </h3>
-            <p style={{ margin: 0, fontSize: 14, fontWeight: 500, color: t.textSecondary }}>
-              View trusted collectors&apos; garages (view only)
-            </p>
+              <span
+                style={{
+                  fontSize: 16,
+                  fontWeight: 800,
+                  letterSpacing: "-0.02em",
+                }}
+              >
+                Add Friends
+              </span>
+            </div>
+            <div
+              style={{
+                fontSize: 12,
+                fontWeight: 500,
+                color: t.textMuted,
+                lineHeight: 1.35,
+              }}
+            >
+              View each other&apos;s garages (view only)
+            </div>
           </div>
-          <span style={{ fontSize: 20, color: t.textMuted, flexShrink: 0 }} aria-hidden>
+          <span style={{ ...chevronStyle, color: t.textMuted }} aria-hidden>
             ›
           </span>
         </Link>
 
         <Link
           href="/howto"
-          style={tertiaryLink}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.borderColor = "rgba(255,122,24,0.38)";
-            e.currentTarget.style.transform = "translateY(-1px)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.borderColor = expOrangeBorderSubtle;
-            e.currentTarget.style.transform = "translateY(0)";
-          }}
+          {...dvModelRowCardHoverHandlers}
+          style={{ ...rowCardBase, marginBottom: 0 }}
         >
           <IconCircle variant="orangeSubtle">
             <IconHowTo />
           </IconCircle>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <h3
+            <div
               style={{
-                margin: "0 0 6px",
-                fontFamily: displayFont,
                 fontSize: 16,
-                fontWeight: 700,
-                color: t.textPrimary,
+                fontWeight: 800,
+                marginBottom: 4,
+                letterSpacing: "-0.02em",
               }}
             >
               How To
-            </h3>
-            <p style={{ margin: 0, fontSize: 14, fontWeight: 500, color: t.textSecondary }}>
-              Lighting & angles for showcase shots
-            </p>
+            </div>
+            <div
+              style={{
+                fontSize: 12,
+                fontWeight: 500,
+                color: t.textMuted,
+                lineHeight: 1.35,
+              }}
+            >
+              Tips for great photos
+            </div>
           </div>
-          <span style={{ fontSize: 20, color: t.textMuted, flexShrink: 0 }} aria-hidden>
+          <span style={{ ...chevronStyle, color: t.textMuted }} aria-hidden>
             ›
           </span>
         </Link>
