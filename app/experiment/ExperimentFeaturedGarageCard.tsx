@@ -25,7 +25,8 @@ type Props = {
 };
 
 /**
- * “My Garage” — coche + textos; fila interna con flex:1 bajo un button en columna para centrar en altura real.
+ * “My Garage” — coche + textos; button en grid con placeItems: center stretch: el bloque repite
+ * ancho y altura de contenido, y queda centrado en vertical respecto a minHeight.
  */
 export function ExperimentFeaturedGarageCard({ onClick, title, lead, subline, displayFont }: Props) {
   return (
@@ -40,9 +41,8 @@ export function ExperimentFeaturedGarageCard({ onClick, title, lead, subline, di
       }}
       style={{
         position: "relative",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "stretch",
+        display: "grid",
+        placeItems: "center stretch",
         width: "100%",
         minHeight: 124,
         padding: "16px 20px 18px 20px",
@@ -64,18 +64,15 @@ export function ExperimentFeaturedGarageCard({ onClick, title, lead, subline, di
       <ExperimentCarDeco />
       <div className="experimentMyGarageGlint" aria-hidden />
       {/*
-        Único hijo en flujo: ocupa toda la altura entre padding (el flex line con fila no puede).
-        Así el bloque de textos recibe altura real y justify-content: center actúa.
+        Coche y glint van absolute; un solo hijo en grid. placeItems centra en vertical y estira a lo ancho.
       */}
       <div
         style={{
           position: "relative",
           zIndex: 1,
-          flex: 1,
-          minHeight: 0,
           display: "flex",
           flexDirection: "row",
-          alignItems: "stretch",
+          alignItems: "center",
           width: "100%",
           gap: 12,
         }}
@@ -86,10 +83,8 @@ export function ExperimentFeaturedGarageCard({ onClick, title, lead, subline, di
             display: "flex",
             flex: 1,
             minWidth: 0,
-            minHeight: 0,
             flexDirection: "column",
             alignItems: "flex-start",
-            justifyContent: "center",
             boxSizing: "border-box",
             gap: 0,
           }}
@@ -127,7 +122,6 @@ export function ExperimentFeaturedGarageCard({ onClick, title, lead, subline, di
             color: experimentFeaturedChevron,
             lineHeight: 1,
             flexShrink: 0,
-            alignSelf: "center",
             position: "relative",
             zIndex: 1,
           }}
