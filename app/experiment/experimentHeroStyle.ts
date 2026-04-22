@@ -52,18 +52,20 @@ export const experimentHeroBackground = HERO_LATERAL + ", " + HERO_BASE_FILL;
 export const experimentHeroSubline = "rgba(255, 255, 255, 0.6)";
 
 export const experimentHeroBoxShadow =
-  "0 0 25px rgba(255, 102, 0, 0.25)," +
-  "0 0 8px rgba(255, 140, 0, 0.2)," +
+  "0 0 15px rgba(255, 102, 0, 0.18)," +
+  "0 0 20px rgba(255, 102, 0, 0.15)," +
+  "0 0 6px rgba(255, 140, 0, 0.2)," +
   "inset 0 0 25px rgba(255, 255, 255, 0.02)," +
   "inset 0 0 10px rgba(0, 0, 0, 0.6)";
 
 export const experimentHeroBoxShadowHover =
-  "0 0 30px rgba(255, 102, 0, 0.32)," +
-  "0 0 10px rgba(255, 140, 0, 0.26)," +
-  "inset 0 0 25px rgba(255, 255, 255, 0.025)," +
+  "0 0 35px rgba(255, 102, 0, 0.35)," +
+  "0 0 22px rgba(255, 102, 0, 0.2)," +
+  "0 0 8px rgba(255, 140, 0, 0.25)," +
+  "inset 0 0 25px rgba(255, 255, 255, 0.03)," +
   "inset 0 0 10px rgba(0, 0, 0, 0.55)";
 
-export const experimentHeroBorder = "1px solid rgba(255, 140, 0, 0.15)";
+export const experimentHeroBorder = "1px solid rgba(255, 140, 0, 0.12)";
 
 export const experimentHeroBadge: CSSProperties = {
   display: "inline-flex",
