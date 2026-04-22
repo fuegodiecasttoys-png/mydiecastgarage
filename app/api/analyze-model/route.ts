@@ -1,14 +1,13 @@
 import { NextResponse } from "next/server"
 import { Buffer } from "buffer"
 import { normalizeBrand } from "../../lib/brandAliases"
-import { BRANDS, COLORS } from "../../lib/constants"
+import { BRANDS } from "../../lib/constants"
 
 export const runtime = "nodejs"
 
 type AnalyzeResult = {
   brand: string | null
   model: string | null
-  color: string | null
   series: string | null
 }
 
@@ -82,18 +81,6 @@ function resolveBrandFromAnalyze(value: string | null | undefined): string | nul
   return null
 }
 
-function normalizeColor(value: string | null | undefined): string | null {
-  if (value === null || value === undefined) return null
-  const trimmed = value.trim()
-  if (!trimmed) return null
-
-  const exact = COLORS.find(
-    (c: string) => c.toLowerCase() === trimmed.toLowerCase()
-  )
-
-  return exact ?? trimmed
-}
-
 function normalizeModel(value: string | null | undefined): string | null {
   if (value === null || value === undefined) return null
   const trimmed = value.trim()
@@ -143,11 +130,10 @@ function tryParseAnalyzeJson(raw: string): Partial<Record<keyof AnalyzeResult, u
 
 function fieldsFromPartialParsed(
   parsed: Partial<Record<keyof AnalyzeResult, unknown>>
-): Pick<AnalyzeResult, "brand" | "model" | "color" | "series"> {
+): Pick<AnalyzeResult, "brand" | "model" | "series"> {
   return {
     brand: pickNullableString(parsed.brand),
     model: pickNullableString(parsed.model),
-    color: pickNullableString(parsed.color),
     series: pickNullableString(parsed.series),
   }
 }
@@ -249,11 +235,10 @@ export async function POST(req: Request) {
           "If text is not clearly readable for a field, use JSON null for that field (not empty string, not guesses).",
           "model is the MOST IMPORTANT field: the exact vehicle/model name as printed; no corrections; trim spaces; max 40 characters (truncate if longer).",
           "brand: toy line brand if clearly printed (e.g. Hot Wheels, Matchbox, GreenLight).",
-          "color: only if explicitly written on the package (e.g. Red, Metallic Blue); otherwise null.",
           "series: sub-line or collection name if clearly visible (e.g. HW Flames, Fast & Furious); otherwise null.",
           "Reply with ONLY valid JSON, no markdown, no commentary. Exact shape:",
-          '{"brand":string|null,"model":string|null,"color":string|null,"series":string|null}',
-          `Reference lists (prefer exact spellings when text matches): brands: ${BRANDS.join(", ")}; colors: ${COLORS.join(", ")}.`,
+          '{"brand":string|null,"model":string|null,"series":string|null}',
+          `Reference list (prefer exact spellings when text matches): brands: ${BRANDS.join(", ")}.`,
         ].join(" "),
       },
       {
@@ -262,7 +247,7 @@ export async function POST(req: Request) {
           {
             type: "text" as const,
             text:
-              "Read ONLY visible printed text on this diecast package image. Return strict JSON: brand, model, color, series. Use null when not clearly readable.",
+              "Read ONLY visible printed text on this diecast package image. Return strict JSON: brand, model, series. Use null when not clearly readable.",
           },
           {
             type: "image_url" as const,
@@ -358,7 +343,6 @@ export async function POST(req: Request) {
     const result: AnalyzeResult = {
       brand: resolveBrandFromAnalyze(parsed.brand),
       model: normalizeModel(parsed.model),
-      color: normalizeColor(parsed.color),
       series: normalizeSeries(parsed.series),
     }
 

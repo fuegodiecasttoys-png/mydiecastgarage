@@ -273,7 +273,6 @@ export default function CapturePage() {
       let data: {
         brand?: string | null
         model?: string | null
-        color?: string | null
         series?: string | null
         error?: string
       }
@@ -295,13 +294,11 @@ export default function CapturePage() {
 
       if (data.brand) setBrand(data.brand)
       if (data.model) setName(data.model)
-      if (data.color) setColor(data.color)
       if (data.series) setSeries(data.series)
 
       console.log("[analyze-model] client form state after apply", {
         brand: data.brand ?? "(unchanged)",
         model: data.model ?? "(unchanged)",
-        color: data.color ?? "(unchanged)",
         series: data.series ?? "(unchanged)",
       })
     } catch (err: unknown) {
