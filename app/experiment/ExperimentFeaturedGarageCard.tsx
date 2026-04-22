@@ -26,7 +26,7 @@ type Props = {
 
 /**
  * “My Garage” — cuerpo en columna; fila interior (100% altura útil) con alignItems center;
- * bloque título|badge|sub: flex col + justifyContent center, texto a la izquierda (alignItems start).
+ * bloque título|badge|sub: height 100% + flex col + justifyContent center, texto a la izquierda.
  * Coche/glow sin cambios.
  */
 export function ExperimentFeaturedGarageCard({ onClick, title, lead, subline, displayFont }: Props) {
@@ -80,7 +80,7 @@ export function ExperimentFeaturedGarageCard({ onClick, title, lead, subline, di
           minHeight: 124,
           width: "100%",
           boxSizing: "border-box",
-          padding: "16px 20px 18px 20px",
+          padding: "17px 20px 17px 20px",
           lineHeight: "normal",
         }}
       >
@@ -103,7 +103,7 @@ export function ExperimentFeaturedGarageCard({ onClick, title, lead, subline, di
         >
           {/*
             Bloque: título + badge + sublínea; a la izquierda; el grupo se centra en el eje de la fila
-            (alignSelf center) y justify center si la columna tuviera alto extra.
+            (height 100% + justifyContent center en la columna de texto).
           */}
           <div
             style={{
@@ -112,10 +112,10 @@ export function ExperimentFeaturedGarageCard({ onClick, title, lead, subline, di
               flex: 1,
               minWidth: 0,
               minHeight: 0,
+              height: "100%",
               flexDirection: "column",
               justifyContent: "center",
               alignItems: "flex-start",
-              alignSelf: "center",
               boxSizing: "border-box",
             }}
           >
@@ -126,14 +126,14 @@ export function ExperimentFeaturedGarageCard({ onClick, title, lead, subline, di
                 fontWeight: 800,
                 letterSpacing: "-0.03em",
                 marginTop: 0,
-                marginBottom: 8,
+                marginBottom: 7,
                 lineHeight: 1.04,
                 color: experimentTextStrong,
               }}
             >
               {title}
             </div>
-            <div style={{ marginTop: 0, marginBottom: 7 }}>{lead}</div>
+            <div style={{ marginTop: 0, marginBottom: 6 }}>{lead}</div>
             <div
               style={{
                 marginTop: 0,
