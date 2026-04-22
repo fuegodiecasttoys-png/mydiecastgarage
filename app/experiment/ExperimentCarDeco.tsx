@@ -4,9 +4,9 @@ const CAR_SRC =
   "https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=1200&q=85&auto=format&fit=crop";
 
 const CAR_FILTER =
-  "blur(0.8px) brightness(0.45) contrast(1.1) saturate(0.6) grayscale(0.25)";
+  "brightness(0.5) contrast(1.12) saturate(0.65) grayscale(0.2) blur(0.6px)";
 
-const CAR_MASK = "linear-gradient(to left, black 35%, transparent 85%)";
+const CAR_MASK = "linear-gradient(to left, black 40%, transparent 85%)";
 
 const OVERLAY =
   "linear-gradient(to right, rgba(0, 0, 0, 0.7), transparent)";
@@ -28,7 +28,7 @@ export function ExperimentCarDeco() {
         pointerEvents: "none",
         zIndex: 0,
         overflow: "hidden",
-        opacity: 0.14,
+        opacity: 0.17,
         maskImage: CAR_MASK,
         WebkitMaskImage: CAR_MASK,
         maskSize: "100% 100%",
