@@ -25,7 +25,7 @@ type Props = {
 };
 
 /**
- * “My Garage” — tarjeta protagonista: texto y chevron, coche de ambiente a la derecha.
+ * “My Garage” — coche + textos; fila interna con flex:1 bajo un button en columna para centrar en altura real.
  */
 export function ExperimentFeaturedGarageCard({ onClick, title, lead, subline, displayFont }: Props) {
   return (
@@ -41,9 +41,8 @@ export function ExperimentFeaturedGarageCard({ onClick, title, lead, subline, di
       style={{
         position: "relative",
         display: "flex",
-        flexDirection: "row",
+        flexDirection: "column",
         alignItems: "stretch",
-        justifyContent: "flex-start",
         width: "100%",
         minHeight: 124,
         padding: "16px 20px 18px 20px",
@@ -56,7 +55,6 @@ export function ExperimentFeaturedGarageCard({ onClick, title, lead, subline, di
         color: experimentTextStrong,
         WebkitTapHighlightColor: "transparent",
         overflow: "hidden",
-        gap: 12,
         fontFamily: "inherit",
         margin: 0,
         boxSizing: "border-box",
@@ -66,35 +64,32 @@ export function ExperimentFeaturedGarageCard({ onClick, title, lead, subline, di
       <ExperimentCarDeco />
       <div className="experimentMyGarageGlint" aria-hidden />
       {/*
-        Columna izq.: el padre estira (stretch) a la fila; el stack interno es 100% alto
-        y flex column + justifyContent center = centrado vertical estructural.
+        Único hijo en flujo: ocupa toda la altura entre padding (el flex line con fila no puede).
+        Así el bloque de textos recibe altura real y justify-content: center actúa.
       */}
       <div
         style={{
-          flex: 1,
-          minWidth: 0,
-          minHeight: 0,
-          alignSelf: "stretch",
           position: "relative",
           zIndex: 1,
+          flex: 1,
+          minHeight: 0,
           display: "flex",
           flexDirection: "row",
           alignItems: "stretch",
-          justifyContent: "flex-start",
+          width: "100%",
+          gap: 12,
         }}
       >
         <div
           style={{
             position: "relative",
             display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "flex-start",
             flex: 1,
             minWidth: 0,
             minHeight: 0,
-            width: "100%",
-            height: "100%",
+            flexDirection: "column",
+            alignItems: "flex-start",
+            justifyContent: "center",
             boxSizing: "border-box",
             gap: 0,
           }}
@@ -125,22 +120,22 @@ export function ExperimentFeaturedGarageCard({ onClick, title, lead, subline, di
             {subline}
           </div>
         </div>
+        <span
+          style={{
+            fontSize: 30,
+            fontWeight: 300,
+            color: experimentFeaturedChevron,
+            lineHeight: 1,
+            flexShrink: 0,
+            alignSelf: "center",
+            position: "relative",
+            zIndex: 1,
+          }}
+          aria-hidden
+        >
+          {chev}
+        </span>
       </div>
-      <span
-        style={{
-          fontSize: 30,
-          fontWeight: 300,
-          color: experimentFeaturedChevron,
-          lineHeight: 1,
-          flexShrink: 0,
-          alignSelf: "center",
-          position: "relative",
-          zIndex: 1,
-        }}
-        aria-hidden
-      >
-        {chev}
-      </span>
     </button>
   );
 }
