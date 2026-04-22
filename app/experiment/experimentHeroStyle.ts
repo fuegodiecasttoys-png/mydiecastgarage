@@ -43,11 +43,12 @@ export const experimentLogoHalo: CSSProperties = {
   filter: "drop-shadow(0 0 20px " + experimentOrangeGlow + ")",
 };
 
-/* —— Featured “My Garage” (test visuals — neutral charcoal + metal edge) —— */
+/* —— Featured “My Garage” (metallic blue-gray + orange side wash; box-shadow naranja sin tocar) —— */
 const HERO_LATERAL = "linear-gradient(to right, rgba(255, 102, 0, 0.15), transparent 40%)";
-const HERO_BASE_FILL = "linear-gradient(145deg, #121212, #050505)";
+const HERO_COLD = "linear-gradient(120deg, rgba(90, 130, 180, 0.10), transparent 58%)";
+const HERO_BASE = "linear-gradient(145deg, #11151c, #06080c)";
 
-export const experimentHeroBackground = HERO_LATERAL + ", " + HERO_BASE_FILL;
+export const experimentHeroBackground = HERO_COLD + ", " + HERO_LATERAL + ", " + HERO_BASE;
 
 /** “My Garage” lead/sub copy — feature card only. */
 export const experimentHeroSubline = "rgba(255, 255, 255, 0.72)";
