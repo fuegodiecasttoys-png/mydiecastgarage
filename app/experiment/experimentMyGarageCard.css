@@ -1,4 +1,21 @@
-/* Solo card “My Garage” /experiment — spotlight naranja desde la derecha */
+/* Solo card “My Garage” /experiment — specular + spotlight */
+
+/* Brillos metálicos sutiles (::before bajo el contenido z-1, encima del fondo) */
+.experimentMyGarageCard::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  border-radius: inherit;
+  background:
+    linear-gradient(120deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.06) 18%, transparent 35%),
+    linear-gradient(300deg, rgba(255, 255, 255, 0.05) 0%, transparent 40%);
+  filter: blur(6px);
+  opacity: 0.45;
+}
+
+/* Spotlight naranja desde la derecha */
 .experimentMyGarageCard::after {
   content: "";
   position: absolute;
