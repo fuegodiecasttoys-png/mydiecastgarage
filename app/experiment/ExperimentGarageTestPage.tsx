@@ -10,7 +10,7 @@ import {
 const chev = "›" as const;
 
 /**
- * Página de prueba aislada: bloque izquierdo centrado en vertical con top/translateY, no con flex.
+ * Página de prueba: título + badge + sublínea centrados en la card (translate -50%/-50%); chevrón a la der.
  */
 export function ExperimentGarageTestPage() {
   return (
@@ -34,7 +34,7 @@ export function ExperimentGarageTestPage() {
           position: "relative",
           width: "100%",
           maxWidth: 500,
-          height: 130,
+          height: "130px",
           borderRadius: experimentRadiusFeature,
           overflow: "hidden",
           boxSizing: "border-box",
@@ -43,15 +43,17 @@ export function ExperimentGarageTestPage() {
         }}
       >
         <div
-          className="leftBlock"
+          className="contentBlock"
           style={{
             position: "absolute",
             top: "50%",
-            left: 20,
-            transform: "translateY(-50%)",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
             display: "flex",
             flexDirection: "column",
-            alignItems: "flex-start",
+            alignItems: "center",
+            justifyContent: "center",
+            textAlign: "center",
             boxSizing: "border-box",
           }}
         >
@@ -76,6 +78,7 @@ export function ExperimentGarageTestPage() {
               fontSize: 12,
               fontWeight: 700,
               letterSpacing: "0.02em",
+              marginTop: 0,
               marginBottom: 7,
               padding: "4px 12px",
               borderRadius: 999,
