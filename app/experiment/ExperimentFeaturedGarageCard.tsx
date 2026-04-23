@@ -25,9 +25,9 @@ type Props = {
 };
 
 /**
- * “My Garage” (solo /experiment): mismo criterio que garage-test — bloque de
- * texto en el centro de la card (translate -50%/-50%); chevrón absoluto a la
- * der. Coche, glint y capas de experimentMyGarageCard.css sin participar en el flujo.
+ * “My Garage” (solo /experiment): ancla horizontal del bloque al inicio del 2.º
+ * tercio (centro de contenido en left: 33.33% con translateX -50%). Chevrón a
+ * la der. Coche/glow fuera del flujo.
  */
 export function ExperimentFeaturedGarageCard({ onClick, title, lead, subline, displayFont }: Props) {
   return (
@@ -72,7 +72,7 @@ export function ExperimentFeaturedGarageCard({ onClick, title, lead, subline, di
         style={{
           position: "absolute",
           top: "50%",
-          left: "50%",
+          left: "33.333%",
           zIndex: 1,
           transform: "translate(-50%, -50%)",
           display: "flex",
