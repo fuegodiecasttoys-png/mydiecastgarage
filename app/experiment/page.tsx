@@ -8,6 +8,7 @@ import { AccentBadge } from "../ui/AccentBadge";
 import { IconCircle } from "../ui/IconCircle";
 import { dvBodyFont, dvDisplayFont, dvGhostButton } from "../ui/dv-visual";
 import { ExperimentFeaturedGarageCard } from "./ExperimentFeaturedGarageCard";
+import { ExperimentFavoritesGarageCard } from "./ExperimentFavoritesGarageCard";
 import { ExperimentMenuCard } from "./ExperimentMenuCard";
 import {
   experimentAppBackground,
@@ -386,13 +387,12 @@ export default function ExperimentPage() {
           />
         </div>
 
-        <ExperimentMenuCard
+        <ExperimentFavoritesGarageCard
           onClick={() => router.push("/favorites")}
           icon={<ExpIconStar color={experimentIconPrimary} size={24} />}
           title="Favorites"
           subtitle="Your top picks"
           marginBottom={experimentListGap}
-          variant="favoritesCalm"
         />
         <ExperimentMenuCard
           onClick={() => router.push("/wishlist")}
