@@ -25,8 +25,8 @@ type Props = {
 };
 
 /**
- * Favorites: misma piel My Garage; altura y padding idénticos a ExperimentMenuCard (p. ej. Wishlist):
- * minHeight 80, padding 16px 18px, flex + gap 16.
+ * Favorites: piel My Garage. Estructura de fila y altura = ExperimentMenuCard (Wishlist):
+ * mismo minHeight, padding, display flex, alignItems, gap 16, tres hijos a flujo; sin wrapper extra.
  */
 export function ExperimentFavoritesGarageCard({ onClick, icon, title, subtitle, marginBottom }: Props) {
   return (
@@ -48,8 +48,6 @@ export function ExperimentFavoritesGarageCard({ onClick, icon, title, subtitle, 
         alignItems: "center",
         padding: "16px 18px",
         boxSizing: "border-box",
-        margin: 0,
-        marginBottom,
         borderRadius: experimentRadiusFeature,
         background: experimentHeroBackground,
         border: experimentHeroBorder,
@@ -57,10 +55,12 @@ export function ExperimentFavoritesGarageCard({ onClick, icon, title, subtitle, 
         cursor: "pointer",
         textAlign: "left",
         color: "#FFFFFF",
-        WebkitTapHighlightColor: "transparent",
-        overflow: "hidden",
         fontFamily: "inherit",
-        lineHeight: "normal",
+        margin: 0,
+        marginBottom,
+        WebkitTapHighlightColor: "transparent",
+        gap: 16,
+        overflow: "hidden",
         WebkitAppearance: "none" as const,
         appearance: "none",
       }}
@@ -68,65 +68,63 @@ export function ExperimentFavoritesGarageCard({ onClick, icon, title, subtitle, 
       <div className="experimentMyGarageGlint" aria-hidden />
       <div
         style={{
+          ...experimentMenuIconFrame,
           position: "relative",
           zIndex: 1,
-          display: "flex",
-          width: "100%",
-          minWidth: 0,
-          flex: 1,
-          alignItems: "center",
-          gap: 16,
-          boxSizing: "border-box",
         }}
       >
-        <div style={experimentMenuIconFrame}>{icon}</div>
+        {icon}
+      </div>
+      <div
+        style={{
+          flex: 1,
+          minWidth: 0,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          gap: 3,
+          position: "relative",
+          zIndex: 1,
+        }}
+      >
         <div
           style={{
-            flex: 1,
-            minWidth: 0,
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            gap: 3,
+            fontSize: 16,
+            fontWeight: 700,
+            letterSpacing: "-0.02em",
+            lineHeight: 1.2,
+            color: experimentListTitle,
           }}
         >
-          <div
-            style={{
-              fontSize: 16,
-              fontWeight: 700,
-              letterSpacing: "-0.02em",
-              lineHeight: 1.2,
-              color: experimentListTitle,
-            }}
-          >
-            {title}
-          </div>
-          <div
-            style={{
-              fontSize: 13,
-              fontWeight: 500,
-              color: experimentTextMuted,
-              lineHeight: 1.4,
-              letterSpacing: "0.01em",
-            }}
-          >
-            {subtitle}
-          </div>
+          {title}
         </div>
-        <span
+        <div
           style={{
-            fontSize: 22,
-            fontWeight: 300,
-            lineHeight: 1,
-            color: experimentListChevron,
-            flexShrink: 0,
-            opacity: 0.9,
+            fontSize: 13,
+            fontWeight: 500,
+            color: experimentTextMuted,
+            lineHeight: 1.4,
+            letterSpacing: "0.01em",
           }}
-          aria-hidden
         >
-          {chev}
-        </span>
+          {subtitle}
+        </div>
       </div>
+      <span
+        style={{
+          fontSize: 22,
+          fontWeight: 300,
+          lineHeight: 1,
+          color: experimentListChevron,
+          flexShrink: 0,
+          opacity: 0.9,
+          position: "relative",
+          zIndex: 1,
+        }}
+        aria-hidden
+      >
+        {chev}
+      </span>
     </button>
   );
 }
