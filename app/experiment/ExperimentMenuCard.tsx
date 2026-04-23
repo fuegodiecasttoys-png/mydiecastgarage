@@ -8,6 +8,7 @@ import {
   experimentListRowShadowRest,
   experimentListTitle,
   experimentMenuIconFrame,
+  experimentMenuIconSlotPlain,
   experimentRadiusMenu,
   experimentTextMuted,
 } from "./experimentHeroStyle";
@@ -18,6 +19,8 @@ type Props = {
   onClick: () => void;
   /** Si no se pasa, no se muestra el frame ni el hueco a la izquierda. */
   icon?: ReactNode;
+  /** Mismo 48×48, sin caja oscura bajo el icono (fondo transparante). */
+  iconNoFrame?: boolean;
   title: ReactNode;
   subtitle: string;
   marginBottom: number;
@@ -26,7 +29,7 @@ type Props = {
 /**
  * Standard secondary row: dark tile, left icon in frame, bold title, grey subtitle, orange chevron.
  */
-export function ExperimentMenuCard({ onClick, icon, title, subtitle, marginBottom }: Props) {
+export function ExperimentMenuCard({ onClick, icon, iconNoFrame, title, subtitle, marginBottom }: Props) {
   return (
     <button
       type="button"
@@ -58,7 +61,9 @@ export function ExperimentMenuCard({ onClick, icon, title, subtitle, marginBotto
         border: experimentListRowOrangeAccent.border,
       }}
     >
-      {icon != null ? <div style={experimentMenuIconFrame}>{icon}</div> : null}
+      {icon != null ? (
+        <div style={iconNoFrame ? experimentMenuIconSlotPlain : experimentMenuIconFrame}>{icon}</div>
+      ) : null}
       <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "center", gap: 3 }}>
         <div
           style={{

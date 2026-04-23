@@ -187,6 +187,28 @@ export const experimentMenuIconFrame: CSSProperties = {
   boxShadow: "inset 0 1px 0 rgba(255,255,255,0.04), inset 0 -1px 0 rgba(0,0,0,0.35)",
 };
 
+/** Misma huella 48×48 y alineación que el frame, sin caja (solo icono, p. ej. Add Friends en /experiment). */
+export const experimentMenuIconSlotPlain: CSSProperties = {
+  width: 48,
+  height: 48,
+  minWidth: 48,
+  minHeight: 48,
+  lineHeight: 0,
+  borderRadius: 0,
+  display: "grid",
+  placeItems: "center",
+  flexShrink: 0,
+  boxSizing: "border-box",
+  margin: 0,
+  padding: 0,
+  position: "relative",
+  zIndex: 1,
+  border: "none",
+  background: "transparent",
+  boxShadow: "none",
+  outline: "none",
+};
+
 export const experimentListTitle = experimentTextStrong;
 export const experimentListChevron = "rgba(255, 191, 120, 0.9)";
 
