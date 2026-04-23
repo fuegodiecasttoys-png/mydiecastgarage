@@ -429,6 +429,7 @@ export default function ExperimentPage() {
         <ExperimentMenuCard
           onClick={() => router.push("/howto")}
           icon={<ExpIconCamera color={experimentIconPrimary} size={24} />}
+          iconNoFrame
           title="How To"
           subtitle="Tips for great photos"
           marginBottom={0}
