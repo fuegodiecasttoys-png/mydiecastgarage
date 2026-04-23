@@ -1,0 +1,39 @@
+/* Favorites (único): anula toda caja bajo el icono; nada de fondo/borde/sombra. */
+
+.favorites-garage-card__iconSlot,
+button.favorites-garage-card .favorites-garage-card__iconSlot {
+  -webkit-appearance: none;
+  appearance: none;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  min-height: 48px;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  line-height: 0;
+  position: relative;
+  z-index: 2;
+  flex-shrink: 0;
+  border: 0;
+  border-radius: 0;
+  outline: none;
+  background: none !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  filter: none;
+}
+
+.favorites-garage-card__iconSlot svg,
+button.favorites-garage-card .favorites-garage-card__iconSlot svg {
+  display: block;
+  flex-shrink: 0;
+}
+
+.favorites-garage-card__iconSlot path,
+button.favorites-garage-card .favorites-garage-card__iconSlot path {
+  stroke: none;
+}

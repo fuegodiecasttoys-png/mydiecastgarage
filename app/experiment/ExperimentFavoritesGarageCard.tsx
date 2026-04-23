@@ -1,6 +1,6 @@
 "use client";
 
-import type { CSSProperties, ReactNode } from "react";
+import type { ReactNode } from "react";
 import {
   experimentHeroBackground,
   experimentHeroBorder,
@@ -9,45 +9,31 @@ import {
   experimentListChevron,
   experimentListTitle,
   experimentRadiusFeature,
+  experimentIconPrimary,
   experimentTextMuted,
 } from "./experimentHeroStyle";
+import { ExpIconStarFilled } from "./experimentIcons";
 import "./experimentMyGarageCard.css";
-
-/** Misma caja 48×48 y grid que el menu row, sin fondo ni borde (solo Favorites). */
-const favoritesIconSlot: CSSProperties = {
-  width: 48,
-  height: 48,
-  lineHeight: 0,
-  borderRadius: 14,
-  display: "grid",
-  placeItems: "center",
-  flexShrink: 0,
-  background: "transparent",
-  border: "none",
-  boxShadow: "none",
-  position: "relative",
-  zIndex: 1,
-};
+import "./experimentFavoritesGarageCard.css";
 
 const chev = "›" as const;
 
 type Props = {
   onClick: () => void;
-  icon: ReactNode;
   title: ReactNode;
   subtitle: string;
   marginBottom: number;
 };
 
 /**
- * Favorites: piel My Garage. Estructura de fila y altura = ExperimentMenuCard (Wishlist):
- * mismo minHeight, padding, display flex, alignItems, gap 16, tres hijos a flujo; sin wrapper extra.
+ * Favorites: misma piel que My Garage. Estrella rellena sin caja; slot en
+ * experimentFavoritesGarageCard.css (solo esta card).
  */
-export function ExperimentFavoritesGarageCard({ onClick, icon, title, subtitle, marginBottom }: Props) {
+export function ExperimentFavoritesGarageCard({ onClick, title, subtitle, marginBottom }: Props) {
   return (
     <button
       type="button"
-      className="experimentMyGarageCard"
+      className="experimentMyGarageCard favorites-garage-card"
       onClick={onClick}
       onMouseEnter={(e) => {
         e.currentTarget.style.boxShadow = experimentHeroBoxShadowHover;
@@ -81,7 +67,9 @@ export function ExperimentFavoritesGarageCard({ onClick, icon, title, subtitle, 
       }}
     >
       <div className="experimentMyGarageGlint" aria-hidden />
-      <div style={favoritesIconSlot}>{icon}</div>
+      <div className="favorites-garage-card__iconSlot" aria-hidden>
+        <ExpIconStarFilled color={experimentIconPrimary} size={24} />
+      </div>
       <div
         style={{
           flex: 1,
