@@ -16,7 +16,8 @@ const chev = "›" as const;
 
 type Props = {
   onClick: () => void;
-  icon: ReactNode;
+  /** Si no se pasa, no se muestra el frame ni el hueco a la izquierda. */
+  icon?: ReactNode;
   title: ReactNode;
   subtitle: string;
   marginBottom: number;
@@ -57,7 +58,7 @@ export function ExperimentMenuCard({ onClick, icon, title, subtitle, marginBotto
         border: experimentListRowOrangeAccent.border,
       }}
     >
-      <div style={experimentMenuIconFrame}>{icon}</div>
+      {icon != null ? <div style={experimentMenuIconFrame}>{icon}</div> : null}
       <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "center", gap: 3 }}>
         <div
           style={{

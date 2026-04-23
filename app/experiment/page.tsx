@@ -36,7 +36,6 @@ import {
   ExpIconCamera,
   ExpIconCar,
   ExpIconPackage,
-  ExpIconUsers,
 } from "./experimentIcons";
 
 function garageCountLabel(count: number) {
@@ -400,7 +399,6 @@ export default function ExperimentPage() {
         />
         <ExperimentMenuCard
           onClick={() => router.push("/friends")}
-          icon={<ExpIconUsers color={experimentIconPrimary} size={24} />}
           title={
             <span style={{ display: "inline-flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
               <span>Add Friends</span>
