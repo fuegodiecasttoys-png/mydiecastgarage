@@ -1,0 +1,28 @@
+/* Add Friends + How To: brillo gris leve; más sutil que Favorites (sin ::after naranja). */
+
+button.experiment-paired-menu-row--premium {
+  position: relative;
+  overflow: hidden;
+}
+
+button.experiment-paired-menu-row--premium::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 0;
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0.08) 0%,
+    rgba(255, 255, 255, 0.03) 30%,
+    transparent 55%
+  );
+  opacity: 0.6;
+  filter: blur(3px);
+}
+
+button.experiment-paired-menu-row--premium > * {
+  position: relative;
+  z-index: 1;
+}

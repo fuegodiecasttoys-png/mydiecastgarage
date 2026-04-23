@@ -15,6 +15,7 @@ import {
   experimentRadiusMenu,
   experimentTextMuted,
 } from "./experimentHeroStyle";
+import "./experimentPairedMenuListRow.css";
 
 const chev = "›" as const;
 
@@ -42,6 +43,7 @@ export function ExperimentMenuCard({ onClick, icon, iconNoFrame, pairedDimmed, t
   return (
     <button
       type="button"
+      className={pairedDimmed ? "experiment-paired-menu-row--premium" : undefined}
       onClick={onClick}
       onMouseEnter={(e) => {
         e.currentTarget.style.boxShadow = hoverShadow;

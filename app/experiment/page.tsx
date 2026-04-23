@@ -422,7 +422,7 @@ export default function ExperimentPage() {
               ) : null}
             </span>
           }
-          subtitle="View each other's garages (view only)"
+          subtitle="View each other's garages"
           marginBottom={experimentListGap}
         />
         <ExperimentPairedMenuListRow
