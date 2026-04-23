@@ -176,7 +176,7 @@ export const experimentListRowShadowHover =
 
 /**
  * Add Friends + How To: ~10% menos brillo que el list row estándar.
- * Mismas capas lógicas (gradiente metálico, barra naranja lateral, insets) con alfas ligeramente más bajas.
+ * Capa extra muy ligera metálica (120deg blanco bajo) sobre el core; sin spotlight naranja ni blur tipo feature.
  * No afecta Favorites, Wishlist ni My Garage.
  */
 const PAIRED_LIST_CORE =
@@ -184,8 +184,14 @@ const PAIRED_LIST_CORE =
   ", " +
   "linear-gradient(270deg, rgba(255, 160, 40, 0.043) 0%, transparent 50%)";
 
+/** Muy sutil, encima del core; sin blur (no es el brillo de Favorites/Wishlist). */
+const PAIRED_METALLIC_SHEEN =
+  "linear-gradient(120deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02), transparent 50%)";
+
+const PAIRED_LIST_BACKGROUND = PAIRED_METALLIC_SHEEN + ", " + PAIRED_LIST_CORE;
+
 export const experimentPairedListRowBase: CSSProperties = {
-  background: PAIRED_LIST_CORE,
+  background: PAIRED_LIST_BACKGROUND,
   border: "1px solid rgba(120, 135, 160, 0.126)",
   boxShadow:
     "0 2px 0 rgba(255,255,255,0.018), 0 8px 20px rgba(0,0,0,0.46), inset 0 1px 0 rgba(255,255,255,0.036)",
