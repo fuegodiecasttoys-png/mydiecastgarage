@@ -1,0 +1,10 @@
+[33mcommit 44f04f690dd6bd1a2eb7ff169ed6560c3b4586b1[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: fuegodiecasttoys <fuegodiecasttoys@gmail.com>
+Date:   Wed Apr 22 21:37:58 2026 -0500
+
+    fix(experiment): Favorites card star without dark icon box
+    
+    Inline ExpIconStarFilled in ExperimentFavoritesGarageCard, transparent
+    icon slot CSS, and remove icon prop from experiment page.
+    
+    Made-with: Cursor
