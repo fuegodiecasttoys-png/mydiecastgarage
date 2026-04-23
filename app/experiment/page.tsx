@@ -9,7 +9,7 @@ import { IconCircle } from "../ui/IconCircle";
 import { dvBodyFont, dvDisplayFont, dvGhostButton } from "../ui/dv-visual";
 import { ExperimentFeaturedGarageCard } from "./ExperimentFeaturedGarageCard";
 import { ExperimentFavoritesGarageCard } from "./ExperimentFavoritesGarageCard";
-import { ExperimentMenuCard } from "./ExperimentMenuCard";
+import { ExperimentPairedMenuListRow } from "./ExperimentPairedMenuListRow";
 import { ExperimentWishlistGarageCard } from "./ExperimentWishlistGarageCard";
 import {
   experimentAppBackground,
@@ -398,10 +398,9 @@ export default function ExperimentPage() {
           subtitle="Models you want next"
           marginBottom={experimentListGap}
         />
-        <ExperimentMenuCard
+        <ExperimentPairedMenuListRow
           onClick={() => router.push("/friends")}
           icon={<ExpIconUsers color={experimentIconPrimary} size={24} />}
-          iconNoFrame
           title={
             <span style={{ display: "inline-flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
               <span>Add Friends</span>
@@ -426,10 +425,9 @@ export default function ExperimentPage() {
           subtitle="View each other's garages (view only)"
           marginBottom={experimentListGap}
         />
-        <ExperimentMenuCard
+        <ExperimentPairedMenuListRow
           onClick={() => router.push("/howto")}
           icon={<ExpIconCamera color={experimentIconPrimary} size={24} />}
-          iconNoFrame
           title="How To"
           subtitle="Tips for great photos"
           marginBottom={0}
