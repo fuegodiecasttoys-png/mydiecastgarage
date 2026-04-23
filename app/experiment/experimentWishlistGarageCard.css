@@ -1,0 +1,39 @@
+/* Wishlist (único, /experiment): anula caja bajo el icono; alineado con Favorites. */
+
+.wishlist-garage-card__iconSlot,
+button.wishlist-garage-card .wishlist-garage-card__iconSlot {
+  -webkit-appearance: none;
+  appearance: none;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  min-height: 48px;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  line-height: 0;
+  position: relative;
+  z-index: 2;
+  flex-shrink: 0;
+  border: 0;
+  border-radius: 0;
+  outline: none;
+  background: none !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  filter: none;
+}
+
+.wishlist-garage-card__iconSlot svg,
+button.wishlist-garage-card .wishlist-garage-card__iconSlot svg {
+  display: block;
+  flex-shrink: 0;
+}
+
+.wishlist-garage-card__iconSlot path,
+button.wishlist-garage-card .wishlist-garage-card__iconSlot path {
+  stroke: none;
+}

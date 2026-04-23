@@ -10,6 +10,7 @@ import { dvBodyFont, dvDisplayFont, dvGhostButton } from "../ui/dv-visual";
 import { ExperimentFeaturedGarageCard } from "./ExperimentFeaturedGarageCard";
 import { ExperimentFavoritesGarageCard } from "./ExperimentFavoritesGarageCard";
 import { ExperimentMenuCard } from "./ExperimentMenuCard";
+import { ExperimentWishlistGarageCard } from "./ExperimentWishlistGarageCard";
 import {
   experimentAppBackground,
   experimentContentMax,
@@ -34,7 +35,6 @@ import {
 import {
   ExpIconCamera,
   ExpIconCar,
-  ExpIconHeart,
   ExpIconPackage,
   ExpIconUsers,
 } from "./experimentIcons";
@@ -392,9 +392,8 @@ export default function ExperimentPage() {
           subtitle="Your top picks"
           marginBottom={experimentListGap}
         />
-        <ExperimentMenuCard
+        <ExperimentWishlistGarageCard
           onClick={() => router.push("/wishlist")}
-          icon={<ExpIconHeart color={experimentIconPrimary} size={24} />}
           title="Wishlist"
           subtitle="Models you want next"
           marginBottom={experimentListGap}
