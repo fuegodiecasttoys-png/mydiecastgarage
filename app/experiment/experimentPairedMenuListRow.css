@@ -22,7 +22,7 @@ button.experiment-paired-menu-row--premium::before {
   filter: blur(3px);
 }
 
-/* Calidez naranja suave, lado derecho — más sutil que el ::after de Favorites/Wishlist. */
+/* Toque cálido muy sutil (no domina; solo “calor” hacia Favorites/Wishlist). */
 button.experiment-paired-menu-row--premium::after {
   content: "";
   position: absolute;
@@ -32,11 +32,11 @@ button.experiment-paired-menu-row--premium::after {
   z-index: 0;
   background: radial-gradient(
     60% 80% at 85% 50%,
-    rgba(255, 140, 0, 0.1) 0%,
-    rgba(255, 140, 0, 0.05) 35%,
-    transparent 65%
+    rgba(255, 140, 0, 0.08) 0%,
+    rgba(255, 140, 0, 0.04) 30%,
+    transparent 60%
   );
-  opacity: 0.55;
+  opacity: 0.6;
   filter: blur(10px);
 }
 
