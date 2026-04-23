@@ -25,9 +25,8 @@ type Props = {
 };
 
 /**
- * Favorites en /experiment: misma capa visual que My Garage (fondo, borde, sombra,
- * ::before/::after vía .experimentMyGarageCard + .experimentMyGarageGlint), sin coche.
- * Contenido: mismo layout que ExperimentMenuCard (icono, título, subtítulo, chevron).
+ * Favorites: misma piel My Garage; altura y padding idénticos a ExperimentMenuCard (p. ej. Wishlist):
+ * minHeight 80, padding 16px 18px, flex + gap 16.
  */
 export function ExperimentFavoritesGarageCard({ onClick, icon, title, subtitle, marginBottom }: Props) {
   return (
@@ -43,10 +42,12 @@ export function ExperimentFavoritesGarageCard({ onClick, icon, title, subtitle, 
       }}
       style={{
         position: "relative",
-        display: "block",
+        display: "flex",
         width: "100%",
-        height: "130px",
-        padding: 0,
+        minHeight: 80,
+        alignItems: "center",
+        padding: "16px 18px",
+        boxSizing: "border-box",
         margin: 0,
         marginBottom,
         borderRadius: experimentRadiusFeature,
@@ -60,7 +61,6 @@ export function ExperimentFavoritesGarageCard({ onClick, icon, title, subtitle, 
         overflow: "hidden",
         fontFamily: "inherit",
         lineHeight: "normal",
-        boxSizing: "border-box",
         WebkitAppearance: "none" as const,
         appearance: "none",
       }}
@@ -72,11 +72,11 @@ export function ExperimentFavoritesGarageCard({ onClick, icon, title, subtitle, 
           zIndex: 1,
           display: "flex",
           width: "100%",
-          height: "100%",
+          minWidth: 0,
+          flex: 1,
           alignItems: "center",
-          padding: "16px 18px",
-          boxSizing: "border-box",
           gap: 16,
+          boxSizing: "border-box",
         }}
       >
         <div style={experimentMenuIconFrame}>{icon}</div>
