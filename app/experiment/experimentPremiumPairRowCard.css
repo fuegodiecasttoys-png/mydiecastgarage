@@ -1,7 +1,7 @@
-/* Favorites (único): anula toda caja bajo el icono; nada de fondo/borde/sombra. */
+/* Favorites + Wishlist en /experiment: un solo patrón; nada de caja bajo el icono. */
 
-.favorites-garage-card__iconSlot,
-button.favorites-garage-card .favorites-garage-card__iconSlot {
+.experiment-premium-pair-row__iconSlot,
+button.experiment-premium-pair-row .experiment-premium-pair-row__iconSlot {
   -webkit-appearance: none;
   appearance: none;
   display: grid;
@@ -27,13 +27,13 @@ button.favorites-garage-card .favorites-garage-card__iconSlot {
   filter: none;
 }
 
-.favorites-garage-card__iconSlot svg,
-button.favorites-garage-card .favorites-garage-card__iconSlot svg {
+.experiment-premium-pair-row__iconSlot svg,
+button.experiment-premium-pair-row .experiment-premium-pair-row__iconSlot svg {
   display: block;
   flex-shrink: 0;
 }
 
-.favorites-garage-card__iconSlot path,
-button.favorites-garage-card .favorites-garage-card__iconSlot path {
+.experiment-premium-pair-row__iconSlot path,
+button.experiment-premium-pair-row .experiment-premium-pair-row__iconSlot path {
   stroke: none;
 }
