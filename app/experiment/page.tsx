@@ -36,7 +36,7 @@ import {
   ExpIconCar,
   ExpIconHeart,
   ExpIconPackage,
-  ExpIconStar,
+  ExpIconStarFilled,
   ExpIconUsers,
 } from "./experimentIcons";
 
@@ -389,7 +389,7 @@ export default function ExperimentPage() {
 
         <ExperimentFavoritesGarageCard
           onClick={() => router.push("/favorites")}
-          icon={<ExpIconStar color={experimentIconPrimary} size={24} />}
+          icon={<ExpIconStarFilled color={experimentIconPrimary} size={24} />}
           title="Favorites"
           subtitle="Your top picks"
           marginBottom={experimentListGap}

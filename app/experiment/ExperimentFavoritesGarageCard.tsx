@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import {
   experimentHeroBackground,
   experimentHeroBorder,
@@ -8,11 +8,26 @@ import {
   experimentHeroBoxShadowHover,
   experimentListChevron,
   experimentListTitle,
-  experimentMenuIconFrame,
   experimentRadiusFeature,
   experimentTextMuted,
 } from "./experimentHeroStyle";
 import "./experimentMyGarageCard.css";
+
+/** Misma caja 48×48 y grid que el menu row, sin fondo ni borde (solo Favorites). */
+const favoritesIconSlot: CSSProperties = {
+  width: 48,
+  height: 48,
+  lineHeight: 0,
+  borderRadius: 14,
+  display: "grid",
+  placeItems: "center",
+  flexShrink: 0,
+  background: "transparent",
+  border: "none",
+  boxShadow: "none",
+  position: "relative",
+  zIndex: 1,
+};
 
 const chev = "›" as const;
 
@@ -66,15 +81,7 @@ export function ExperimentFavoritesGarageCard({ onClick, icon, title, subtitle, 
       }}
     >
       <div className="experimentMyGarageGlint" aria-hidden />
-      <div
-        style={{
-          ...experimentMenuIconFrame,
-          position: "relative",
-          zIndex: 1,
-        }}
-      >
-        {icon}
-      </div>
+      <div style={favoritesIconSlot}>{icon}</div>
       <div
         style={{
           flex: 1,
