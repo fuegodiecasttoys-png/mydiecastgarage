@@ -25,8 +25,9 @@ type Props = {
 };
 
 /**
- * “My Garage” (solo /experiment): contentShell = fila útil; leftBlock = columna a la
- * izquierda, centrada en vertical. Brillos/spot en experimentMyGarageCard.css, fuera del flujo.
+ * “My Garage” (solo /experiment): mismo criterio que garage-test — bloque de
+ * texto en el centro de la card (translate -50%/-50%); chevrón absoluto a la
+ * der. Coche, glint y capas de experimentMyGarageCard.css sin participar en el flujo.
  */
 export function ExperimentFeaturedGarageCard({ onClick, title, lead, subline, displayFont }: Props) {
   return (
@@ -44,7 +45,7 @@ export function ExperimentFeaturedGarageCard({ onClick, title, lead, subline, di
         position: "relative",
         display: "block",
         width: "100%",
-        height: 124,
+        height: "130px",
         padding: 0,
         margin: 0,
         borderRadius: experimentRadiusFeature,
@@ -67,79 +68,70 @@ export function ExperimentFeaturedGarageCard({ onClick, title, lead, subline, di
       <ExperimentCarDeco />
       <div className="experimentMyGarageGlint" aria-hidden />
       <div
-        className="contentShell"
+        className="contentBlock"
         style={{
-          position: "relative",
+          position: "absolute",
+          top: "50%",
+          left: "50%",
           zIndex: 1,
+          transform: "translate(-50%, -50%)",
           display: "flex",
-          flexDirection: "row",
+          flexDirection: "column",
           alignItems: "center",
-          justifyContent: "space-between",
-          height: "100%",
-          width: "100%",
+          justifyContent: "center",
+          textAlign: "center",
           boxSizing: "border-box",
-          padding: "17px 20px",
         }}
       >
         <div
-          className="leftBlock"
+          className="title"
           style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "flex-start",
-            height: "100%",
-            flex: 1,
-            minWidth: 0,
-            boxSizing: "border-box",
+            fontFamily: displayFont,
+            fontSize: 20,
+            fontWeight: 800,
+            letterSpacing: "-0.03em",
+            margin: 0,
+            marginBottom: 7,
+            lineHeight: 1.04,
+            color: experimentTextStrong,
           }}
         >
-          <div
-            className="title"
-            style={{
-              fontFamily: displayFont,
-              fontSize: 20,
-              fontWeight: 800,
-              letterSpacing: "-0.03em",
-              margin: 0,
-              marginBottom: 7,
-              lineHeight: 1.04,
-              color: experimentTextStrong,
-            }}
-          >
-            {title}
-          </div>
-          <div className="lead" style={{ margin: 0, marginBottom: 6 }}>
-            {lead}
-          </div>
-          <div
-            className="subline"
-            style={{
-              margin: 0,
-              fontSize: 13,
-              fontWeight: 500,
-              color: experimentHeroSubline,
-              lineHeight: 1.32,
-              letterSpacing: "0.01em",
-            }}
-          >
-            {subline}
-          </div>
+          {title}
         </div>
-        <span
-          className="chevron"
+        <div className="lead" style={{ margin: 0, marginBottom: 6 }}>
+          {lead}
+        </div>
+        <div
+          className="subline"
           style={{
-            fontSize: 30,
-            fontWeight: 300,
-            color: experimentFeaturedChevron,
-            lineHeight: 1,
-            flexShrink: 0,
+            margin: 0,
+            fontSize: 13,
+            fontWeight: 500,
+            color: experimentHeroSubline,
+            lineHeight: 1.32,
+            letterSpacing: "0.01em",
           }}
-          aria-hidden
         >
-          {chev}
-        </span>
+          {subline}
+        </div>
       </div>
+      <span
+        className="chevron"
+        style={{
+          position: "absolute",
+          right: 20,
+          top: "50%",
+          zIndex: 1,
+          transform: "translateY(-50%)",
+          fontSize: 30,
+          fontWeight: 300,
+          color: experimentFeaturedChevron,
+          lineHeight: 1,
+        }}
+        aria-hidden
+      >
+        {chev}
+      </span>
     </button>
   );
 }
