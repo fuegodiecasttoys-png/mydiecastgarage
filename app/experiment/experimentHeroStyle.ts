@@ -175,8 +175,7 @@ export const experimentListRowShadowHover =
   "0 2px 0 rgba(255,255,255,0.03), 0 10px 26px rgba(0,0,0,0.48), inset 0 1px 0 rgba(255,255,255,0.05)";
 
 /**
- * Add Friends + How To: ~10% menos brillo que el list row estándar.
- * Brillo premium ligero vía ::before (experimentPairedMenuListRow.css), sin spotlight naranja.
+ * Add Friends + How To: base list + capas en experimentPairedMenuListRow.css (::before / ::after suaves).
  * No afecta Favorites, Wishlist ni My Garage.
  */
 const PAIRED_LIST_CORE =
@@ -186,14 +185,16 @@ const PAIRED_LIST_CORE =
 
 export const experimentPairedListRowBase: CSSProperties = {
   background: PAIRED_LIST_CORE,
-  border: "1px solid rgba(120, 135, 160, 0.126)",
+  border: "1px solid rgba(120, 140, 168, 0.2)",
   boxShadow:
-    "0 2px 0 rgba(255,255,255,0.018), 0 8px 20px rgba(0,0,0,0.46), inset 0 1px 0 rgba(255,255,255,0.036)",
+    "0 0 0 1px rgba(0,0,0,0.2)," +
+    "0 2px 0 rgba(255,255,255,0.024), 0 8px 22px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.045), 0 0 18px -6px rgba(255, 120, 0, 0.08)",
 };
 
 export const experimentPairedListRowShadowRest = experimentPairedListRowBase.boxShadow as string;
 export const experimentPairedListRowShadowHover =
-  "0 2px 0 rgba(255,255,255,0.027), 0 10px 26px rgba(0,0,0,0.51), inset 0 1px 0 rgba(255,255,255,0.045)";
+  "0 0 0 1px rgba(0,0,0,0.18)," +
+  "0 2px 0 rgba(255,255,255,0.032), 0 12px 28px rgba(0,0,0,0.52), inset 0 1px 0 rgba(255,255,255,0.05), 0 0 22px -4px rgba(255, 130, 0, 0.1)";
 
 export const experimentPairedListRowOrangeAccent: CSSProperties = { ...experimentPairedListRowBase };
 
