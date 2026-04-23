@@ -174,6 +174,29 @@ export const experimentListRowShadowRest = experimentListRowBase.boxShadow as st
 export const experimentListRowShadowHover =
   "0 2px 0 rgba(255,255,255,0.03), 0 10px 26px rgba(0,0,0,0.48), inset 0 1px 0 rgba(255,255,255,0.05)";
 
+/**
+ * Add Friends + How To: ~10% menos brillo que el list row estándar.
+ * Mismas capas lógicas (gradiente metálico, barra naranja lateral, insets) con alfas ligeramente más bajas.
+ * No afecta Favorites, Wishlist ni My Garage.
+ */
+const PAIRED_LIST_CORE =
+  "linear-gradient(98deg, " + experimentSurfaceB + " 0%, " + experimentSurfaceA + " 55%, rgba(15, 21, 33, 0.94) 100%)" +
+  ", " +
+  "linear-gradient(270deg, rgba(255, 160, 40, 0.043) 0%, transparent 50%)";
+
+export const experimentPairedListRowBase: CSSProperties = {
+  background: PAIRED_LIST_CORE,
+  border: "1px solid rgba(120, 135, 160, 0.126)",
+  boxShadow:
+    "0 2px 0 rgba(255,255,255,0.018), 0 8px 20px rgba(0,0,0,0.46), inset 0 1px 0 rgba(255,255,255,0.036)",
+};
+
+export const experimentPairedListRowShadowRest = experimentPairedListRowBase.boxShadow as string;
+export const experimentPairedListRowShadowHover =
+  "0 2px 0 rgba(255,255,255,0.027), 0 10px 26px rgba(0,0,0,0.51), inset 0 1px 0 rgba(255,255,255,0.045)";
+
+export const experimentPairedListRowOrangeAccent: CSSProperties = { ...experimentPairedListRowBase };
+
 export const experimentMenuIconFrame: CSSProperties = {
   width: 48,
   height: 48,

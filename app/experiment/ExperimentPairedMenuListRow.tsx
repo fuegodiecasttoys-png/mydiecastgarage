@@ -13,7 +13,7 @@ type Props = {
 
 /**
  * Pareja visual: Add Friends + How To en /experiment.
- * Cualquier ajuste de fila (frame del icono, etc.) vive aquí; solo cambian icono y textos.
+ * Cualquier ajuste de fila (icono sin frame, intensidad apagada, etc.) vive aquí; solo cambian icono y textos.
  */
 export function ExperimentPairedMenuListRow({ onClick, icon, title, subtitle, marginBottom }: Props) {
   return (
@@ -21,6 +21,7 @@ export function ExperimentPairedMenuListRow({ onClick, icon, title, subtitle, ma
       onClick={onClick}
       icon={icon}
       iconNoFrame
+      pairedDimmed
       title={title}
       subtitle={subtitle}
       marginBottom={marginBottom}

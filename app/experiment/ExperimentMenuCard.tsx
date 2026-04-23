@@ -9,6 +9,9 @@ import {
   experimentListTitle,
   experimentMenuIconFrame,
   experimentMenuIconSlotPlain,
+  experimentPairedListRowOrangeAccent,
+  experimentPairedListRowShadowHover,
+  experimentPairedListRowShadowRest,
   experimentRadiusMenu,
   experimentTextMuted,
 } from "./experimentHeroStyle";
@@ -21,6 +24,8 @@ type Props = {
   icon?: ReactNode;
   /** Mismo 48×48, sin caja oscura bajo el icono (fondo transparante). */
   iconNoFrame?: boolean;
+  /** Superficie list row ~10% más apagada (Add Friends + How To). */
+  pairedDimmed?: boolean;
   title: ReactNode;
   subtitle: string;
   marginBottom: number;
@@ -29,16 +34,20 @@ type Props = {
 /**
  * Standard secondary row: dark tile, left icon in frame, bold title, grey subtitle, orange chevron.
  */
-export function ExperimentMenuCard({ onClick, icon, iconNoFrame, title, subtitle, marginBottom }: Props) {
+export function ExperimentMenuCard({ onClick, icon, iconNoFrame, pairedDimmed, title, subtitle, marginBottom }: Props) {
+  const rowAccent = pairedDimmed ? experimentPairedListRowOrangeAccent : experimentListRowOrangeAccent;
+  const restShadow = pairedDimmed ? experimentPairedListRowShadowRest : experimentListRowShadowRest;
+  const hoverShadow = pairedDimmed ? experimentPairedListRowShadowHover : experimentListRowShadowHover;
+
   return (
     <button
       type="button"
       onClick={onClick}
       onMouseEnter={(e) => {
-        e.currentTarget.style.boxShadow = experimentListRowShadowHover;
+        e.currentTarget.style.boxShadow = hoverShadow;
       }}
       onMouseLeave={(e) => {
-        e.currentTarget.style.boxShadow = experimentListRowShadowRest;
+        e.currentTarget.style.boxShadow = restShadow;
       }}
       style={{
         display: "flex",
@@ -56,9 +65,9 @@ export function ExperimentMenuCard({ onClick, icon, iconNoFrame, title, subtitle
         marginBottom,
         WebkitTapHighlightColor: "transparent",
         gap: 16,
-        ...experimentListRowOrangeAccent,
-        boxShadow: experimentListRowShadowRest,
-        border: experimentListRowOrangeAccent.border,
+        ...rowAccent,
+        boxShadow: restShadow,
+        border: rowAccent.border,
       }}
     >
       {icon != null ? (
