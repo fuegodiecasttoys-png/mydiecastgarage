@@ -37,3 +37,16 @@ button.experiment-premium-pair-row .experiment-premium-pair-row__iconSlot svg {
 button.experiment-premium-pair-row .experiment-premium-pair-row__iconSlot path {
   stroke: none;
 }
+
+/* Favorites + Wishlist: un poco menos de brillo (no afecta My Garage, sin otra clase .experiment-premium-pair-row) */
+.experimentMyGarageCard.experiment-premium-pair-row::before {
+  opacity: 0.75;
+}
+
+.experimentMyGarageCard.experiment-premium-pair-row .experimentMyGarageGlint {
+  opacity: 0.75;
+}
+
+.experimentMyGarageCard.experiment-premium-pair-row::after {
+  opacity: 0.7;
+}
