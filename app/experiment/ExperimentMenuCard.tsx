@@ -14,27 +14,41 @@ import {
 
 const chev = "›" as const;
 
+/** "favoritesCalm" = lenguaje visual tipo My Garage pero más oscuro y apagado. */
+const favoritesCalmStyle = {
+  backgroundImage:
+    "linear-gradient(120deg, rgba(90, 120, 160, 0.05), transparent 60%)," +
+    " linear-gradient(145deg, #0b0f14, #04060a)",
+  border: "1px solid rgba(255,255,255,0.04)",
+  restShadow: "0 0 8px rgba(0,0,0,0.6), 0 0 6px rgba(255,140,0,0.04)" as const,
+  hoverShadow: "0 0 10px rgba(0,0,0,0.64), 0 0 8px rgba(255,140,0,0.055)" as const,
+};
+
 type Props = {
   onClick: () => void;
   icon: ReactNode;
   title: ReactNode;
   subtitle: string;
   marginBottom: number;
+  /** Solo Favorites: superficie premium más oscura y en calma que el hero. */
+  variant?: "default" | "favoritesCalm";
 };
 
 /**
  * Standard secondary row: dark tile, left icon in frame, bold title, grey subtitle, orange chevron.
  */
-export function ExperimentMenuCard({ onClick, icon, title, subtitle, marginBottom }: Props) {
+export function ExperimentMenuCard({ onClick, icon, title, subtitle, marginBottom, variant = "default" }: Props) {
+  const isFavoritesCalm = variant === "favoritesCalm";
+
   return (
     <button
       type="button"
       onClick={onClick}
       onMouseEnter={(e) => {
-        e.currentTarget.style.boxShadow = experimentListRowShadowHover;
+        e.currentTarget.style.boxShadow = isFavoritesCalm ? favoritesCalmStyle.hoverShadow : experimentListRowShadowHover;
       }}
       onMouseLeave={(e) => {
-        e.currentTarget.style.boxShadow = experimentListRowShadowRest;
+        e.currentTarget.style.boxShadow = isFavoritesCalm ? favoritesCalmStyle.restShadow : experimentListRowShadowRest;
       }}
       style={{
         display: "flex",
@@ -52,9 +66,18 @@ export function ExperimentMenuCard({ onClick, icon, title, subtitle, marginBotto
         marginBottom,
         WebkitTapHighlightColor: "transparent",
         gap: 16,
-        ...experimentListRowOrangeAccent,
-        boxShadow: experimentListRowShadowRest,
-        border: experimentListRowOrangeAccent.border,
+        ...(isFavoritesCalm
+          ? {
+              background: "none",
+              backgroundImage: favoritesCalmStyle.backgroundImage,
+              boxShadow: favoritesCalmStyle.restShadow,
+              border: favoritesCalmStyle.border,
+            }
+          : {
+              ...experimentListRowOrangeAccent,
+              boxShadow: experimentListRowShadowRest,
+              border: experimentListRowOrangeAccent.border,
+            }),
       }}
     >
       <div style={experimentMenuIconFrame}>{icon}</div>

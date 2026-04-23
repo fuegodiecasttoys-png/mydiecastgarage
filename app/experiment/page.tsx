@@ -392,6 +392,7 @@ export default function ExperimentPage() {
           title="Favorites"
           subtitle="Your top picks"
           marginBottom={experimentListGap}
+          variant="favoritesCalm"
         />
         <ExperimentMenuCard
           onClick={() => router.push("/wishlist")}
