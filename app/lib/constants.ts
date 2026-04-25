@@ -61,6 +61,10 @@ export const BRANDS = [
   "Oxford Diecast",
   "Premium ClassiXXs",
   "Vitesse",
+  "Lionel Racing",
+  "Action Racing Collectables",
+  "RCCA",
+  "Car Tuned",
 ]
 export const COLORS = [
   "Antifreeze",
