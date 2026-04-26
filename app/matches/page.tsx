@@ -18,14 +18,27 @@ export default function MatchesPage() {
   async function handleUpdate(item: any) {
     const newItem = JSON.parse(localStorage.getItem('newItem') || '{}')
 
-    await supabase
-      .from('items')
-      .update({
-        qty: (item.qty || 0) + (newItem.qty || 1),
-      })
-      .eq('id', item.id)
+await supabase.from('items').insert({
+  user_id: newItem.user_id,
+  photo_url: newItem.photo_url,
+  name: newItem.name,
+  brand: newItem.brand,
+  color: newItem.color,
+  scale: newItem.scale,
+  qty: newItem.qty,
+  sth: newItem.sth,
+  th: newItem.th,
+  chase: newItem.chase,
+  main_number: newItem.main_number,
+  sub_number: newItem.sub_number,
+  series: newItem.series,
+  year: newItem.year,
+  location: newItem.location,
+  type: newItem.type,
+  notes: newItem.notes,
+})
 
-    router.push('/mygarage')
+router.push('/mygarage')
   }
 
   async function handleAddNew() {
