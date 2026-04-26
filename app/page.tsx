@@ -45,6 +45,7 @@ export default function Home() {
   const [garageCountError, setGarageCountError] = useState<string | null>(null);
   const [garageCountRetrying, setGarageCountRetrying] = useState(false);
   const [pendingFriendRequestsCount, setPendingFriendRequestsCount] = useState(0);
+  const [profile, setProfile] = useState<any>(null);
 
   const fetchPendingFriendRequests = useCallback(async (uid: string) => {
     const { count, error } = await supabase
@@ -57,12 +58,14 @@ export default function Home() {
       setPendingFriendRequestsCount(0);
       return;
     }
+
     setPendingFriendRequestsCount(count);
   }, []);
 
   const fetchGarageCount = useCallback(async (uid: string) => {
     setGarageCountRetrying(true);
     setGarageCountError(null);
+
     const { count, error } = await supabase
       .from("items")
       .select("*", { count: "exact", head: true })
@@ -74,10 +77,12 @@ export default function Home() {
       setGarageCountError(error.message || "Could not load your collection.");
       return;
     }
+
     if (count === null) {
       setGarageCountError("Could not load your collection.");
       return;
     }
+
     setGarageCount(count);
   }, []);
 
@@ -103,7 +108,20 @@ export default function Home() {
       }
 
       setUserId(data.user.id);
-      await Promise.all([fetchGarageCount(data.user.id), fetchPendingFriendRequests(data.user.id)]);
+
+      const { data: profileData } = await supabase
+        .from("profiles")
+        .select("plan, monthly_captures")
+        .eq("id", data.user.id)
+        .single();
+
+      setProfile(profileData);
+
+      await Promise.all([
+        fetchGarageCount(data.user.id),
+        fetchPendingFriendRequests(data.user.id),
+      ]);
+
       setCheckingAuth(false);
     }
 
@@ -243,6 +261,24 @@ export default function Home() {
           </button>
         </div>
 
+        {profile?.plan !== "pro" ? (
+          <div
+            style={{
+              marginBottom: 12,
+              padding: "10px 12px",
+              borderRadius: 12,
+              background: "rgba(255, 122, 24, 0.08)",
+              border: "1px solid rgba(255, 122, 24, 0.25)",
+              color: t.textSecondary,
+              fontSize: 13,
+              fontWeight: 700,
+              textAlign: "center",
+            }}
+          >
+            {(profile?.monthly_captures || 0)} / 20 captures used
+          </div>
+        ) : null}
+
         {garageCountError ? (
           <div
             style={{
@@ -254,10 +290,27 @@ export default function Home() {
               boxSizing: "border-box",
             }}
           >
-            <p style={{ margin: "0 0 6px", fontSize: 13, fontWeight: 700, color: "rgba(255,200,200,0.92)", lineHeight: 1.4 }}>
+            <p
+              style={{
+                margin: "0 0 6px",
+                fontSize: 13,
+                fontWeight: 700,
+                color: "rgba(255,200,200,0.92)",
+                lineHeight: 1.4,
+              }}
+            >
               Couldn&apos;t load your garage count.
             </p>
-            <p style={{ margin: "0 0 12px", fontSize: 12, lineHeight: 1.45, color: t.textMuted }}>{garageCountError}</p>
+            <p
+              style={{
+                margin: "0 0 12px",
+                fontSize: 12,
+                lineHeight: 1.45,
+                color: t.textMuted,
+              }}
+            >
+              {garageCountError}
+            </p>
             <button
               type="button"
               disabled={garageCountRetrying || !userId}
@@ -314,7 +367,9 @@ export default function Home() {
                 lineHeight: 1.35,
               }}
             >
-              {garageCountError ? "You can still open your collection below." : "View your collection"}
+              {garageCountError
+                ? "You can still open your collection below."
+                : "View your collection"}
             </div>
           </div>
           <span style={{ ...chevronStyle, color: t.orange400 }} aria-hidden>
@@ -322,7 +377,7 @@ export default function Home() {
           </span>
         </button>
 
-        {/* Favorites — same row pattern as Wishlist */}
+        {/* Favorites */}
         <button
           type="button"
           onClick={() => router.push("/favorites")}
@@ -420,7 +475,9 @@ export default function Home() {
               </span>
               {pendingFriendRequestsCount > 0 ? (
                 <AccentBadge
-                  aria-label={`${pendingFriendRequestsCount} pending friend request${pendingFriendRequestsCount === 1 ? "" : "s"}`}
+                  aria-label={`${pendingFriendRequestsCount} pending friend request${
+                    pendingFriendRequestsCount === 1 ? "" : "s"
+                  }`}
                   style={{
                     padding: "2px 10px",
                     fontSize: 12,
