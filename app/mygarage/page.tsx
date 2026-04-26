@@ -66,7 +66,15 @@ const sortSelectStyle = { ...dvSelect, marginBottom: 10 }
 
 const exportButtonStyle = { ...dvGhostButton, borderRadius: 12 }
 
-const cardStyle = { ...dvListCard, ...dvModelListCardHoverHandlers, transition: "all 0.2s ease" as const }
+const cardStyle = {
+  display: "flex",
+  alignItems: "center",
+  gap: 10,
+  padding: 8,
+  borderRadius: 12,
+  background: "#0f172a",
+  minHeight: 70, // 👈 clave (antes estaba grande)
+}
 
 const imageWrapStyle = { ...dvImageThumb }
 
