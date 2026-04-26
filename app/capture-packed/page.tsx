@@ -349,6 +349,27 @@ export default function CapturePage() {
         setErrorMessage("Quantity must be at least 1.")
         return
       }
+      
+      const fileExt = file.name.split(".").pop() || "jpg"
+      const fileName = `${user.id}/${Date.now()}.${fileExt}`
+
+      const compressedFile = await compressImage(file)
+
+      const { error: uploadError } = await supabase.storage
+        .from("captures")
+        .upload(fileName, compressedFile)
+
+      if (uploadError) {
+        console.error(uploadError)
+        setErrorMessage("Upload failed.")
+        return
+      }
+
+      const { data: publicUrlData } = supabase.storage
+        .from("captures")
+        .getPublicUrl(fileName)
+
+      const publicUrl = publicUrlData.publicUrl
       const { data: possibleMatches } = await supabase
   .from("items")
   .select("*")
@@ -385,26 +406,6 @@ if (possibleMatches && possibleMatches.length > 0) {
   router.push("/matches")
   return
 }
-      const fileExt = file.name.split(".").pop() || "jpg"
-      const fileName = `${user.id}/${Date.now()}.${fileExt}`
-
-      const compressedFile = await compressImage(file)
-
-      const { error: uploadError } = await supabase.storage
-        .from("captures")
-        .upload(fileName, compressedFile)
-
-      if (uploadError) {
-        console.error(uploadError)
-        setErrorMessage("Upload failed.")
-        return
-      }
-
-      const { data: publicUrlData } = supabase.storage
-        .from("captures")
-        .getPublicUrl(fileName)
-
-      const publicUrl = publicUrlData.publicUrl
 
       const { error: captureError } = await supabase.from("captures").insert({
         user_id: user.id,
