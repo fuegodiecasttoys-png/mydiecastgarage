@@ -223,6 +223,47 @@ export default function MyGarage() {
           >
             My Garage
           </h1>
+          <div
+  style={{
+    display: "flex",
+    justifyContent: "center",
+    gap: 10,
+    marginTop: 12,
+    marginBottom: 16,
+  }}
+>
+  <button
+    type="button"
+    onClick={() => router.push("/capture-packed")}
+    style={{
+      padding: "10px 16px",
+      borderRadius: 14,
+      border: "1px solid #f97316",
+      background: "rgba(249, 115, 22, 0.12)",
+      color: "#f97316",
+      fontWeight: 800,
+      fontSize: 14,
+    }}
+  >
+    📦 + Packed
+  </button>
+
+  <button
+    type="button"
+    onClick={() => router.push("/capture-loose")}
+    style={{
+      padding: "10px 16px",
+      borderRadius: 14,
+      border: "1px solid #f97316",
+      background: "rgba(249, 115, 22, 0.12)",
+      color: "#f97316",
+      fontWeight: 800,
+      fontSize: 14,
+    }}
+  >
+    🚗 + Loose
+  </button>
+</div>
 
           <div
             style={{
