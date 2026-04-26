@@ -6,64 +6,38 @@ import { useRouter } from 'next/navigation'
 
 export default function MatchesPage() {
   const router = useRouter()
-
   const [matches, setMatches] = useState<any[]>([])
 
   useEffect(() => {
     const storedMatches = localStorage.getItem('matches')
-
     if (storedMatches) setMatches(JSON.parse(storedMatches))
   }, [])
 
   async function handleUpdate(item: any) {
     const newItem = JSON.parse(localStorage.getItem('newItem') || '{}')
 
-await supabase.from('items').insert({
-  user_id: newItem.user_id,
-  photo_url: newItem.photo_url,
-  name: newItem.name,
-  brand: newItem.brand,
-  color: newItem.color,
-  scale: newItem.scale,
-  qty: newItem.qty,
-  sth: newItem.sth,
-  th: newItem.th,
-  chase: newItem.chase,
-  main_number: newItem.main_number,
-  sub_number: newItem.sub_number,
-  series: newItem.series,
-  year: newItem.year,
-  location: newItem.location,
-  type: newItem.type,
-  notes: newItem.notes,
-})
+    await supabase
+      .from('items')
+      .update({
+        qty: (item.qty || 0) + (newItem.qty || 1),
+      })
+      .eq('id', item.id)
 
-router.push('/mygarage')
+    router.push('/mygarage')
   }
 
   async function handleAddNew() {
-  const newItem = JSON.parse(localStorage.getItem('newItem') || '{}')
-  async function handleAddNew() {
-  const newItem = JSON.parse(localStorage.getItem('newItem') || '{}')
+    const newItem = JSON.parse(localStorage.getItem('newItem') || '{}')
 
-  console.log('NEW ITEM PHOTO:', newItem.photo_url) // 👈 agrega esto
+    await supabase.from('captures').insert({
+      user_id: newItem.user_id,
+      photo_url: newItem.photo_url,
+    })
 
-  await supabase.from('items').insert(newItem)
+    await supabase.from('items').insert(newItem)
 
-  router.push('/mygarage')
-}
-
-  // 🔥 guardar capture (foto)
-  await supabase.from('captures').insert({
-    user_id: newItem.user_id,
-    photo_url: newItem.photo_url,
-  })
-
-  // 🔥 guardar item
-  await supabase.from('items').insert(newItem)
-
-  router.push('/mygarage')
-}
+    router.push('/mygarage')
+  }
 
   return (
     <div className="min-h-screen bg-[#020617] text-white p-4 space-y-4">
@@ -79,11 +53,17 @@ router.push('/mygarage')
             key={item.id || i}
             className="flex items-center gap-3 p-2 rounded-xl bg-[#0f172a] border border-white/10"
           >
-            <img
-              src={item.photo_url}
-              alt={item.name || 'Match'}
-              className="w-14 h-14 rounded-lg object-cover"
-            />
+            {item.photo_url ? (
+              <img
+                src={item.photo_url}
+                alt={item.name || 'Match'}
+                className="w-14 h-14 rounded-lg object-cover"
+              />
+            ) : (
+              <div className="w-14 h-14 rounded-lg border border-white/10 flex items-center justify-center text-xs text-gray-400">
+                No photo
+              </div>
+            )}
 
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold truncate">{item.name}</p>
