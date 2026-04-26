@@ -35,13 +35,9 @@ const SCALE_OPTIONS = [
 ]
 
 const pageStyle: CSSProperties = dvAppPageShell
-
 const containerStyle: CSSProperties = dvDashboardInner
-
 const inputStyle: CSSProperties = { ...dvInput, outline: "none" }
-
 const buttonStyle: CSSProperties = dvPrimaryButton
-
 const disabledButtonStyle: CSSProperties = dvPrimaryButtonDisabled
 
 export default function CapturePage() {
@@ -55,7 +51,6 @@ export default function CapturePage() {
   const [color, setColor] = useState("")
   const [scale, setScale] = useState("1:64")
   const [customScale, setCustomScale] = useState("")
-
   const [qty, setQty] = useState(1)
 
   const [sth, setSth] = useState(false)
@@ -72,7 +67,6 @@ export default function CapturePage() {
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState<string | null>(null)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
-
   const [sessionChecked, setSessionChecked] = useState(false)
 
   useEffect(() => {
@@ -197,6 +191,7 @@ export default function CapturePage() {
       const fileExt = file.name.split(".").pop() || "jpg"
       const fileName = `${user.id}/${Date.now()}.${fileExt}`
       const compressedFile = await compressImage(file)
+
       const { error: uploadError } = await supabase.storage
         .from("captures")
         .upload(fileName, compressedFile)
@@ -224,61 +219,67 @@ export default function CapturePage() {
         return
       }
 
-      // 🔍 Check if item already exists
-const { data } = await supabase
-  .from("items")
-  .select("*")
-  .eq("user_id", user.id)
-  .ilike("brand", `%${brand.trim()}%`)
-  .ilike("name", `%${name.trim()}%`)
-  .eq("type", "loose")
-  .limit(1)
+      const { data: possibleMatches } = await supabase
+        .from("items")
+        .select("*")
+        .eq("user_id", user.id)
+        .eq("brand", brand.trim())
+        .eq("name", name.trim())
+        .eq("type", "loose")
+        .limit(5)
 
-const existingItem = data?.[0] as any
+      if (possibleMatches && possibleMatches.length > 0) {
+        localStorage.setItem("matches", JSON.stringify(possibleMatches))
 
-if (existingItem) {
-  const { error: updateError } = await supabase
-    .from("items")
-    .update({
-      qty: existingItem.qty + qty,
-    })
-    .eq("id", existingItem.id)
+        localStorage.setItem(
+          "newItem",
+          JSON.stringify({
+            user_id: user.id,
+            photo_url: publicUrl,
+            name: name.trim(),
+            brand: brand.trim(),
+            color: color.trim() || null,
+            scale: (scale === "Other" ? customScale : scale).trim() || null,
+            qty,
+            sth,
+            th,
+            chase,
+            main_number: mainNumber.trim() || null,
+            sub_number: subNumber.trim() || null,
+            series: series.trim() || null,
+            year: year.trim() || null,
+            location: location.trim() || null,
+            type: "loose",
+            notes: notes.trim() || null,
+          })
+        )
 
-  if (updateError) {
-    console.error(updateError)
-    setErrorMessage("Failed to update quantity.")
-    return
-  }
+        router.push("/matches")
+        return
+      }
 
-  setMessage("Quantity updated ✅")
-  resetForm()
-  router.push("/mygarage")
-  return
-}
+      const { error: itemError } = await supabase.from("items").insert({
+        user_id: user.id,
+        photo_url: publicUrl,
 
-// 🆕 Insert new if not exists
-const { error: itemError } = await supabase.from("items").insert({
-  user_id: user.id,
-  photo_url: publicUrl,
+        name: name.trim(),
+        brand: brand.trim(),
+        color: color.trim() || null,
+        scale: (scale === "Other" ? customScale : scale).trim() || null,
+        qty,
 
-  name: name.trim(),
-  brand: brand.trim(),
-  color: color.trim() || null,
-  scale: (scale === "Other" ? customScale : scale).trim() || null,
-  qty,
+        sth,
+        th,
+        chase,
 
-  sth,
-  th,
-  chase,
-
-  main_number: mainNumber.trim() || null,
-  sub_number: subNumber.trim() || null,
-  series: series.trim() || null,
-  year: year.trim() || null,
-  location: location.trim() || null,
-  type: 'loose',
-  notes: notes.trim() || null,
-})
+        main_number: mainNumber.trim() || null,
+        sub_number: subNumber.trim() || null,
+        series: series.trim() || null,
+        year: year.trim() || null,
+        location: location.trim() || null,
+        type: "loose",
+        notes: notes.trim() || null,
+      })
 
       if (itemError) {
         console.error(itemError)
@@ -321,20 +322,22 @@ const { error: itemError } = await supabase.from("items").insert({
             }}
           />
         </div>
-         <Link
-  href="/"
-  style={{
-    position: "fixed",
-    top: 20,
-    left: 20,
-    fontSize: 20,
-    textDecoration: "none",
-    color: "white",
-    zIndex: 999,
-  }}
->
-  🏠
-</Link>
+
+        <Link
+          href="/"
+          style={{
+            position: "fixed",
+            top: 20,
+            left: 20,
+            fontSize: 20,
+            textDecoration: "none",
+            color: "white",
+            zIndex: 999,
+          }}
+        >
+          🏠
+        </Link>
+
         <div
           style={{
             borderTop: "1px solid rgba(255,255,255,0.08)",
@@ -514,17 +517,17 @@ const { error: itemError } = await supabase.from("items").insert({
                 </option>
               ))}
             </select>
-            {scale === "Other" && (
-  <input
-    type="text"
-    placeholder="Enter custom scale"
-    value={customScale}
-    onChange={(e) => setCustomScale(e.target.value)}
-    disabled={loading}
-    style={inputStyle}
-  />
-)}
 
+            {scale === "Other" && (
+              <input
+                type="text"
+                placeholder="Enter custom scale"
+                value={customScale}
+                onChange={(e) => setCustomScale(e.target.value)}
+                disabled={loading}
+                style={inputStyle}
+              />
+            )}
 
             <input
               type="number"
