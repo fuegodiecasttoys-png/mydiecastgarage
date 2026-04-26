@@ -349,7 +349,42 @@ export default function CapturePage() {
         setErrorMessage("Quantity must be at least 1.")
         return
       }
+      const { data: possibleMatches } = await supabase
+  .from("items")
+  .select("*")
+  .eq("user_id", user.id)
+  .eq("brand", brand.trim())
+  .eq("name", name.trim())
+  .eq("type", "packed")
+  .limit(5)
 
+if (possibleMatches && possibleMatches.length > 0) {
+  localStorage.setItem("matches", JSON.stringify(possibleMatches))
+  localStorage.setItem(
+    "newItem",
+    JSON.stringify({
+      user_id: user.id,
+      name: name.trim(),
+      brand: brand.trim(),
+      color: color.trim() || null,
+      scale: (scale === "Other" ? customScale : scale).trim() || null,
+      qty,
+      sth,
+      th,
+      chase,
+      main_number: mainNumber.trim() || null,
+      sub_number: subNumber.trim() || null,
+      series: series.trim() || null,
+      year: year.trim() || null,
+      location: location.trim() || null,
+      type: "packed",
+      notes: notes.trim() || null,
+    })
+  )
+
+  router.push("/matches")
+  return
+}
       const fileExt = file.name.split(".").pop() || "jpg"
       const fileName = `${user.id}/${Date.now()}.${fileExt}`
 
