@@ -385,25 +385,57 @@ export default function CapturePage() {
       const finalScale =
         scale === "Other" ? customScale.trim() || null : scale.trim() || null
 
-      const { error: itemError } = await supabase.from("items").insert({
-        user_id: user.id,
-        photo_url: publicUrl,
-        name: name.trim(),
-        brand: brand.trim(),
-        color: color.trim() || null,
-        scale: finalScale,
-        qty,
-        sth,
-        th,
-        chase,
-        main_number: mainNumber.trim() || null,
-        sub_number: subNumber.trim() || null,
-        series: series.trim() || null,
-        year: year.trim() || null,
-        location: location.trim() || null,
-        type: "packed",
-        notes: notes.trim() || null,
-      })
+      // 🔍 Check if item already exists
+const { data: existingItem } = await supabase
+  .from("items")
+  .select("*")
+  .eq("user_id", user.id)
+  .eq("name", name.trim())
+  .eq("brand", brand.trim())
+  .eq("color", color.trim() || null)
+  .eq("scale", finalScale)
+  .eq("type", "packed")
+  .maybeSingle()
+
+if (existingItem) {
+  const { error: updateError } = await supabase
+    .from("items")
+    .update({
+      qty: existingItem.qty + qty,
+    })
+    .eq("id", existingItem.id)
+
+  if (updateError) {
+    console.error(updateError)
+    setErrorMessage("Failed to update quantity.")
+    return
+  }
+
+  setMessage("Quantity updated ✅")
+  resetForm()
+  return
+}
+
+// 🆕 Insert new if not exists
+const { error: itemError } = await supabase.from("items").insert({
+  user_id: user.id,
+  photo_url: publicUrl,
+  name: name.trim(),
+  brand: brand.trim(),
+  color: color.trim() || null,
+  scale: finalScale,
+  qty,
+  sth,
+  th,
+  chase,
+  main_number: mainNumber.trim() || null,
+  sub_number: subNumber.trim() || null,
+  series: series.trim() || null,
+  year: year.trim() || null,
+  location: location.trim() || null,
+  type: "packed",
+  notes: notes.trim() || null,
+})
 
       if (itemError) {
         console.error(itemError)
