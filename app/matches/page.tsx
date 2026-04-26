@@ -45,16 +45,14 @@ export default function MatchesPage() {
       await countFreeCapture(newItem.user_id)
     }
 
+    localStorage.removeItem('matches')
+    localStorage.removeItem('newItem')
+
     router.push('/mygarage')
   }
 
   async function handleAddNew() {
     const newItem = JSON.parse(localStorage.getItem('newItem') || '{}')
-
-    await supabase.from('captures').insert({
-      user_id: newItem.user_id,
-      photo_url: newItem.photo_url,
-    })
 
     await supabase.from('items').insert(newItem)
 
@@ -62,26 +60,30 @@ export default function MatchesPage() {
       await countFreeCapture(newItem.user_id)
     }
 
+    localStorage.removeItem('matches')
+    localStorage.removeItem('newItem')
+
     router.push('/mygarage')
   }
 
   return (
     <div className="min-h-screen bg-[#020617] text-white p-4 space-y-4">
       <div className="flex justify-between items-center">
-  <button
-    onClick={() => router.back()}
-    className="text-white text-lg"
-  >
-    ⬅️
-  </button>
+        <button
+          onClick={() => router.back()}
+          className="text-white text-lg"
+        >
+          ⬅️
+        </button>
 
-  <button
-    onClick={() => router.push('/')}
-    className="text-white text-lg"
-  >
-    🏠
-  </button>
-</div>
+        <button
+          onClick={() => router.push('/')}
+          className="text-white text-lg"
+        >
+          🏠
+        </button>
+      </div>
+
       <h1 className="text-2xl font-bold text-center">Possible Matches</h1>
 
       <p className="text-sm text-gray-400 text-center">
