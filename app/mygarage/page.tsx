@@ -76,7 +76,13 @@ const cardStyle = {
   minHeight: 70, // 👈 clave (antes estaba grande)
 }
 
-const imageWrapStyle = { ...dvImageThumb }
+const imageWrapStyle = {
+  width: 60,
+  height: 60,
+  borderRadius: 10,
+  overflow: "hidden",
+  flexShrink: 0,
+}
 
 function escapeCsvCell(value: string | number | boolean | null | undefined) {
   if (value === null || value === undefined) return ""
