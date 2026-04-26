@@ -225,14 +225,16 @@ export default function CapturePage() {
       }
 
       // 🔍 Check if item already exists
-const { data: existingItem } = await supabase
+const { data } = await supabase
   .from("items")
   .select("*")
   .eq("user_id", user.id)
   .eq("brand", brand.trim())
   .eq("name", name.trim())
   .eq("type", "loose")
-  .maybeSingle()
+  .limit(1)
+
+const existingItem = data?.[0] as any
 
 if (existingItem) {
   const { error: updateError } = await supabase
