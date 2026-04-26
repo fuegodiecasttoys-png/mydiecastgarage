@@ -429,7 +429,7 @@ const { data: existingItem } = await supabase
   .eq("user_id", user.id)
   .eq("brand", brand.trim())
   .eq("name", name.trim())
-  .eq("type", "loose")
+  .eq("type", "packed")
   .maybeSingle()
 
 if (existingItem) {
