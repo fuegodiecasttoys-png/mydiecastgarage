@@ -213,16 +213,56 @@ export default function MyGarage() {
             }}
           />
 
-          <h1
-            style={{
-              fontSize: 28,
-              margin: "10px 0 4px 0",
-              fontWeight: 800,
-              color: t.textPrimary,
-            }}
-          >
-            My Garage
-          </h1>
+          <div
+  style={{
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  }}
+>
+  <h1
+    style={{
+      fontSize: 28,
+      margin: "10px 0 4px 0",
+      fontWeight: 800,
+      color: t.textPrimary,
+    }}
+  >
+    My Garage
+  </h1>
+
+  <div style={{ display: 'flex', gap: 8 }}>
+    <button
+      onClick={() => router.push('/packed')}
+      style={{
+        padding: '6px 10px',
+        borderRadius: 10,
+        background: '#f97316',
+        color: 'black',
+        border: 'none',
+        fontSize: 12,
+        fontWeight: 'bold',
+      }}
+    >
+      📦
+    </button>
+
+    <button
+      onClick={() => router.push('/loose')}
+      style={{
+        padding: '6px 10px',
+        borderRadius: 10,
+        background: '#0ea5e9',
+        color: 'white',
+        border: 'none',
+        fontSize: 12,
+        fontWeight: 'bold',
+      }}
+    >
+      🚗
+    </button>
+  </div>
+</div>
 
           <div
             style={{
