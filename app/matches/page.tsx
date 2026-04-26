@@ -43,6 +43,15 @@ router.push('/mygarage')
 
   async function handleAddNew() {
   const newItem = JSON.parse(localStorage.getItem('newItem') || '{}')
+  async function handleAddNew() {
+  const newItem = JSON.parse(localStorage.getItem('newItem') || '{}')
+
+  console.log('NEW ITEM PHOTO:', newItem.photo_url) // 👈 agrega esto
+
+  await supabase.from('items').insert(newItem)
+
+  router.push('/mygarage')
+}
 
   // 🔥 guardar capture (foto)
   await supabase.from('captures').insert({
