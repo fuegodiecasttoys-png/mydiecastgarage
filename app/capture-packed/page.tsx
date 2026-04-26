@@ -412,8 +412,9 @@ if (existingItem) {
   }
 
   setMessage("Quantity updated ✅")
-  resetForm()
-  return
+resetForm()
+router.push("/mygarage")
+return
 }
 
 // 🆕 Insert new if not exists
