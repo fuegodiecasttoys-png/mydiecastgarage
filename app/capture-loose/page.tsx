@@ -168,6 +168,43 @@ export default function CapturePage() {
         return
       }
 
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("plan, monthly_captures, last_capture_reset")
+        .eq("id", user.id)
+        .single()
+
+      if (profile?.plan !== "pro") {
+        const today = new Date()
+        const lastReset = profile?.last_capture_reset
+          ? new Date(profile.last_capture_reset)
+          : null
+
+        const isNewMonth =
+          !lastReset ||
+          lastReset.getMonth() !== today.getMonth() ||
+          lastReset.getFullYear() !== today.getFullYear()
+
+        let currentCaptures = profile?.monthly_captures || 0
+
+        if (isNewMonth) {
+          currentCaptures = 0
+
+          await supabase
+            .from("profiles")
+            .update({
+              monthly_captures: 0,
+              last_capture_reset: today.toISOString(),
+            })
+            .eq("id", user.id)
+        }
+
+        if (currentCaptures >= 30) {
+          alert("Free plan limit reached (30 per month). Upgrade to Pro 🚀")
+          return
+        }
+      }
+
       if (!file) {
         setErrorMessage("Please select a photo first.")
         return
@@ -285,6 +322,16 @@ export default function CapturePage() {
         console.error(itemError)
         setErrorMessage("Image uploaded, but failed to create diecast item.")
         return
+      }
+
+      if (profile?.plan !== "pro") {
+        await supabase
+          .from("profiles")
+          .update({
+            monthly_captures: (profile?.monthly_captures || 0) + 1,
+            last_capture_reset: new Date().toISOString(),
+          })
+          .eq("id", user.id)
       }
 
       setMessage("Diecast saved successfully ✅")

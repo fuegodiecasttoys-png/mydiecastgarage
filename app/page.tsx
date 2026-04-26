@@ -275,7 +275,7 @@ export default function Home() {
               textAlign: "center",
             }}
           >
-            {(profile?.monthly_captures || 0)} / 20 captures used
+            {(profile?.monthly_captures || 0)} / 30 captures used
           </div>
         ) : null}
 

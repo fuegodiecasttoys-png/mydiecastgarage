@@ -365,8 +365,8 @@ if (profile?.plan !== "pro") {
       .eq("id", user.id)
   }
 
-  if (currentCaptures >= 20) {
-    alert("Free plan limit reached (20 per month). Upgrade to Pro 🚀")
+  if (currentCaptures >= 30) {
+    alert("Free plan limit reached (30 per month). Upgrade to Pro 🚀")
     return
   }
 }
