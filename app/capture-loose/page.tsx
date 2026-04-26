@@ -229,8 +229,8 @@ const { data } = await supabase
   .from("items")
   .select("*")
   .eq("user_id", user.id)
-  .ilike("brand", brand.trim())
-  .ilike("name", name.trim())
+  .ilike("brand", `%${brand.trim()}%`)
+  .ilike("name", `%${name.trim()}%`)
   .eq("type", "loose")
   .limit(1)
 
