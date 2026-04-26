@@ -355,174 +355,168 @@ export default function MyGarage() {
         )}
 
         {!loading && paginatedItems.length > 0 && (
-          <div style={{ display: "grid", gap: 16 }}>
-            {paginatedItems.map((item) => (
-              <Link
-                key={item.id}
-                href={`/car/${item.id}`}
+  <div style={{ display: "grid", gap: 8 }}>
+    {paginatedItems.map((item) => (
+      <Link
+        key={item.id}
+        href={`/car/${item.id}`}
+        style={{
+          textDecoration: "none",
+          color: "inherit",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 12,
+            padding: 8,
+            borderRadius: 14,
+            background: "#0f172a",
+            border: "1px solid rgba(255,255,255,0.10)",
+          }}
+        >
+          {item.photo_url ? (
+            <img
+              src={item.photo_url}
+              alt={item.name ?? "Diecast photo"}
+              style={{
+                width: 56,
+                height: 56,
+                borderRadius: 10,
+                objectFit: "cover",
+                flexShrink: 0,
+              }}
+            />
+          ) : (
+            <div
+              style={{
+                width: 56,
+                height: 56,
+                borderRadius: 10,
+                border: "1px solid rgba(255,255,255,0.10)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: 11,
+                color: t.textSecondary,
+                flexShrink: 0,
+              }}
+            >
+              No photo
+            </div>
+          )}
+
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div
+              style={{
+                fontSize: 14,
+                fontWeight: 800,
+                color: t.textPrimary,
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {item.name ?? "Unnamed model"}
+            </div>
+
+            <div
+              style={{
+                fontSize: 12,
+                color: t.textSecondary,
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                marginTop: 2,
+              }}
+            >
+              {item.brand ?? "-"} • {item.color ?? "-"} • {item.scale ?? "-"} • Qty{" "}
+              {item.qty ?? 1}
+            </div>
+
+            <div
+              style={{
+                display: "flex",
+                gap: 6,
+                marginTop: 6,
+                flexWrap: "wrap",
+                alignItems: "center",
+              }}
+            >
+              <span
                 style={{
-                  textDecoration: "none",
-                  color: "inherit",
+                  background:
+                    item.type === "packed"
+                      ? "rgba(255, 122, 24, 0.10)"
+                      : "rgba(255,255,255,0.04)",
+                  color: item.type === "packed" ? t.textPrimary : t.textSecondary,
+                  padding: "2px 8px",
+                  borderRadius: 7,
+                  fontSize: 11,
+                  border:
+                    item.type === "packed"
+                      ? "1px solid rgba(255, 122, 24, 0.30)"
+                      : `1px solid ${t.borderSubtle}`,
                 }}
               >
-                <div style={{ marginBottom: 6 }}>
-                  {item.type === "packed" ? (
-                    <span
-                      style={{
-                        background: "rgba(255, 122, 24, 0.1)",
-                        color: t.textPrimary,
-                        padding: "4px 10px",
-                        borderRadius: 8,
-                        fontSize: 12,
-                        border: "1px solid rgba(255, 122, 24, 0.3)",
-                      }}
-                    >
-                      📦 Packed
-                    </span>
-                  ) : (
-                    <span
-                      style={{
-                        background: "rgba(255,255,255,0.04)",
-                        color: t.textSecondary,
-                        padding: "4px 10px",
-                        borderRadius: 8,
-                        fontSize: 12,
-                        border: `1px solid ${t.borderSubtle}`,
-                      }}
-                    >
-                      Loose
-                    </span>
-                  )}
-                </div>
+                {item.type === "packed" ? "📦 Packed" : "Loose"}
+              </span>
 
-                <div style={cardStyle}>
-                  <div style={imageWrapStyle}>
-                    {item.photo_url ? (
-                      <img
-                        src={item.photo_url}
-                        alt={item.name ?? "Diecast photo"}
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          objectFit: "cover",
-                          display: "block",
-                        }}
-                      />
-                    ) : (
-                      <div
-                        style={{
-                          fontSize: 12,
-                          opacity: 0.5,
-                        }}
-                      >
-                        No photo
-                      </div>
-                    )}
-                  </div>
+              {item.sth && (
+                <span
+                  style={{
+                    background: "rgba(255, 200, 90, 0.12)",
+                    color: t.textPrimary,
+                    border: "1px solid rgba(255, 200, 100, 0.35)",
+                    padding: "2px 8px",
+                    borderRadius: 7,
+                    fontSize: 11,
+                    fontWeight: 700,
+                  }}
+                >
+                  🔥 STH
+                </span>
+              )}
 
-                  <div style={{ minWidth: 0, flex: 1 }}>
-                    <div
-                      style={{
-                        fontSize: 11,
-                        opacity: 0.7,
-                        textTransform: "uppercase",
-                        fontWeight: 600,
-                        letterSpacing: "0.04em",
-                        marginBottom: 4,
-                      }}
-                    >
-                      {item.brand ?? "Unknown"} • {item.type ?? "no-type"}
-                    </div>
+              {item.th && (
+                <span
+                  style={{
+                    background: "rgba(255, 122, 24, 0.14)",
+                    color: t.textPrimary,
+                    border: "1px solid rgba(255, 122, 24, 0.3)",
+                    padding: "2px 8px",
+                    borderRadius: 7,
+                    fontSize: 11,
+                    fontWeight: 700,
+                  }}
+                >
+                  TH
+                </span>
+              )}
 
-                    <div
-                      style={{
-                        fontSize: 16,
-                        fontWeight: 800,
-                        lineHeight: 1.15,
-                        marginBottom: 6,
-                        wordBreak: "break-word",
-                        paddingRight: 72,
-                        color: t.textPrimary,
-                        letterSpacing: "-0.02em",
-                      }}
-                    >
-                      {item.name ?? "Unnamed model"}
-                    </div>
-
-                    <div
-                      style={{
-                        fontSize: 13,
-                        opacity: 0.85,
-                        fontWeight: 500,
-                      }}
-                    >
-                      {item.color ?? "-"}
-                    </div>
-
-                    <div
-                      style={{
-                        display: "flex",
-                        gap: 6,
-                        marginTop: 6,
-                        flexWrap: "wrap",
-                      }}
-                    >
-                      {item.sth && (
-                        <span
-                          style={{
-                            background: "rgba(255, 200, 90, 0.12)",
-                            color: t.textPrimary,
-                            border: "1px solid rgba(255, 200, 100, 0.35)",
-                            padding: "2px 8px",
-                            borderRadius: 6,
-                            fontSize: 11,
-                            fontWeight: 700,
-                          }}
-                        >
-                          🔥 STH
-                        </span>
-                      )}
-
-                      {item.th && (
-                        <span
-                          style={{
-                            background: "rgba(255, 122, 24, 0.14)",
-                            color: t.textPrimary,
-                            border: "1px solid rgba(255, 122, 24, 0.3)",
-                            padding: "2px 8px",
-                            borderRadius: 6,
-                            fontSize: 11,
-                            fontWeight: 700,
-                          }}
-                        >
-                          TH
-                        </span>
-                      )}
-
-                      {item.chase && (
-                        <span
-                          style={{
-                            background: "rgba(200, 50, 70, 0.2)",
-                            color: "#F5F7FA",
-                            border: "1px solid rgba(200, 70, 90, 0.4)",
-                            padding: "2px 8px",
-                            borderRadius: 6,
-                            fontSize: 11,
-                            fontWeight: 700,
-                          }}
-                        >
-                          Chase
-                        </span>
-                      )}
-                    </div>
-                  </div>
-
-                  <span style={scaleBadgeStyle}>{item.scale ?? "-"}</span>
-                </div>
-              </Link>
-            ))}
+              {item.chase && (
+                <span
+                  style={{
+                    background: "rgba(200, 50, 70, 0.2)",
+                    color: "#F5F7FA",
+                    border: "1px solid rgba(200, 70, 90, 0.4)",
+                    padding: "2px 8px",
+                    borderRadius: 7,
+                    fontSize: 11,
+                    fontWeight: 700,
+                  }}
+                >
+                  Chase
+                </span>
+              )}
+            </div>
           </div>
-        )}
+        </div>
+      </Link>
+    ))}
+  </div>
+)}
 
         {!loading && items.length === 0 && (
           <div
