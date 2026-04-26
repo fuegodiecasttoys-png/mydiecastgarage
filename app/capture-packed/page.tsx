@@ -385,6 +385,7 @@ if (possibleMatches && possibleMatches.length > 0) {
     "newItem",
     JSON.stringify({
       user_id: user.id,
+      photo_url: publicUrl,
       name: name.trim(),
       brand: brand.trim(),
       color: color.trim() || null,
