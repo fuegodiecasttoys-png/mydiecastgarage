@@ -109,6 +109,8 @@ export default function CapturePage() {
         data: { user },
       } = await supabase.auth.getUser()
 
+      
+
       if (!user) {
         router.replace("/login")
         return
@@ -324,12 +326,50 @@ export default function CapturePage() {
       const {
         data: { user },
       } = await supabase.auth.getUser()
+       
+      
 
       if (!user) {
         setErrorMessage("You must be logged in.")
         return
       }
+      // 🔒 CHECK PLAN
+const { data: profile } = await supabase
+  .from("profiles")
+  .select("plan, monthly_captures, last_capture_reset")
+  .eq("id", user.id)
+  .single()
 
+if (profile?.plan !== "pro") {
+  const today = new Date()
+  const lastReset = profile?.last_capture_reset
+    ? new Date(profile.last_capture_reset)
+    : null
+
+  const isNewMonth =
+    !lastReset ||
+    lastReset.getMonth() !== today.getMonth() ||
+    lastReset.getFullYear() !== today.getFullYear()
+
+  let currentCaptures = profile?.monthly_captures || 0
+
+  if (isNewMonth) {
+    currentCaptures = 0
+
+    await supabase
+      .from("profiles")
+      .update({
+        monthly_captures: 0,
+        last_capture_reset: today.toISOString(),
+      })
+      .eq("id", user.id)
+  }
+
+  if (currentCaptures >= 20) {
+    alert("Free plan limit reached (20 per month). Upgrade to Pro 🚀")
+    return
+  }
+}
       if (!file) {
         setErrorMessage("Please select a photo first.")
         return
@@ -479,8 +519,18 @@ const { error: itemError } = await supabase.from("items").insert({
         return
       }
 
-      setMessage("Diecast saved successfully ✅")
-      resetForm()
+      if (profile?.plan !== "pro") {
+  await supabase
+    .from("profiles")
+    .update({
+      monthly_captures: (profile?.monthly_captures || 0) + 1,
+      last_capture_reset: new Date().toISOString(),
+    })
+    .eq("id", user.id)
+}
+
+setMessage("Diecast saved successfully ✅")
+resetForm()
     } catch (err) {
       console.error(err)
       setErrorMessage("Unexpected error.")
