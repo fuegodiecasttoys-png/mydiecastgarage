@@ -13,6 +13,24 @@ export default function MatchesPage() {
     if (storedMatches) setMatches(JSON.parse(storedMatches))
   }, [])
 
+  async function countFreeCapture(userId: string) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('plan, monthly_captures, last_capture_reset')
+      .eq('id', userId)
+      .single()
+
+    if (profile?.plan === 'pro') return
+
+    await supabase
+      .from('profiles')
+      .update({
+        monthly_captures: (profile?.monthly_captures || 0) + 1,
+        last_capture_reset: new Date().toISOString(),
+      })
+      .eq('id', userId)
+  }
+
   async function handleUpdate(item: any) {
     const newItem = JSON.parse(localStorage.getItem('newItem') || '{}')
 
@@ -22,6 +40,10 @@ export default function MatchesPage() {
         qty: (item.qty || 0) + (newItem.qty || 1),
       })
       .eq('id', item.id)
+
+    if (newItem.user_id) {
+      await countFreeCapture(newItem.user_id)
+    }
 
     router.push('/mygarage')
   }
@@ -35,6 +57,10 @@ export default function MatchesPage() {
     })
 
     await supabase.from('items').insert(newItem)
+
+    if (newItem.user_id) {
+      await countFreeCapture(newItem.user_id)
+    }
 
     router.push('/mygarage')
   }
