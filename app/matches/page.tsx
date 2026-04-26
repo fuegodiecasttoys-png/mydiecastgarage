@@ -29,12 +29,19 @@ export default function MatchesPage() {
   }
 
   async function handleAddNew() {
-    const newItem = JSON.parse(localStorage.getItem('newItem') || '{}')
+  const newItem = JSON.parse(localStorage.getItem('newItem') || '{}')
 
-    await supabase.from('items').insert(newItem)
+  // 🔥 guardar capture (foto)
+  await supabase.from('captures').insert({
+    user_id: newItem.user_id,
+    photo_url: newItem.photo_url,
+  })
 
-    router.push('/mygarage')
-  }
+  // 🔥 guardar item
+  await supabase.from('items').insert(newItem)
+
+  router.push('/mygarage')
+}
 
   return (
     <div className="min-h-screen bg-[#020617] text-white p-4 space-y-4">
