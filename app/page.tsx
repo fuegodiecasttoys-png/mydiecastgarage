@@ -277,38 +277,6 @@ export default function Home() {
           </div>
         ) : null}
 
-        {profile?.plan !== "pro" && (
-          <button
-            onClick={async () => {
-              const {
-                data: { user },
-              } = await supabase.auth.getUser();
-
-              if (!user) return;
-
-              const { error } = await supabase
-                .from("profiles")
-                .update({ plan: "pro" })
-                .eq("user_id", user.id);
-
-              if (error) {
-                console.error(error);
-                alert("Error activating Pro");
-                return;
-              }
-
-              alert("Pro activated 🚀");
-              window.location.href = "/";
-            }}
-            className="mt-7 w-full rounded-2xl bg-orange-500 py-4 font-bold text-black"
-            style={{ marginBottom: 12 }}
-          >
-            Upgrade to Pro
-          </button>
-        )}
-
-      
-
         {garageCountError ? (
           <div
             style={{
