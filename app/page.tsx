@@ -279,6 +279,24 @@ export default function Home() {
           </div>
         ) : null}
 
+        {profile?.plan !== "pro" && (
+  <button
+    onClick={() => router.push("/pro")}
+    style={{
+      width: "100%",
+      padding: "10px",
+      borderRadius: 12,
+      border: "1px solid rgba(255,122,24,0.4)",
+      color: "#f97316",
+      background: "transparent",
+      fontWeight: 700,
+      marginBottom: 12,
+    }}
+  >
+    Upgrade to Pro 🚀
+  </button>
+)}
+
         {garageCountError ? (
           <div
             style={{
