@@ -112,7 +112,7 @@ export default function Home() {
       const { data: profileData } = await supabase
         .from("profiles")
         .select("plan, monthly_captures")
-        .eq("id", data.user.id)
+        .eq("user_id", data.user.id)
         .single();
 
       setProfile(profileData);
