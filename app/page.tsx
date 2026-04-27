@@ -281,20 +281,26 @@ export default function Home() {
 
         {profile?.plan !== "pro" && (
   <button
-    onClick={() => router.push("/pro")}
-    style={{
-      width: "100%",
-      padding: "10px",
-      borderRadius: 12,
-      border: "1px solid rgba(255,122,24,0.4)",
-      color: "#f97316",
-      background: "transparent",
-      fontWeight: 700,
-      marginBottom: 12,
-    }}
-  >
-    Upgrade to Pro 🚀
-  </button>
+  onClick={async () => {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
+
+    if (!user) return
+
+    await supabase
+      .from("profiles")
+      .update({ plan: "pro" })
+      .eq("user_id", user.id)
+
+    alert("Pro activated 🚀")
+
+    window.location.href = "/"
+  }}
+  className="mt-7 w-full rounded-2xl bg-orange-500 py-4 font-bold text-black"
+>
+  Upgrade to Pro
+</button>
 )}
 
         {garageCountError ? (
