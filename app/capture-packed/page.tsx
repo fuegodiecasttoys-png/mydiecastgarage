@@ -256,7 +256,7 @@ export default function CapturePage() {
       }
 
       if (currentAiScans >= 50) {
-        alert("You used your 50 AI scans this month. AI scan packs coming soon 🚀")
+        alert("You used your 50 Model scans this month 🚀")
         return
       }
 
