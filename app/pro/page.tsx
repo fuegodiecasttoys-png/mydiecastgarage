@@ -39,11 +39,36 @@ export default function ProPage() {
             <p>✅ AI scan packs coming soon: 50 for $0.99</p>
           </div>
 
+          \
           <button
-            className="mt-7 w-full rounded-2xl bg-orange-500 py-4 font-bold text-black"
-          >
-            Upgrade to Pro
-          </button>
+  onClick={async () => {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
+
+    if (!user) {
+      alert("No user")
+      return
+    }
+
+    const { error } = await supabase
+      .from("profiles")
+      .update({ plan: "pro" })
+      .eq("user_id", user.id)
+
+    if (error) {
+      console.error(error)
+      alert("Error upgrading")
+      return
+    }
+
+    alert("Pro activated 🚀")
+    window.location.href = "/"
+  }}
+  className="mt-7 w-full rounded-2xl bg-orange-500 py-4 font-bold text-black"
+>
+  Upgrade to Pro
+</button>
 
           <p className="mt-3 text-center text-xs text-gray-500">
             Payment setup coming soon. For now, Pro access is activated manually.
