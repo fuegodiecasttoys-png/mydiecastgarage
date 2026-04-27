@@ -94,6 +94,7 @@ export default function CapturePage() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [sessionChecked, setSessionChecked] = useState(false)
   const [isPro, setIsPro] = useState(false)
+  const [aiScansUsed, setAiScansUsed] = useState(0)
 
   useEffect(() => {
     async function init() {
@@ -114,22 +115,23 @@ export default function CapturePage() {
 
   useEffect(() => {
     async function checkPlan() {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
 
-      if (!user) return
+  if (!user) return
 
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("plan")
-        .eq("user_id", user.id)
-        .single()
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("plan, monthly_ai_scans")
+    .eq("user_id", user.id)
+    .single()
 
-      if (profile?.plan === "pro") {
-        setIsPro(true)
-      }
-    }
+  if (profile?.plan === "pro") {
+    setIsPro(true)
+    setAiScansUsed(profile?.monthly_ai_scans || 0)
+  }
+}
 
     void checkPlan()
   }, [])
