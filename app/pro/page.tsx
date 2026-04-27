@@ -1,8 +1,6 @@
 "use client"
 
 import Link from "next/link"
-import { supabase } from "../lib/supabaseClient"
-
 
 export default function ProPage() {
   return (
@@ -22,7 +20,7 @@ export default function ProPage() {
           </h1>
 
           <p className="mt-3 text-gray-300">
-            Built for collectors who want more captures, AI help, exports, and no limits.
+            Built for collectors who want more captures, model scan help, exports, and no limits.
           </p>
 
           <div className="mt-6 rounded-2xl bg-black/30 p-5 text-center">
@@ -36,42 +34,35 @@ export default function ProPage() {
             <p>✅ CSV export enabled</p>
             <p>✅ Unlimited favorites</p>
             <p>✅ Unlimited wishlist</p>
-            <p>✅ AI scan packs coming soon: 50 for $0.99</p>
           </div>
 
-          \
+          {/* 💥 SCAN PACK */}
+          <div className="mt-6 rounded-2xl border border-white/10 bg-white/5 p-5 text-center">
+            <p className="text-sm text-gray-400">Need more scans?</p>
+            <p className="mt-2 text-3xl font-bold">$0.99</p>
+            <p className="text-sm text-gray-400">for 50 model scans</p>
+          </div>
+
           <button
-  onClick={async () => {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
+            onClick={() => {
+              alert("Payment setup coming soon.")
+            }}
+            className="mt-7 w-full rounded-2xl bg-orange-500 py-4 font-bold text-black"
+          >
+            Subscribe to Pro
+          </button>
 
-    if (!user) {
-      alert("No user")
-      return
-    }
-
-    const { error } = await supabase
-      .from("profiles")
-      .update({ plan: "pro" })
-      .eq("user_id", user.id)
-
-    if (error) {
-      console.error(error)
-      alert("Error upgrading")
-      return
-    }
-
-    alert("Pro activated 🚀")
-    window.location.href = "/"
-  }}
-  className="mt-7 w-full rounded-2xl bg-orange-500 py-4 font-bold text-black"
->
-  Upgrade to Pro
-</button>
+          <button
+            onClick={() => {
+              alert("Scan packs coming soon.")
+            }}
+            className="mt-3 w-full rounded-2xl border border-white/20 py-3 font-semibold text-white"
+          >
+            Buy Scan Pack ($0.99)
+          </button>
 
           <p className="mt-3 text-center text-xs text-gray-500">
-            Payment setup coming soon. For now, Pro access is activated manually.
+            Secure payment setup coming soon.
           </p>
         </div>
 
