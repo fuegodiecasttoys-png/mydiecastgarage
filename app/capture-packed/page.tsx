@@ -419,7 +419,20 @@ if (profile?.plan !== "pro") {
   .eq("type", "packed")
   .limit(5)
 
-if (possibleMatches && possibleMatches.length > 0) {
+  if (possibleMatches && possibleMatches.length > 0) {
+
+  // ✅ INSERT CAPTURE antes de ir a matches
+  const { error: captureError } = await supabase.from("captures").insert({
+    user_id: user.id,
+    photo_url: publicUrl,
+  })
+
+  if (captureError) {
+    console.error(captureError)
+    setErrorMessage("Image uploaded, but failed to save capture record.")
+    return
+  }
+
   localStorage.setItem("matches", JSON.stringify(possibleMatches))
   localStorage.setItem(
     "newItem",
@@ -447,17 +460,6 @@ if (possibleMatches && possibleMatches.length > 0) {
   router.push("/matches")
   return
 }
-
-      const { error: captureError } = await supabase.from("captures").insert({
-        user_id: user.id,
-        photo_url: publicUrl,
-      })
-
-      if (captureError) {
-        console.error(captureError)
-        setErrorMessage("Image uploaded, but failed to save capture record.")
-        return
-      }
 
       const finalScale =
         scale === "Other" ? customScale.trim() || null : scale.trim() || null
