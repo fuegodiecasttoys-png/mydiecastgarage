@@ -363,13 +363,17 @@ export default function CapturePage() {
       if (data.main_number) setMainNumber(data.main_number)
       if (data.sub_number) setSubNumber(data.sub_number)
 
-      await supabase
+      const { error: aiScanUpdateError } = await supabase
         .from("profiles")
         .update({
           monthly_ai_scans: currentAiScans + 1,
           last_ai_scan_reset: today.toISOString(),
         })
         .eq("user_id", user.id)
+
+      if (!aiScanUpdateError) {
+        setAiScansUsed(currentAiScans + 1)
+      }
 
       console.log("[analyze-model] client form state after apply", {
         brand: data.brand ?? "(unchanged)",
@@ -720,6 +724,24 @@ export default function CapturePage() {
               Take pic
             </button>
           </div>
+
+          {isPro ? (
+            <div
+              style={{
+                marginBottom: 8,
+                padding: "8px 10px",
+                borderRadius: 12,
+                background: "rgba(255, 122, 24, 0.08)",
+                border: "1px solid rgba(255, 122, 24, 0.25)",
+                color: t.textSecondary,
+                fontSize: 12,
+                fontWeight: 700,
+                textAlign: "center",
+              }}
+            >
+              AI scans: {aiScansUsed} / 50
+            </div>
+          ) : null}
 
           <button
             type="button"
