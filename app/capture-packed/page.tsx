@@ -36,19 +36,13 @@ const SCALE_OPTIONS = [
 ]
 
 const pageStyle: CSSProperties = dvAppPageShell
-
 const containerStyle: CSSProperties = dvDashboardInner
-
 const inputStyle: CSSProperties = dvInput
-
 const buttonStyle: CSSProperties = dvPrimaryButton
-
 const disabledButtonStyle: CSSProperties = dvPrimaryButtonDisabled
 
-/** Post-compression ceiling for multipart body (Vercel function limit); leave headroom below 4.5 MB. */
 const MAX_ANALYZE_UPLOAD_BYTES = Math.floor(3.5 * 1024 * 1024)
 
-/** Prefer server { error: string }; else first 500 chars of body; else status line. */
 function messageFromAnalyzeFailure(res: Response, bodyText: string): string {
   try {
     const parsed = JSON.parse(bodyText) as unknown
@@ -56,9 +50,7 @@ function messageFromAnalyzeFailure(res: Response, bodyText: string): string {
       const err = (parsed as { error?: unknown }).error
       if (typeof err === "string" && err.trim()) return err.trim()
     }
-  } catch {
-    /* use fallback */
-  }
+  } catch {}
   const t = bodyText.trim()
   if (t) return t.length > 500 ? `${t.slice(0, 500)}…` : t
   return `Analyze request failed (${res.status})`
@@ -100,16 +92,14 @@ export default function CapturePage() {
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState<string | null>(null)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
-
   const [sessionChecked, setSessionChecked] = useState(false)
+  const [isPro, setIsPro] = useState(false)
 
   useEffect(() => {
     async function init() {
       const {
         data: { user },
       } = await supabase.auth.getUser()
-
-      
 
       if (!user) {
         router.replace("/login")
@@ -121,6 +111,28 @@ export default function CapturePage() {
 
     void init()
   }, [router])
+
+  useEffect(() => {
+    async function checkPlan() {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+
+      if (!user) return
+
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("plan")
+        .eq("user_id", user.id)
+        .single()
+
+      if (profile?.plan === "pro") {
+        setIsPro(true)
+      }
+    }
+
+    void checkPlan()
+  }, [])
 
   useEffect(() => {
     return () => {
@@ -197,6 +209,55 @@ export default function CapturePage() {
       setMessage(null)
       setErrorMessage(null)
 
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+
+      if (!user) {
+        setErrorMessage("You must be logged in.")
+        return
+      }
+
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("plan, monthly_ai_scans, last_ai_scan_reset")
+        .eq("user_id", user.id)
+        .single()
+
+      if (profile?.plan !== "pro") {
+        router.push("/pro")
+        return
+      }
+
+      const today = new Date()
+      const lastReset = profile?.last_ai_scan_reset
+        ? new Date(profile.last_ai_scan_reset)
+        : null
+
+      const isNewMonth =
+        !lastReset ||
+        lastReset.getMonth() !== today.getMonth() ||
+        lastReset.getFullYear() !== today.getFullYear()
+
+      let currentAiScans = profile?.monthly_ai_scans || 0
+
+      if (isNewMonth) {
+        currentAiScans = 0
+
+        await supabase
+          .from("profiles")
+          .update({
+            monthly_ai_scans: 0,
+            last_ai_scan_reset: today.toISOString(),
+          })
+          .eq("user_id", user.id)
+      }
+
+      if (currentAiScans >= 50) {
+        alert("You used your 50 AI scans this month. AI scan packs coming soon 🚀")
+        return
+      }
+
       console.log("[analyze-model] client original image", {
         fileName: file.name,
         fileType: file.type,
@@ -214,9 +275,7 @@ export default function CapturePage() {
       })
 
       if (compressedForAnalyze.size > MAX_ANALYZE_UPLOAD_BYTES) {
-        alert(
-          "Image is still too large. Please choose a smaller photo."
-        )
+        alert("Image is still too large. Please choose a smaller photo.")
         return
       }
 
@@ -228,7 +287,6 @@ export default function CapturePage() {
           : `req_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`
       console.log("[analyze-model] after reqId", reqId)
 
-      /** Same-origin absolute URL — relative "/" can mis-resolve in some embedded/mobile contexts. */
       const analyzeEndpoint = new URL(
         "/api/analyze-model",
         window.location.origin
@@ -280,6 +338,7 @@ export default function CapturePage() {
         sub_number?: string | null
         error?: string
       }
+
       try {
         data = JSON.parse(responseText) as typeof data
       } catch {
@@ -301,6 +360,14 @@ export default function CapturePage() {
       if (data.series) setSeries(data.series)
       if (data.main_number) setMainNumber(data.main_number)
       if (data.sub_number) setSubNumber(data.sub_number)
+
+      await supabase
+        .from("profiles")
+        .update({
+          monthly_ai_scans: currentAiScans + 1,
+          last_ai_scan_reset: today.toISOString(),
+        })
+        .eq("user_id", user.id)
 
       console.log("[analyze-model] client form state after apply", {
         brand: data.brand ?? "(unchanged)",
@@ -326,50 +393,49 @@ export default function CapturePage() {
       const {
         data: { user },
       } = await supabase.auth.getUser()
-       
-      
 
       if (!user) {
         setErrorMessage("You must be logged in.")
         return
       }
-      // 🔒 CHECK PLAN
-const { data: profile } = await supabase
-  .from("profiles")
-  .select("plan, monthly_captures, last_capture_reset")
-  .eq("user_id", user.id)
-  .single()
 
-if (profile?.plan !== "pro") {
-  const today = new Date()
-  const lastReset = profile?.last_capture_reset
-    ? new Date(profile.last_capture_reset)
-    : null
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("plan, monthly_captures, last_capture_reset")
+        .eq("user_id", user.id)
+        .single()
 
-  const isNewMonth =
-    !lastReset ||
-    lastReset.getMonth() !== today.getMonth() ||
-    lastReset.getFullYear() !== today.getFullYear()
+      if (profile?.plan !== "pro") {
+        const today = new Date()
+        const lastReset = profile?.last_capture_reset
+          ? new Date(profile.last_capture_reset)
+          : null
 
-  let currentCaptures = profile?.monthly_captures || 0
+        const isNewMonth =
+          !lastReset ||
+          lastReset.getMonth() !== today.getMonth() ||
+          lastReset.getFullYear() !== today.getFullYear()
 
-  if (isNewMonth) {
-    currentCaptures = 0
+        let currentCaptures = profile?.monthly_captures || 0
 
-    await supabase
-      .from("profiles")
-      .update({
-        monthly_captures: 0,
-        last_capture_reset: today.toISOString(),
-      })
-      .eq("user_id", user.id)
-  }
+        if (isNewMonth) {
+          currentCaptures = 0
 
-  if (currentCaptures >= 30) {
-    alert("Free plan limit reached (30 per month). Upgrade to Pro 🚀")
-    return
-  }
-}
+          await supabase
+            .from("profiles")
+            .update({
+              monthly_captures: 0,
+              last_capture_reset: today.toISOString(),
+            })
+            .eq("user_id", user.id)
+        }
+
+        if (currentCaptures >= 30) {
+          alert("Free plan limit reached (30 per month). Upgrade to Pro 🚀")
+          return
+        }
+      }
+
       if (!file) {
         setErrorMessage("Please select a photo first.")
         return
@@ -389,7 +455,7 @@ if (profile?.plan !== "pro") {
         setErrorMessage("Quantity must be at least 1.")
         return
       }
-      
+
       const fileExt = file.name.split(".").pop() || "jpg"
       const fileName = `${user.id}/${Date.now()}.${fileExt}`
 
@@ -410,110 +476,107 @@ if (profile?.plan !== "pro") {
         .getPublicUrl(fileName)
 
       const publicUrl = publicUrlData.publicUrl
+
       const { data: possibleMatches } = await supabase
-  .from("items")
-  .select("*")
-  .eq("user_id", user.id)
-  .eq("brand", brand.trim())
-  .eq("name", name.trim())
-  .eq("type", "packed")
-  .limit(5)
+        .from("items")
+        .select("*")
+        .eq("user_id", user.id)
+        .eq("brand", brand.trim())
+        .eq("name", name.trim())
+        .eq("type", "packed")
+        .limit(5)
 
-  if (possibleMatches && possibleMatches.length > 0) {
+      if (possibleMatches && possibleMatches.length > 0) {
+        const { error: captureError } = await supabase.from("captures").insert({
+          user_id: user.id,
+          photo_url: publicUrl,
+        })
 
-  // ✅ INSERT CAPTURE antes de ir a matches
-  const { error: captureError } = await supabase.from("captures").insert({
-    user_id: user.id,
-    photo_url: publicUrl,
-  })
+        if (captureError) {
+          console.error(captureError)
+          setErrorMessage("Image uploaded, but failed to save capture record.")
+          return
+        }
 
-  if (captureError) {
-    console.error(captureError)
-    setErrorMessage("Image uploaded, but failed to save capture record.")
-    return
-  }
+        localStorage.setItem("matches", JSON.stringify(possibleMatches))
+        localStorage.setItem(
+          "newItem",
+          JSON.stringify({
+            user_id: user.id,
+            photo_url: publicUrl,
+            name: name.trim(),
+            brand: brand.trim(),
+            color: color.trim() || null,
+            scale: (scale === "Other" ? customScale : scale).trim() || null,
+            qty,
+            sth,
+            th,
+            chase,
+            main_number: mainNumber.trim() || null,
+            sub_number: subNumber.trim() || null,
+            series: series.trim() || null,
+            year: year.trim() || null,
+            location: location.trim() || null,
+            type: "packed",
+            notes: notes.trim() || null,
+          })
+        )
 
-  localStorage.setItem("matches", JSON.stringify(possibleMatches))
-  localStorage.setItem(
-    "newItem",
-    JSON.stringify({
-      user_id: user.id,
-      photo_url: publicUrl,
-      name: name.trim(),
-      brand: brand.trim(),
-      color: color.trim() || null,
-      scale: (scale === "Other" ? customScale : scale).trim() || null,
-      qty,
-      sth,
-      th,
-      chase,
-      main_number: mainNumber.trim() || null,
-      sub_number: subNumber.trim() || null,
-      series: series.trim() || null,
-      year: year.trim() || null,
-      location: location.trim() || null,
-      type: "packed",
-      notes: notes.trim() || null,
-    })
-  )
-
-  router.push("/matches")
-  return
-}
+        router.push("/matches")
+        return
+      }
 
       const finalScale =
         scale === "Other" ? customScale.trim() || null : scale.trim() || null
 
-      // 🔍 Check if item already exists
-const { data: existingItem } = await supabase
-  .from("items")
-  .select("*")
-  .eq("user_id", user.id)
-  .eq("brand", brand.trim())
-  .eq("name", name.trim())
-  .eq("type", "packed")
-  .maybeSingle()
+      const { data: existingItem } = await supabase
+        .from("items")
+        .select("*")
+        .eq("user_id", user.id)
+        .eq("brand", brand.trim())
+        .eq("name", name.trim())
+        .eq("type", "packed")
+        .maybeSingle()
 
-if (existingItem) {
-  const { error: updateError } = await supabase
-    .from("items")
-    .update({
-      qty: existingItem.qty + qty,
-    })
-    .eq("id", existingItem.id)
+      if (existingItem) {
+        const { error: updateError } = await supabase
+          .from("items")
+          .update({
+            qty: existingItem.qty + qty,
+          })
+          .eq("id", existingItem.id)
 
-  if (updateError) {
-    console.error(updateError)
-    setErrorMessage("Failed to update quantity.")
-    return
-  }
+        if (updateError) {
+          console.error(updateError)
+          setErrorMessage("Failed to update quantity.")
+          return
+        }
 
-  setMessage("Quantity updated ✅")
-resetForm()
-router.push("/mygarage")
-return
-}
+        setMessage("Quantity updated ✅")
+        resetForm()
+        router.push("/mygarage")
+        return
+      }
 
-// 🆕 Insert new if not exists
-const { error: itemError } = await supabase.from("items").insert({
-  user_id: user.id,
-  photo_url: publicUrl,
-  name: name.trim(),
-  brand: brand.trim(),
-  color: color.trim() || null,
-  scale: finalScale,
-  qty,
-  sth,
-  th,
-  chase,
-  main_number: mainNumber.trim() || null,
-  sub_number: subNumber.trim() || null,
-  series: series.trim() || null,
-  year: year.trim() || null,
-  location: location.trim() || null,
-  type: "packed",
-  notes: notes.trim() || null,
-})
+      const { error: itemError } = await supabase.from("items").insert({
+        user_id: user.id,
+        photo_url: publicUrl,
+        name: name.trim(),
+        brand: brand.trim(),
+        color: color.trim() || null,
+        scale: finalScale,
+        qty,
+        sth,
+        th,
+        chase,
+        main_number: mainNumber.trim() || null,
+        sub_number: subNumber.trim() || null,
+        series: series.trim() || null,
+        year: year.trim() || null,
+        location: location.trim() || null,
+        type: "packed",
+        notes: notes.trim() || null,
+      })
 
       if (itemError) {
         console.error(itemError)
@@ -522,17 +585,17 @@ const { error: itemError } = await supabase.from("items").insert({
       }
 
       if (profile?.plan !== "pro") {
-  await supabase
-    .from("profiles")
-    .update({
-      monthly_captures: (profile?.monthly_captures || 0) + 1,
-      last_capture_reset: new Date().toISOString(),
-    })
-    .eq("user_id", user.id)
-}
+        await supabase
+          .from("profiles")
+          .update({
+            monthly_captures: (profile?.monthly_captures || 0) + 1,
+            last_capture_reset: new Date().toISOString(),
+          })
+          .eq("user_id", user.id)
+      }
 
-setMessage("Diecast saved successfully ✅")
-resetForm()
+      setMessage("Diecast saved successfully ✅")
+      resetForm()
     } catch (err) {
       console.error(err)
       setErrorMessage("Unexpected error.")
@@ -540,29 +603,7 @@ resetForm()
       setLoading(false)
     }
   }
-  const [isPro, setIsPro] = useState(false)
 
-useEffect(() => {
-  async function checkPlan() {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
-
-    if (!user) return
-
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("plan")
-      .eq("user_id", user.id)
-      .single()
-
-    if (profile?.plan === "pro") {
-      setIsPro(true)
-    }
-  }
-
-  checkPlan()
-}, [])
   if (!sessionChecked) {
     return <FullPageLoading label="Loading..." />
   }
@@ -679,39 +720,39 @@ useEffect(() => {
           </div>
 
           <button
-  type="button"
-  onClick={() => {
-    if (!isPro) {
-      router.push("/pro")
-      return
-    }
+            type="button"
+            onClick={() => {
+              if (!isPro) {
+                router.push("/pro")
+                return
+              }
 
-    handleAnalyze()
-  }}
-  disabled={loading || !file}
-  style={
-    loading || !file
-      ? {
-          ...disabledButtonStyle,
-          marginBottom: 12,
-          padding: "12px 14px",
-          fontSize: 15,
-        }
-      : {
-          ...buttonStyle,
-          marginBottom: 12,
-          padding: "12px 14px",
-          fontSize: 15,
-        }
-  }
->
-  🤖 Analyze model
-  {!isPro && (
-    <div style={{ fontSize: 12, opacity: 0.7 }}>
-      Pro only
-    </div>
-  )}
-</button>
+              void handleAnalyze()
+            }}
+            disabled={loading || !file}
+            style={
+              loading || !file
+                ? {
+                    ...disabledButtonStyle,
+                    marginBottom: 12,
+                    padding: "12px 14px",
+                    fontSize: 15,
+                  }
+                : {
+                    ...buttonStyle,
+                    marginBottom: 12,
+                    padding: "12px 14px",
+                    fontSize: 15,
+                  }
+            }
+          >
+            🤖 Analyze model
+            {!isPro && (
+              <div style={{ fontSize: 12, opacity: 0.7 }}>
+                Pro only
+              </div>
+            )}
+          </button>
 
           <input
             ref={fileInputRef}
