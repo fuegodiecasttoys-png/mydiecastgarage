@@ -151,7 +151,6 @@ export default function Home() {
           Logout
         </button>
 
-        {/* Branding */}
         <div style={{ textAlign: "center", paddingTop: 4, marginBottom: 22 }}>
           <div
             style={{
@@ -171,7 +170,6 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Add Packed / Add Loose */}
         <div
           style={{
             display: "grid",
@@ -280,46 +278,64 @@ export default function Home() {
         ) : null}
 
         {profile?.plan !== "pro" && (
-          
-  <button
-  onClick={async () => {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
+          <button
+            onClick={async () => {
+              const {
+                data: { user },
+              } = await supabase.auth.getUser();
 
-    if (!user) return
+              if (!user) return;
 
-    await supabase
-      .from("profiles")
-      .update({ plan: "pro" })
-      .eq("user_id", user.id)
+              const { error } = await supabase
+                .from("profiles")
+                .update({ plan: "pro" })
+                .eq("user_id", user.id);
 
-    alert("Pro activated 🚀")
+              if (error) {
+                console.error(error);
+                alert("Error activating Pro");
+                return;
+              }
 
-    window.location.href = "/"
-  }}
-  className="mt-7 w-full rounded-2xl bg-orange-500 py-4 font-bold text-black"
->
-  Upgrade to Pro
-</button>
-{profile?.plan === "pro" && (
-  <div
-    style={{
-      marginBottom: 12,
-      padding: "10px 12px",
-      borderRadius: 12,
-      background: "rgba(255, 122, 24, 0.08)",
-      border: "1px solid rgba(255, 122, 24, 0.25)",
-      color: t.textSecondary,
-      fontSize: 13,
-      fontWeight: 700,
-      textAlign: "center",
-    }}
-  >
-    {(profile?.monthly_ai_scans || 0)} / 50 AI scans used
-  </div>
-)}
-          
+              alert("Pro activated 🚀");
+              window.location.href = "/";
+            }}
+            className="mt-7 w-full rounded-2xl bg-orange-500 py-4 font-bold text-black"
+            style={{ marginBottom: 12 }}
+          >
+            Upgrade to Pro
+          </button>
+        )}
+
+        {profile?.plan === "pro" && (
+          <div
+            style={{
+              marginBottom: 12,
+              padding: "10px 12px",
+              borderRadius: 12,
+              background: "rgba(255, 122, 24, 0.08)",
+              border: "1px solid rgba(255, 122, 24, 0.25)",
+              color: t.textSecondary,
+              fontSize: 13,
+              fontWeight: 700,
+              textAlign: "center",
+            }}
+          >
+            {(profile?.monthly_ai_scans || 0)} / 50 AI scans used
+          </div>
+        )}
+
+        {garageCountError ? (
+          <div
+            style={{
+              marginBottom: 12,
+              padding: "12px 14px",
+              borderRadius: t.radiusMd,
+              border: "1px solid rgba(255,100,100,0.28)",
+              background: "rgba(200, 60, 60, 0.1)",
+              boxSizing: "border-box",
+            }}
+          >
             <p
               style={{
                 margin: "0 0 6px",
@@ -331,6 +347,7 @@ export default function Home() {
             >
               Couldn&apos;t load your garage count.
             </p>
+
             <p
               style={{
                 margin: "0 0 12px",
@@ -341,6 +358,7 @@ export default function Home() {
             >
               {garageCountError}
             </p>
+
             <button
               type="button"
               disabled={garageCountRetrying || !userId}
@@ -354,7 +372,6 @@ export default function Home() {
           </div>
         ) : null}
 
-        {/* My Garage — primary */}
         <button
           type="button"
           onClick={() => router.push("/mygarage")}
@@ -407,7 +424,6 @@ export default function Home() {
           </span>
         </button>
 
-        {/* Favorites */}
         <button
           type="button"
           onClick={() => router.push("/favorites")}
@@ -442,7 +458,6 @@ export default function Home() {
           </span>
         </button>
 
-        {/* Wishlist */}
         <button
           type="button"
           onClick={() => router.push("/wishlist")}
@@ -536,7 +551,6 @@ export default function Home() {
           </span>
         </button>
 
-        {/* How To */}
         <button
           type="button"
           onClick={() => router.push("/howto")}
