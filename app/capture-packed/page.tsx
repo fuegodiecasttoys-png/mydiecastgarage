@@ -739,7 +739,7 @@ export default function CapturePage() {
                 textAlign: "center",
               }}
             >
-              AI scans: {aiScansUsed} / 50
+              Model scans: {aiScansUsed} / 50
             </div>
           ) : null}
 
