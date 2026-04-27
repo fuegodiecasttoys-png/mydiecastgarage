@@ -298,17 +298,14 @@ export default function CapturePage() {
       const { error: itemError } = await supabase.from("items").insert({
         user_id: user.id,
         photo_url: publicUrl,
-
         name: name.trim(),
         brand: brand.trim(),
         color: color.trim() || null,
         scale: (scale === "Other" ? customScale : scale).trim() || null,
         qty,
-
         sth,
         th,
         chase,
-
         main_number: mainNumber.trim() || null,
         sub_number: subNumber.trim() || null,
         series: series.trim() || null,
