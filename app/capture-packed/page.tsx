@@ -540,7 +540,29 @@ resetForm()
       setLoading(false)
     }
   }
+  const [isPro, setIsPro] = useState(false)
 
+useEffect(() => {
+  async function checkPlan() {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
+
+    if (!user) return
+
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("plan")
+      .eq("id", user.id)
+      .single()
+
+    if (profile?.plan === "pro") {
+      setIsPro(true)
+    }
+  }
+
+  checkPlan()
+}, [])
   if (!sessionChecked) {
     return <FullPageLoading label="Loading..." />
   }
@@ -657,27 +679,39 @@ resetForm()
           </div>
 
           <button
-            type="button"
-            onClick={handleAnalyze}
-            disabled={loading || !file}
-            style={
-              loading || !file
-                ? {
-                    ...disabledButtonStyle,
-                    marginBottom: 12,
-                    padding: "12px 14px",
-                    fontSize: 15,
-                  }
-                : {
-                    ...buttonStyle,
-                    marginBottom: 12,
-                    padding: "12px 14px",
-                    fontSize: 15,
-                  }
-            }
-          >
-            🤖 Analyze model
-          </button>
+  type="button"
+  onClick={() => {
+    if (!isPro) {
+      router.push("/pro")
+      return
+    }
+
+    handleAnalyze()
+  }}
+  disabled={loading || !file}
+  style={
+    loading || !file
+      ? {
+          ...disabledButtonStyle,
+          marginBottom: 12,
+          padding: "12px 14px",
+          fontSize: 15,
+        }
+      : {
+          ...buttonStyle,
+          marginBottom: 12,
+          padding: "12px 14px",
+          fontSize: 15,
+        }
+  }
+>
+  🤖 Analyze model
+  {!isPro && (
+    <div style={{ fontSize: 12, opacity: 0.7 }}>
+      Pro only
+    </div>
+  )}
+</button>
 
           <input
             ref={fileInputRef}
