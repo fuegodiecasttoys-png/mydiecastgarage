@@ -111,7 +111,7 @@ export default function Home() {
 
       const { data: profileData } = await supabase
         .from("profiles")
-        .select("plan, monthly_captures")
+        .select("plan, monthly_captures, monthly_ai_scans")
         .eq("user_id", data.user.id)
         .single();
 
@@ -280,6 +280,7 @@ export default function Home() {
         ) : null}
 
         {profile?.plan !== "pro" && (
+          
   <button
   onClick={async () => {
     const {
@@ -301,19 +302,24 @@ export default function Home() {
 >
   Upgrade to Pro
 </button>
+{profile?.plan === "pro" && (
+  <div
+    style={{
+      marginBottom: 12,
+      padding: "10px 12px",
+      borderRadius: 12,
+      background: "rgba(255, 122, 24, 0.08)",
+      border: "1px solid rgba(255, 122, 24, 0.25)",
+      color: t.textSecondary,
+      fontSize: 13,
+      fontWeight: 700,
+      textAlign: "center",
+    }}
+  >
+    {(profile?.monthly_ai_scans || 0)} / 50 AI scans used
+  </div>
 )}
-
-        {garageCountError ? (
-          <div
-            style={{
-              marginBottom: 12,
-              padding: "12px 14px",
-              borderRadius: t.radiusMd,
-              border: "1px solid rgba(255,100,100,0.28)",
-              background: "rgba(200, 60, 60, 0.1)",
-              boxSizing: "border-box",
-            }}
-          >
+          
             <p
               style={{
                 margin: "0 0 6px",
