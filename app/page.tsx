@@ -307,23 +307,7 @@ export default function Home() {
           </button>
         )}
 
-        {profile?.plan === "pro" && (
-          <div
-            style={{
-              marginBottom: 12,
-              padding: "10px 12px",
-              borderRadius: 12,
-              background: "rgba(255, 122, 24, 0.08)",
-              border: "1px solid rgba(255, 122, 24, 0.25)",
-              color: t.textSecondary,
-              fontSize: 13,
-              fontWeight: 700,
-              textAlign: "center",
-            }}
-          >
-            {(profile?.monthly_ai_scans || 0)} / 50 AI scans used
-          </div>
-        )}
+      
 
         {garageCountError ? (
           <div
