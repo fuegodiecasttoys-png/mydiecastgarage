@@ -32,7 +32,7 @@ export default function ProPage() {
 
           <div className="mt-6 space-y-3 text-sm">
             <p>✅ Unlimited manual captures</p>
-            <p>✅ 50 AI scans included every month</p>
+            <p>✅ 50 Auto Model scans included every month</p>
             <p>✅ CSV export enabled</p>
             <p>✅ Unlimited favorites</p>
             <p>✅ Unlimited wishlist</p>
@@ -78,7 +78,7 @@ export default function ProPage() {
         <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-gray-300">
           <p className="font-semibold text-white">Free plan</p>
           <p className="mt-2">
-            Free users get 30 manual captures per month. AI scans and exports are Pro features.
+            Free users get 30 manual captures per month. Auto model scans and exports are Pro features.
           </p>
         </div>
       </div>
