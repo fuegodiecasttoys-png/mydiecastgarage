@@ -1,4 +1,8 @@
+"use client"
+
 import Link from "next/link"
+import { supabase } from "../lib/supabaseClient"
+
 
 export default function ProPage() {
   return (
