@@ -171,7 +171,7 @@ export default function CapturePage() {
       const { data: profile } = await supabase
         .from("profiles")
         .select("plan, monthly_captures, last_capture_reset")
-        .eq("id", user.id)
+        .eq("user_id", user.id)
         .single()
 
       if (profile?.plan !== "pro") {
@@ -196,7 +196,7 @@ export default function CapturePage() {
               monthly_captures: 0,
               last_capture_reset: today.toISOString(),
             })
-            .eq("id", user.id)
+            .eq("user_id", user.id)
         }
 
         if (currentCaptures >= 30) {
@@ -328,7 +328,7 @@ export default function CapturePage() {
             monthly_captures: (profile?.monthly_captures || 0) + 1,
             last_capture_reset: new Date().toISOString(),
           })
-          .eq("id", user.id)
+          .eq("user_id", user.id)
       }
 
       setMessage("Diecast saved successfully ✅")
