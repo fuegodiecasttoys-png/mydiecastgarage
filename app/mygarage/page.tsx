@@ -139,6 +139,8 @@ const scaleBadgeStyle = {
 export default function MyGarage() {
   const [items, setItems] = useState<Item[]>([])
   const [loading, setLoading] = useState(true)
+  const [userId, setUserId] = useState<string | null>(null)
+  const [isActivePro, setIsActivePro] = useState(false)
   const [search, setSearch] = useState("")
   const [sort, setSort] = useState("newest")
   const [page, setPage] = useState(1)
@@ -155,6 +157,14 @@ export default function MyGarage() {
         router.replace("/login")
         return
       }
+      setUserId(user.id)
+
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("plan, is_active")
+        .eq("user_id", user.id)
+        .single()
+      setIsActivePro(profile?.plan === "pro" && profile?.is_active === true)
 
       const { data, error } = await supabase
         .from("items")
@@ -314,14 +324,36 @@ export default function MyGarage() {
           <div style={{ marginTop: 10, marginBottom: 10 }}>
             <button
               type="button"
-              onClick={() => {
+              onClick={async () => {
+                if (!userId) {
+                  alert("Not logged in")
+                  return
+                }
+
+                const { data: profile } = await supabase
+                  .from("profiles")
+                  .select("plan, is_active")
+                  .eq("user_id", userId)
+                  .single()
+
+                const canExport = profile?.plan === "pro" && profile?.is_active === true
+                if (!canExport) {
+                  alert("CSV export is a Pro feature.")
+                  return
+                }
+
                 if (sortedItems.length === 0) {
                   alert("No items to export.")
                   return
                 }
                 downloadGarageCsv(sortedItems)
               }}
-              style={exportButtonStyle}
+              disabled={!isActivePro}
+              style={{
+                ...exportButtonStyle,
+                opacity: !isActivePro ? 0.5 : 1,
+                cursor: !isActivePro ? "not-allowed" : "pointer",
+              }}
             >
               Export CSV
             </button>
