@@ -1,11 +1,17 @@
 import Stripe from "stripe";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2026-04-22.dahlia",
-});
-
 export async function POST() {
   try {
+    const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
+
+    if (!stripeSecretKey) {
+      return Response.json({ error: "Stripe is not configured" }, { status: 500 });
+    }
+
+    const stripe = new Stripe(stripeSecretKey, {
+      apiVersion: "2026-04-22.dahlia",
+    });
+
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
       line_items: [
