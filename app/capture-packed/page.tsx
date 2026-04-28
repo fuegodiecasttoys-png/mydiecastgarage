@@ -304,10 +304,18 @@ export default function CapturePage() {
 
       const formData = new FormData()
       formData.append("file", compressedForAnalyze)
+      const {
+        data: { session },
+      } = await supabase.auth.getSession()
 
       const res = await fetch(analyzeEndpoint, {
         method: "POST",
-        headers: { "x-analyze-request-id": reqId },
+        headers: {
+          "x-analyze-request-id": reqId,
+          ...(session?.access_token
+            ? { Authorization: `Bearer ${session.access_token}` }
+            : {}),
+        },
         body: formData,
       })
 

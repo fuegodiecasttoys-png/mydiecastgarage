@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { Buffer } from "buffer"
+import { headers } from "next/headers"
 import { normalizeBrand } from "../../lib/brandAliases"
 import { BRANDS } from "../../lib/constants"
 import { createClient as createSupabaseServerClient } from "../../lib/supabaseServer"
@@ -202,13 +203,20 @@ export async function POST(req: Request) {
 
   try {
     const supabase = await createSupabaseServerClient()
+    const authHeader = (await headers()).get("authorization")
+    const bearerToken =
+      authHeader && authHeader.toLowerCase().startsWith("bearer ")
+        ? authHeader.slice(7).trim()
+        : null
     const {
       data: { user },
       error: authError,
-    } = await supabase.auth.getUser()
+    } = bearerToken
+      ? await supabase.auth.getUser(bearerToken)
+      : await supabase.auth.getUser()
 
     if (authError || !user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+      return NextResponse.json({ error: "Not logged in" }, { status: 401 })
     }
 
     const {
@@ -216,15 +224,15 @@ export async function POST(req: Request) {
       error: profileError,
     } = await supabase
       .from("profiles")
-      .select("plan, monthly_ai_scans, last_ai_scan_reset")
+      .select("plan, is_active, monthly_ai_scans, last_ai_scan_reset")
       .eq("user_id", user.id)
       .single()
 
     if (profileError || !profile) {
-      return NextResponse.json({ error: "Profile not found" }, { status: 403 })
+      return NextResponse.json({ error: "Profile not found" }, { status: 404 })
     }
 
-    if (profile.plan !== "pro") {
+    if (profile.plan !== "pro" || profile.is_active !== true) {
       return NextResponse.json({ error: "Pro plan required" }, { status: 403 })
     }
 
