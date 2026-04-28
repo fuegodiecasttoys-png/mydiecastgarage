@@ -128,6 +128,29 @@ export default function Home() {
     void checkUser();
   }, [router, fetchGarageCount, fetchPendingFriendRequests]);
 
+  // TEMP: remove before commit — verify DB trigger blocks client `plan` updates
+  useEffect(() => {
+    async function testPlanUpdate() {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) {
+        console.log("No user");
+        return;
+      }
+
+      const { error } = await supabase
+        .from("profiles")
+        .update({ plan: "pro" })
+        .eq("user_id", user.id);
+
+      console.log("Update error:", error);
+    }
+
+    void testPlanUpdate();
+  }, []);
+
   if (checkingAuth) {
     return <FullPageLoading label="Loading your garage..." />;
   }
