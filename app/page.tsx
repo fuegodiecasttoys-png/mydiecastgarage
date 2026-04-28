@@ -603,25 +603,6 @@ export default function Home() {
             ›
           </span>
         </button>
-
-        {/* TEMP: test only — remove before commit */}
-        <button
-          type="button"
-          onClick={async () => {
-            const {
-              data: { user },
-            } = await supabase.auth.getUser();
-            if (!user) return;
-            const { error } = await supabase
-              .from("profiles")
-              .update({ plan: "free" })
-              .eq("user_id", user.id);
-            console.log("TEST UPDATE ERROR:", error);
-          }}
-          style={{ ...dvGhostButton, marginTop: 16, width: "100%" }}
-        >
-          TEST PLAN UPDATE
-        </button>
       </div>
     </div>
   );
