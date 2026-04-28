@@ -36,13 +36,6 @@ export default function ProPage() {
             <p>✅ Unlimited wishlist</p>
           </div>
 
-          {/* 💥 SCAN PACK */}
-          <div className="mt-6 rounded-2xl border border-white/10 bg-white/5 p-5 text-center">
-            <p className="text-sm text-gray-400">Need more scans?</p>
-            <p className="mt-2 text-3xl font-bold">$0.99</p>
-            <p className="text-sm text-gray-400">for 50 model scans</p>
-          </div>
-
           <button
             onClick={async () => {
               try {
@@ -66,6 +59,13 @@ export default function ProPage() {
           >
             Subscribe to Pro
           </button>
+
+          {/* 💥 SCAN PACK */}
+          <div className="mt-6 rounded-2xl border border-white/10 bg-white/5 p-5 text-center">
+            <p className="text-sm text-gray-400">Need more scans?</p>
+            <p className="mt-2 text-3xl font-bold">$0.99</p>
+            <p className="text-sm text-gray-400">for 50 model scans</p>
+          </div>
 
           <button
             onClick={() => {
