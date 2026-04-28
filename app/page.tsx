@@ -128,29 +128,6 @@ export default function Home() {
     void checkUser();
   }, [router, fetchGarageCount, fetchPendingFriendRequests]);
 
-  // TEMP: remove before commit — verify DB trigger blocks client `plan` updates
-  useEffect(() => {
-    async function testPlanUpdate() {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
-      if (!user) {
-        console.log("No user");
-        return;
-      }
-
-      const { error } = await supabase
-        .from("profiles")
-        .update({ plan: "pro" })
-        .eq("user_id", user.id);
-
-      console.log("Update error:", error);
-    }
-
-    void testPlanUpdate();
-  }, []);
-
   if (checkingAuth) {
     return <FullPageLoading label="Loading your garage..." />;
   }
@@ -625,6 +602,25 @@ export default function Home() {
           <span style={{ ...chevronStyle, color: t.textMuted }} aria-hidden>
             ›
           </span>
+        </button>
+
+        {/* TEMP: test only — remove before commit */}
+        <button
+          type="button"
+          onClick={async () => {
+            const {
+              data: { user },
+            } = await supabase.auth.getUser();
+            if (!user) return;
+            const { error } = await supabase
+              .from("profiles")
+              .update({ plan: "free" })
+              .eq("user_id", user.id);
+            console.log("TEST UPDATE ERROR:", error);
+          }}
+          style={{ ...dvGhostButton, marginTop: 16, width: "100%" }}
+        >
+          TEST PLAN UPDATE
         </button>
       </div>
     </div>
