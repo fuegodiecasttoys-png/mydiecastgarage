@@ -1,5 +1,6 @@
 import Stripe from "stripe";
 import { NextResponse } from "next/server";
+import { headers } from "next/headers";
 import { createClient as createSupabaseServerClient } from "../../../lib/supabaseServer";
 
 export async function POST() {
@@ -35,10 +36,17 @@ export async function POST() {
       apiVersion: "2026-04-22.dahlia",
     });
     const supabase = await createSupabaseServerClient();
+    const authHeader = headers().get("authorization");
+    const bearerToken =
+      authHeader && authHeader.toLowerCase().startsWith("bearer ")
+        ? authHeader.slice(7).trim()
+        : null;
     const {
       data: { user },
       error: authError,
-    } = await supabase.auth.getUser();
+    } = bearerToken
+      ? await supabase.auth.getUser(bearerToken)
+      : await supabase.auth.getUser();
 
     if (authError || !user) {
       console.error("Checkout unauthorized");

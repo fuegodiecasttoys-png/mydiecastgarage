@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import { supabase } from "../lib/supabaseClient"
 
 export default function ProPage() {
   return (
@@ -39,14 +40,23 @@ export default function ProPage() {
           <button
             onClick={async () => {
               try {
+                const {
+                  data: { session },
+                } = await supabase.auth.getSession()
+
                 const res = await fetch("/api/stripe/checkout", {
                   method: "POST",
+                  headers: session?.access_token
+                    ? { Authorization: `Bearer ${session.access_token}` }
+                    : undefined,
                 })
 
                 const data = await res.json()
 
                 if (data.url) {
                   window.location.href = data.url
+                } else if (res.status === 401) {
+                  window.location.href = "/login"
                 } else {
                   alert("Something went wrong")
                 }
