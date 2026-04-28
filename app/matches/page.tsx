@@ -17,7 +17,7 @@ export default function MatchesPage() {
     const { data: profile } = await supabase
       .from('profiles')
       .select('plan, monthly_captures, last_capture_reset')
-      .eq('id', userId)
+      .eq('user_id', userId)
       .single()
 
     if (profile?.plan === 'pro') return
@@ -28,7 +28,7 @@ export default function MatchesPage() {
         monthly_captures: (profile?.monthly_captures || 0) + 1,
         last_capture_reset: new Date().toISOString(),
       })
-      .eq('id', userId)
+      .eq('user_id', userId)
   }
 
   async function handleUpdate(item: any) {
