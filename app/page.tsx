@@ -505,39 +505,6 @@ export default function Home() {
 
         <button
           type="button"
-          onClick={() => router.push("/howto")}
-          style={{ ...rowCardBase, marginBottom: 0 }}
-        >
-          <IconCircle variant="orangeSubtle">📖</IconCircle>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div
-              style={{
-                fontSize: 16,
-                fontWeight: 800,
-                marginBottom: 4,
-                letterSpacing: "-0.02em",
-              }}
-            >
-              How To
-            </div>
-            <div
-              style={{
-                fontSize: 12,
-                fontWeight: 500,
-                color: t.textMuted,
-                lineHeight: 1.35,
-              }}
-            >
-              Tips for great photos
-            </div>
-          </div>
-          <span style={{ ...chevronStyle, color: t.textMuted }} aria-hidden>
-            ›
-          </span>
-        </button>
-
-        <button
-          type="button"
           onClick={() => router.push("/pro")}
           {...dvModelRowCardHoverHandlers}
           style={{ ...rowCardBase, marginTop: 12, marginBottom: 12 }}
@@ -597,6 +564,39 @@ export default function Home() {
               }}
             >
               Get 50 model scans for $0.99
+            </div>
+          </div>
+          <span style={{ ...chevronStyle, color: t.textMuted }} aria-hidden>
+            ›
+          </span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => router.push("/howto")}
+          style={{ ...rowCardBase, marginBottom: 0 }}
+        >
+          <IconCircle variant="orangeSubtle">📖</IconCircle>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div
+              style={{
+                fontSize: 16,
+                fontWeight: 800,
+                marginBottom: 4,
+                letterSpacing: "-0.02em",
+              }}
+            >
+              How To
+            </div>
+            <div
+              style={{
+                fontSize: 12,
+                fontWeight: 500,
+                color: t.textMuted,
+                lineHeight: 1.35,
+              }}
+            >
+              Tips for great photos
             </div>
           </div>
           <span style={{ ...chevronStyle, color: t.textMuted }} aria-hidden>
