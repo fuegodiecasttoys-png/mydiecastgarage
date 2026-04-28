@@ -1,4 +1,6 @@
 import Stripe from "stripe";
+import { NextResponse } from "next/server";
+import { createClient as createSupabaseServerClient } from "../../../lib/supabaseServer";
 
 export async function POST() {
   try {
@@ -32,25 +34,30 @@ export async function POST() {
     const stripe = new Stripe(stripeSecretKey, {
       apiVersion: "2026-04-22.dahlia",
     });
+    const supabase = await createSupabaseServerClient();
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
+
+    if (authError || !user) {
+      console.error("Checkout unauthorized");
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
 
     console.log("Creating Stripe checkout session...");
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
       line_items: [
         {
-          price_data: {
-            currency: "usd",
-            product_data: {
-              name: "My Diecast Garage Pro",
-            },
-            unit_amount: 399,
-            recurring: {
-              interval: "month",
-            },
-          },
+          price: stripeProPriceId,
           quantity: 1,
         },
       ],
+      client_reference_id: user.id,
+      metadata: {
+        supabase_user_id: user.id,
+      },
       success_url: `${appUrl}/success`,
       cancel_url: `${appUrl}/pro`,
     });
