@@ -363,17 +363,7 @@ export default function CapturePage() {
       if (data.main_number) setMainNumber(data.main_number)
       if (data.sub_number) setSubNumber(data.sub_number)
 
-      const { error: aiScanUpdateError } = await supabase
-        .from("profiles")
-        .update({
-          monthly_ai_scans: currentAiScans + 1,
-          last_ai_scan_reset: today.toISOString(),
-        })
-        .eq("user_id", user.id)
-
-      if (!aiScanUpdateError) {
-        setAiScansUsed(currentAiScans + 1)
-      }
+      setAiScansUsed(currentAiScans + 1)
 
       console.log("[analyze-model] client form state after apply", {
         brand: data.brand ?? "(unchanged)",

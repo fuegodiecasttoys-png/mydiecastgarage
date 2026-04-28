@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 import { Buffer } from "buffer"
 import { normalizeBrand } from "../../lib/brandAliases"
 import { BRANDS } from "../../lib/constants"
+import { createClient as createSupabaseServerClient } from "../../lib/supabaseServer"
 
 export const runtime = "nodejs"
 
@@ -200,6 +201,71 @@ export async function POST(req: Request) {
   console.log("[analyze-model] route entry", analyzeReqId)
 
   try {
+    const supabase = await createSupabaseServerClient()
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser()
+
+    if (authError || !user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+
+    const {
+      data: profile,
+      error: profileError,
+    } = await supabase
+      .from("profiles")
+      .select("plan, monthly_ai_scans, last_ai_scan_reset")
+      .eq("user_id", user.id)
+      .single()
+
+    if (profileError || !profile) {
+      return NextResponse.json({ error: "Profile not found" }, { status: 403 })
+    }
+
+    if (profile.plan !== "pro") {
+      return NextResponse.json({ error: "Pro plan required" }, { status: 403 })
+    }
+
+    const today = new Date()
+    const lastReset = profile.last_ai_scan_reset
+      ? new Date(profile.last_ai_scan_reset)
+      : null
+
+    const isNewMonth =
+      !lastReset ||
+      lastReset.getMonth() !== today.getMonth() ||
+      lastReset.getFullYear() !== today.getFullYear()
+
+    let currentAiScans = profile.monthly_ai_scans ?? 0
+
+    if (isNewMonth) {
+      currentAiScans = 0
+      const { error: resetError } = await supabase
+        .from("profiles")
+        .update({
+          monthly_ai_scans: 0,
+          last_ai_scan_reset: today.toISOString(),
+        })
+        .eq("user_id", user.id)
+
+      if (resetError) {
+        console.error("[analyze-model] monthly reset failed", analyzeReqId)
+        return NextResponse.json(
+          { error: "Could not reset AI scan period" },
+          { status: 500 }
+        )
+      }
+    }
+
+    if (currentAiScans >= 50) {
+      return NextResponse.json(
+        { error: "You used your 50 model scans this month." },
+        { status: 402 }
+      )
+    }
+
     let formData: FormData
     try {
       formData = await req.formData()
@@ -265,19 +331,11 @@ export async function POST(req: Request) {
 
     const apiKey = process.env.OPENAI_API_KEY
     const hasKey = Boolean(apiKey?.trim())
-    console.log("[analyze-model] OPENAI_API_KEY present:", hasKey)
     if (!hasKey) {
       return NextResponse.json({ error: "OPENAI_API_KEY is missing" }, { status: 500 })
     }
 
     const keyTrim = process.env.OPENAI_API_KEY!.trim()
-    console.log("[analyze-model] env diag", {
-      analyzeReqId,
-      OPENAI_API_KEY_prefix_8: keyTrim.slice(0, 8),
-      OPENAI_MODEL: process.env.OPENAI_MODEL || "undefined",
-      OPENAI_ORG_ID_set: Boolean(process.env.OPENAI_ORG_ID?.trim()),
-      OPENAI_PROJECT_ID_set: Boolean(process.env.OPENAI_PROJECT_ID?.trim()),
-    })
 
     /** Match warehouse default: `OPENAI_MODEL` or economical vision model. */
     const model = process.env.OPENAI_MODEL?.trim() || "gpt-4o-mini"
@@ -337,13 +395,6 @@ export async function POST(req: Request) {
 
     const openaiBodyText = await openaiRes.text()
     console.log("[analyze-model] OpenAI HTTP status", openaiRes.status, { analyzeReqId })
-    console.log(
-      "[analyze-model] OpenAI response body (truncated)",
-      openaiBodyText.slice(0, 1500),
-      { analyzeReqId }
-    )
-
-    console.log("[analyze-model] after OpenAI fetch", { analyzeReqId })
 
     if (!openaiRes.ok) {
       let detail = "unknown error"
@@ -377,8 +428,7 @@ export async function POST(req: Request) {
     }
 
     const raw = completion.choices?.[0]?.message?.content ?? ""
-    console.log("[analyze-model] OpenAI raw content length:", raw.length)
-    console.log("[analyze-model] OpenAI raw (truncated):", raw.slice(0, 800))
+    console.log("[analyze-model] OpenAI raw content length:", raw.length, { analyzeReqId })
 
     if (!raw.trim()) {
       console.log("[analyze-model] fail: empty assistant content")
@@ -397,7 +447,6 @@ export async function POST(req: Request) {
     console.log("[analyze-model] parse success")
 
     const parsed = fieldsFromPartialParsed(partial)
-    console.log("[analyze-model] parsed (pre-normalize):", parsed)
 
     const relocated = relocateFractionsFromSeries(
       parsed.series,
@@ -420,7 +469,21 @@ export async function POST(req: Request) {
       sub_number: normalizeMainSubNumber(relocated.sub_number),
     }
 
-    console.log("[analyze-model] response JSON (normalized):", result)
+    const { error: usageUpdateError } = await supabase
+      .from("profiles")
+      .update({
+        monthly_ai_scans: currentAiScans + 1,
+        last_ai_scan_reset: today.toISOString(),
+      })
+      .eq("user_id", user.id)
+
+    if (usageUpdateError) {
+      console.error("[analyze-model] usage increment failed", analyzeReqId)
+      return NextResponse.json(
+        { error: "Analyze succeeded, but failed to update scan usage." },
+        { status: 500 }
+      )
+    }
 
     return NextResponse.json(result)
   } catch (error) {
