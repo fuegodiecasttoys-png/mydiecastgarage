@@ -44,8 +44,23 @@ export default function ProPage() {
           </div>
 
           <button
-            onClick={() => {
-              alert("Payment setup coming soon.")
+            onClick={async () => {
+              try {
+                const res = await fetch("/api/stripe/checkout", {
+                  method: "POST",
+                })
+
+                const data = await res.json()
+
+                if (data.url) {
+                  window.location.href = data.url
+                } else {
+                  alert("Something went wrong")
+                }
+              } catch (err) {
+                console.error(err)
+                alert("Error starting checkout")
+              }
             }}
             className="mt-7 w-full rounded-2xl bg-orange-500 py-4 font-bold text-black"
           >
