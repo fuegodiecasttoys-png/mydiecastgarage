@@ -535,6 +535,74 @@ export default function Home() {
             ›
           </span>
         </button>
+
+        <button
+          type="button"
+          onClick={() => router.push("/pro")}
+          {...dvModelRowCardHoverHandlers}
+          style={{ ...rowCardBase, marginTop: 12, marginBottom: 12 }}
+        >
+          <IconCircle variant="orangeSubtle">🚀</IconCircle>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div
+              style={{
+                fontSize: 16,
+                fontWeight: 800,
+                marginBottom: 4,
+                letterSpacing: "-0.02em",
+              }}
+            >
+              Upgrade to Pro
+            </div>
+            <div
+              style={{
+                fontSize: 12,
+                fontWeight: 500,
+                color: t.textMuted,
+                lineHeight: 1.35,
+              }}
+            >
+              Unlock unlimited features
+            </div>
+          </div>
+          <span style={{ ...chevronStyle, color: t.textMuted }} aria-hidden>
+            ›
+          </span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => router.push("/pro")}
+          {...dvModelRowCardHoverHandlers}
+          style={{ ...rowCardBase, marginBottom: 0 }}
+        >
+          <IconCircle variant="orangeSubtle">⚡</IconCircle>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div
+              style={{
+                fontSize: 16,
+                fontWeight: 800,
+                marginBottom: 4,
+                letterSpacing: "-0.02em",
+              }}
+            >
+              Buy More Scans
+            </div>
+            <div
+              style={{
+                fontSize: 12,
+                fontWeight: 500,
+                color: t.textMuted,
+                lineHeight: 1.35,
+              }}
+            >
+              Get 50 model scans for $0.99
+            </div>
+          </div>
+          <span style={{ ...chevronStyle, color: t.textMuted }} aria-hidden>
+            ›
+          </span>
+        </button>
       </div>
     </div>
   );
