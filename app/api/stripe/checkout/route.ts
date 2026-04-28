@@ -36,7 +36,7 @@ export async function POST() {
       apiVersion: "2026-04-22.dahlia",
     });
     const supabase = await createSupabaseServerClient();
-    const authHeader = headers().get("authorization");
+    const authHeader = (await headers()).get("authorization");
     const bearerToken =
       authHeader && authHeader.toLowerCase().startsWith("bearer ")
         ? authHeader.slice(7).trim()
