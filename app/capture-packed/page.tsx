@@ -95,6 +95,7 @@ export default function CapturePage() {
   const [sessionChecked, setSessionChecked] = useState(false)
   const [isPro, setIsPro] = useState(false)
   const [aiScansUsed, setAiScansUsed] = useState(0)
+  const [bonusAiScans, setBonusAiScans] = useState(0)
 
   useEffect(() => {
     async function init() {
@@ -123,13 +124,14 @@ export default function CapturePage() {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("plan, monthly_ai_scans")
+    .select("plan, monthly_ai_scans, bonus_ai_scans")
     .eq("user_id", user.id)
     .single()
 
   if (profile?.plan === "pro") {
     setIsPro(true)
     setAiScansUsed(profile?.monthly_ai_scans || 0)
+    setBonusAiScans(profile?.bonus_ai_scans ?? 0)
   }
 }
 
@@ -222,7 +224,7 @@ export default function CapturePage() {
 
       const { data: profile } = await supabase
         .from("profiles")
-        .select("plan, monthly_ai_scans, last_ai_scan_reset")
+        .select("plan, monthly_ai_scans, bonus_ai_scans, last_ai_scan_reset")
         .eq("user_id", user.id)
         .single()
 
@@ -242,6 +244,7 @@ export default function CapturePage() {
         lastReset.getFullYear() !== today.getFullYear()
 
       let currentAiScans = profile?.monthly_ai_scans || 0
+      const packCredits = profile?.bonus_ai_scans ?? 0
 
       if (isNewMonth) {
         currentAiScans = 0
@@ -255,8 +258,9 @@ export default function CapturePage() {
           .eq("user_id", user.id)
       }
 
-      if (currentAiScans >= 50) {
+      if (currentAiScans >= 50 && packCredits <= 0) {
         alert("You used your 50 Model scans this month 🚀")
+        router.push("/pro?scanPack=1")
         return
       }
 
@@ -371,7 +375,16 @@ export default function CapturePage() {
       if (data.main_number) setMainNumber(data.main_number)
       if (data.sub_number) setSubNumber(data.sub_number)
 
-      setAiScansUsed(currentAiScans + 1)
+      const { data: usageRow } = await supabase
+        .from("profiles")
+        .select("monthly_ai_scans, bonus_ai_scans")
+        .eq("user_id", user.id)
+        .single()
+
+      if (usageRow) {
+        setAiScansUsed(usageRow.monthly_ai_scans ?? 0)
+        setBonusAiScans(usageRow.bonus_ai_scans ?? 0)
+      }
 
       console.log("[analyze-model] client form state after apply", {
         brand: data.brand ?? "(unchanged)",
@@ -738,6 +751,7 @@ export default function CapturePage() {
               }}
             >
               Model scans: {aiScansUsed} / 50
+              {bonusAiScans > 0 ? ` (+${bonusAiScans} pack)` : ""}
             </div>
           ) : null}
 

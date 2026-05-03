@@ -1,14 +1,42 @@
 "use client"
 
 import Link from "next/link"
+import { Suspense, useEffect } from "react"
+import { useSearchParams } from "next/navigation"
 import { supabase } from "../lib/supabaseClient"
 
-const SCAN_PACK_PRICE_ID = "price_1TT8MSGZxjPLLizkZ3b0UbrP"
+function ScanPackUrlEffects() {
+  const searchParams = useSearchParams()
+  const thanks = searchParams.get("scanPackThanks") === "1"
+  const scrollToPack =
+    searchParams.get("scanPack") === "1" || thanks
+
+  useEffect(() => {
+    if (!scrollToPack) return
+    requestAnimationFrame(() => {
+      document
+        .getElementById("diecast-scan-pack")
+        ?.scrollIntoView({ behavior: "smooth", block: "center" })
+    })
+  }, [scrollToPack])
+
+  if (!thanks) return null
+
+  return (
+    <div className="rounded-2xl border border-emerald-500/40 bg-emerald-500/10 px-4 py-3 text-center text-sm text-emerald-100">
+      Payment received — your pack of 50 model scans was added to your account.
+    </div>
+  )
+}
 
 export default function ProPage() {
   return (
     <main className="min-h-screen bg-[#020617] text-white px-5 py-8">
       <div className="mx-auto max-w-md space-y-6">
+        <Suspense fallback={null}>
+          <ScanPackUrlEffects />
+        </Suspense>
+
         <Link href="/" className="text-sm text-gray-400">
           ← Back home
         </Link>
@@ -72,8 +100,11 @@ export default function ProPage() {
             Subscribe to Pro
           </button>
 
-          {/* 💥 SCAN PACK */}
-          <div className="mt-6 rounded-2xl border border-white/10 bg-white/5 p-5 text-center">
+          {/* 💥 SCAN PACK — anchor for /pro?scanPack=1 */}
+          <div
+            id="diecast-scan-pack"
+            className="mt-6 scroll-mt-24 rounded-2xl border border-white/10 bg-white/5 p-5 text-center"
+          >
             <p className="text-sm text-gray-400">Need more scans?</p>
             <p className="mt-2 text-3xl font-bold">$0.99</p>
             <p className="text-sm text-gray-400">for 50 model scans</p>
@@ -94,9 +125,7 @@ export default function ProPage() {
                       ? { Authorization: `Bearer ${session.access_token}` }
                       : {}),
                   },
-                  body: JSON.stringify({
-                    priceId: SCAN_PACK_PRICE_ID,
-                  }),
+                  body: JSON.stringify({ lineItem: "scan_pack" }),
                 })
 
                 const data = await res.json()

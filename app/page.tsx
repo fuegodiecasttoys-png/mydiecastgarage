@@ -539,7 +539,7 @@ export default function Home() {
 
         <button
           type="button"
-          onClick={() => router.push("/pro")}
+          onClick={() => router.push("/pro?scanPack=1")}
           {...dvModelRowCardHoverHandlers}
           style={{ ...rowCardBase, marginBottom: 0 }}
         >

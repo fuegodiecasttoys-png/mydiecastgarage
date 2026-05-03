@@ -58,17 +58,48 @@ export async function POST(req: Request) {
       },
     });
 
-    const { error } = await supabaseAdmin
-      .from("profiles")
-      .update({ plan: "pro" })
-      .eq("user_id", userId);
+    const checkoutType = session.metadata?.checkout_type;
 
-    if (error) {
-      console.error("Failed to update profile plan from Stripe webhook:", error);
-      return NextResponse.json({ error: "Failed to update user plan" }, { status: 500 });
+    if (checkoutType === "scan_pack") {
+      const packScans = Number.parseInt(process.env.STRIPE_SCAN_PACK_CREDITS ?? "50", 10);
+      const add = Number.isFinite(packScans) && packScans > 0 ? packScans : 50;
+
+      const { data: row, error: selErr } = await supabaseAdmin
+        .from("profiles")
+        .select("bonus_ai_scans")
+        .eq("user_id", userId)
+        .maybeSingle();
+
+      if (selErr) {
+        console.error("Stripe webhook scan pack: read profile failed:", selErr);
+        return NextResponse.json({ error: "Failed to read profile for scan pack" }, { status: 500 });
+      }
+
+      const currentBonus = typeof row?.bonus_ai_scans === "number" ? row.bonus_ai_scans : 0;
+      const { error: upErr } = await supabaseAdmin
+        .from("profiles")
+        .update({ bonus_ai_scans: currentBonus + add })
+        .eq("user_id", userId);
+
+      if (upErr) {
+        console.error("Failed to add scan pack credits from Stripe webhook:", upErr);
+        return NextResponse.json({ error: "Failed to add scan pack credits" }, { status: 500 });
+      }
+
+      console.log("Added scan pack credits from Stripe webhook:", userId, add);
+    } else {
+      const { error } = await supabaseAdmin
+        .from("profiles")
+        .update({ plan: "pro" })
+        .eq("user_id", userId);
+
+      if (error) {
+        console.error("Failed to update profile plan from Stripe webhook:", error);
+        return NextResponse.json({ error: "Failed to update user plan" }, { status: 500 });
+      }
+
+      console.log("Upgraded user to pro from Stripe webhook:", userId);
     }
-
-    console.log("Upgraded user to pro from Stripe webhook:", userId);
   }
 
   return NextResponse.json({ received: true });

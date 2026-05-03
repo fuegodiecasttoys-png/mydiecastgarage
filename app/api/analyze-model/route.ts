@@ -224,7 +224,7 @@ export async function POST(req: Request) {
       error: profileError,
     } = await supabase
       .from("profiles")
-      .select("plan, is_active, monthly_ai_scans, last_ai_scan_reset")
+      .select("plan, is_active, monthly_ai_scans, bonus_ai_scans, last_ai_scan_reset")
       .eq("user_id", user.id)
       .single()
 
@@ -247,6 +247,7 @@ export async function POST(req: Request) {
       lastReset.getFullYear() !== today.getFullYear()
 
     let currentAiScans = profile.monthly_ai_scans ?? 0
+    let bonusAiScans = profile.bonus_ai_scans ?? 0
 
     if (isNewMonth) {
       currentAiScans = 0
@@ -267,7 +268,8 @@ export async function POST(req: Request) {
       }
     }
 
-    if (currentAiScans >= 50) {
+    const monthlyExhausted = currentAiScans >= 50
+    if (monthlyExhausted && bonusAiScans <= 0) {
       return NextResponse.json(
         { error: "You used your 50 model scans this month." },
         { status: 402 }
@@ -477,12 +479,20 @@ export async function POST(req: Request) {
       sub_number: normalizeMainSubNumber(relocated.sub_number),
     }
 
+    const usagePatch =
+      monthlyExhausted && bonusAiScans > 0
+        ? {
+            bonus_ai_scans: bonusAiScans - 1,
+            last_ai_scan_reset: today.toISOString(),
+          }
+        : {
+            monthly_ai_scans: currentAiScans + 1,
+            last_ai_scan_reset: today.toISOString(),
+          }
+
     const { error: usageUpdateError } = await supabase
       .from("profiles")
-      .update({
-        monthly_ai_scans: currentAiScans + 1,
-        last_ai_scan_reset: today.toISOString(),
-      })
+      .update(usagePatch)
       .eq("user_id", user.id)
 
     if (usageUpdateError) {
