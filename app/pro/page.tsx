@@ -3,6 +3,8 @@
 import Link from "next/link"
 import { supabase } from "../lib/supabaseClient"
 
+const SCAN_PACK_PRICE_ID = "price_1TT8MSGZxjPLLizkZ3b0UbrP"
+
 export default function ProPage() {
   return (
     <main className="min-h-screen bg-[#020617] text-white px-5 py-8">
@@ -78,8 +80,38 @@ export default function ProPage() {
           </div>
 
           <button
-            onClick={() => {
-              alert("Scan packs coming soon.")
+            onClick={async () => {
+              try {
+                const {
+                  data: { session },
+                } = await supabase.auth.getSession()
+
+                const res = await fetch("/api/stripe/checkout", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                    ...(session?.access_token
+                      ? { Authorization: `Bearer ${session.access_token}` }
+                      : {}),
+                  },
+                  body: JSON.stringify({
+                    priceId: SCAN_PACK_PRICE_ID,
+                  }),
+                })
+
+                const data = await res.json()
+
+                if (data.url) {
+                  window.location.href = data.url
+                } else if (res.status === 401) {
+                  window.location.href = "/login"
+                } else {
+                  alert("Something went wrong")
+                }
+              } catch (err) {
+                console.error(err)
+                alert("Error starting checkout")
+              }
             }}
             className="mt-3 w-full rounded-2xl border border-white/20 py-3 font-semibold text-white"
           >
@@ -87,7 +119,7 @@ export default function ProPage() {
           </button>
 
           <p className="mt-3 text-center text-xs text-gray-500">
-            Secure payment setup coming soon.
+            Secure payment powered by Stripe.
           </p>
         </div>
 
