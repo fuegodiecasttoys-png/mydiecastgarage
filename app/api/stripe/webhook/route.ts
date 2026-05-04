@@ -226,42 +226,47 @@ async function handleSubscriptionDeleted(
 }
 
 export async function POST(req: NextRequest) {
-  const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
-  const stripeWebhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-  if (!stripeSecretKey) {
-    return NextResponse.json({ error: "Missing STRIPE_SECRET_KEY" }, { status: 500 });
-  }
-  if (!stripeWebhookSecret) {
-    return NextResponse.json({ error: "Missing STRIPE_WEBHOOK_SECRET" }, { status: 500 });
-  }
-  if (!supabaseUrl) {
-    return NextResponse.json({ error: "Missing NEXT_PUBLIC_SUPABASE_URL" }, { status: 500 });
-  }
-  if (!supabaseServiceRoleKey) {
-    return NextResponse.json({ error: "Missing SUPABASE_SERVICE_ROLE_KEY" }, { status: 500 });
-  }
-
   const signature = req.headers.get("stripe-signature");
   if (!signature) {
     return NextResponse.json({ error: "Missing stripe-signature header" }, { status: 400 });
   }
 
+  if (!process.env.STRIPE_SECRET_KEY) {
+    console.error("Missing STRIPE_SECRET_KEY");
+    return NextResponse.json({ error: "Server misconfigured" }, { status: 500 });
+  }
+  if (!process.env.STRIPE_WEBHOOK_SECRET) {
+    console.error("Missing STRIPE_WEBHOOK_SECRET");
+    return NextResponse.json({ error: "Server misconfigured" }, { status: 500 });
+  }
+
+  const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
+  const stripeWebhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
   const stripe = new Stripe(stripeSecretKey, {
     apiVersion: "2026-04-22.dahlia",
   });
 
+  const body = await req.text();
+
   let event: Stripe.Event;
 
   try {
-    const body = await req.text();
     event = stripe.webhooks.constructEvent(body, signature, stripeWebhookSecret);
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Unknown error";
     console.error("Stripe webhook signature verification failed:", message);
     return NextResponse.json({ error: `Webhook Error: ${message}` }, { status: 400 });
+  }
+
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!supabaseUrl) {
+    return NextResponse.json({ error: "Missing NEXT_PUBLIC_SUPABASE_URL" }, { status: 500 });
+  }
+  if (!supabaseServiceRoleKey) {
+    return NextResponse.json({ error: "Missing SUPABASE_SERVICE_ROLE_KEY" }, { status: 500 });
   }
 
   const supabaseAdmin = createClient(supabaseUrl, supabaseServiceRoleKey, {
