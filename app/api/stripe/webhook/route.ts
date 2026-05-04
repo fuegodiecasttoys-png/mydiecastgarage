@@ -17,6 +17,13 @@ function fallbackStripePackUsername(userId: string): string {
   return `stripe_${hex}`.slice(0, 24);
 }
 
+function stripeExpandableId(value: string | { id: string } | null): string | null {
+  if (value === null) return null;
+  if (typeof value === "string") return value;
+  if (typeof value === "object" && typeof value.id === "string") return value.id;
+  return null;
+}
+
 async function tryClaimStripeEvent(
   admin: SupabaseClient,
   event: Stripe.Event,
@@ -152,9 +159,17 @@ async function handleCheckoutSessionCompleted(
         return NextResponse.json({ error: "Failed to grant scan pack credits" }, { status: 500 });
       }
     } else {
+      const customerId = stripeExpandableId(session.customer);
+      const subscriptionId = stripeExpandableId(session.subscription);
+
       const { data: updated, error } = await supabaseAdmin
         .from("profiles")
-        .update({ plan: "pro" })
+        .update({
+          plan: "pro",
+          is_active: true,
+          stripe_customer_id: customerId,
+          stripe_subscription_id: subscriptionId,
+        })
         .eq("user_id", userId)
         .select("user_id");
 
@@ -204,7 +219,7 @@ async function handleSubscriptionDeleted(
   try {
     const { data: updated, error } = await supabaseAdmin
       .from("profiles")
-      .update({ plan: "free" })
+      .update({ plan: "free", is_active: false })
       .eq("user_id", userId)
       .select("user_id");
 
