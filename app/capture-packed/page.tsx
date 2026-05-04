@@ -44,6 +44,7 @@ const buttonStyle: CSSProperties = dvPrimaryButton
 const disabledButtonStyle: CSSProperties = dvPrimaryButtonDisabled
 
 const MAX_ANALYZE_UPLOAD_BYTES = Math.floor(3.5 * 1024 * 1024)
+const MONTHLY_AI_SCAN_LIMIT = 50
 
 function messageFromAnalyzeFailure(res: Response, bodyText: string): string {
   try {
@@ -268,8 +269,8 @@ export default function CapturePage() {
           .eq("user_id", user.id)
       }
 
-      if (currentAiScans >= 50 && packCredits <= 0) {
-        alert("You used your 50 Model scans this month 🚀")
+      if (currentAiScans >= MONTHLY_AI_SCAN_LIMIT && packCredits <= 0) {
+        alert(`You used your ${MONTHLY_AI_SCAN_LIMIT} Model scans this month 🚀`)
         router.push("/pro?scanPack=1")
         return
       }
@@ -385,6 +386,19 @@ export default function CapturePage() {
       if (data.main_number) setMainNumber(data.main_number)
       if (data.sub_number) setSubNumber(data.sub_number)
 
+      // Keep UI responsive immediately after a successful analyze call.
+      const usedCreditForAnalyze =
+        currentAiScans >= MONTHLY_AI_SCAN_LIMIT && packCredits > 0
+      const optimisticMonthlyAiScans = usedCreditForAnalyze
+        ? currentAiScans
+        : currentAiScans + 1
+      const optimisticAiCredits = usedCreditForAnalyze
+        ? Math.max(packCredits - 1, 0)
+        : packCredits
+
+      setAiScansUsed(optimisticMonthlyAiScans)
+      setAiCredits(optimisticAiCredits)
+
       const { data: usageRow } = await supabase
         .from("profiles")
         .select("monthly_ai_scans, ai_credits")
@@ -392,8 +406,38 @@ export default function CapturePage() {
         .single()
 
       if (usageRow) {
-        setAiScansUsed(usageRow.monthly_ai_scans ?? 0)
-        setAiCredits(usageRow.ai_credits ?? 0)
+        const dbMonthlyAiScans = usageRow.monthly_ai_scans ?? 0
+        const dbAiCredits = usageRow.ai_credits ?? 0
+
+        if (
+          dbMonthlyAiScans < optimisticMonthlyAiScans ||
+          dbAiCredits < optimisticAiCredits
+        ) {
+          const usagePatch = usedCreditForAnalyze
+            ? { ai_credits: optimisticAiCredits }
+            : { monthly_ai_scans: optimisticMonthlyAiScans }
+
+          const { error: usageUpdateError } = await supabase
+            .from("profiles")
+            .update({
+              ...usagePatch,
+              last_ai_scan_reset: new Date().toISOString(),
+            })
+            .eq("user_id", user.id)
+
+          if (usageUpdateError) {
+            console.error(
+              "[analyze-model] client usage update failed",
+              usageUpdateError.message
+            )
+          } else {
+            setAiScansUsed(optimisticMonthlyAiScans)
+            setAiCredits(optimisticAiCredits)
+          }
+        } else {
+          setAiScansUsed(dbMonthlyAiScans)
+          setAiCredits(dbAiCredits)
+        }
       }
 
       console.log("[analyze-model] client form state after apply", {
