@@ -1,74 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import { Suspense, type CSSProperties } from "react";
+import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { t } from "../ui/dv-tokens";
+import { dvAppPageShell, dvBodyFont, dvDashboardInner } from "../ui/dv-visual";
 import {
-  dvAppPageShell,
-  dvBodyFont,
-  dvDashboardInner,
-  dvDisplayFont,
-  dvPrimaryButton,
-} from "../ui/dv-visual";
-
-const labelStyle: CSSProperties = {
-  fontFamily: dvDisplayFont,
-  fontSize: 12,
-  fontWeight: 600,
-  letterSpacing: "0.08em",
-  textTransform: "uppercase",
-  color: t.orange400,
-  margin: "0 0 10px",
-};
-
-const titleStyle: CSSProperties = {
-  fontFamily: dvDisplayFont,
-  color: t.textPrimary,
-  fontSize: 26,
-  fontWeight: 700,
-  margin: "0 0 12px",
-  lineHeight: 1.2,
-};
-
-const paragraphStyle: CSSProperties = {
-  margin: 0,
-  color: t.textSecondary,
-  fontFamily: dvBodyFont,
-  lineHeight: 1.6,
-  fontSize: 15,
-};
-
-const mutedParagraphStyle: CSSProperties = {
-  ...paragraphStyle,
-  color: t.textMuted,
-  fontSize: 14,
-  marginTop: 16,
-};
-
-const detailCardStyle: CSSProperties = {
-  borderRadius: t.radiusLg,
-  border: `1px solid ${t.borderAccent}`,
-  background: t.surfaceElevated,
-  padding: "18px 16px",
-  marginTop: 20,
-  boxShadow: "0 8px 24px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.05)",
-  textAlign: "left",
-};
-
-const accentStrongStyle: CSSProperties = {
-  color: t.orange300,
-  fontWeight: 700,
-};
-
-const linkButtonStyle: CSSProperties = {
-  ...dvPrimaryButton,
-  display: "block",
-  textAlign: "center",
-  textDecoration: "none",
-  boxSizing: "border-box",
-  marginTop: 28,
-};
+  successAccentStrongStyle,
+  successDetailCardStyle,
+  successLabelStyle,
+  successMutedParagraphStyle,
+  successParagraphStyle,
+  successPrimaryLinkStyle,
+  successTitleStyle,
+} from "./successPageStyles";
 
 function formatExpires(raw: string | null): string | null {
   if (!raw?.trim()) return null;
@@ -95,19 +40,19 @@ function SuccessContent() {
     <div style={dvAppPageShell}>
       <div style={{ ...dvDashboardInner, textAlign: "center" }}>
         <div style={{ marginBottom: 8 }}>
-          <p style={labelStyle}>My Diecast Garage</p>
-          <h1 style={titleStyle}>Pago exitoso</h1>
-          <p style={paragraphStyle}>
+          <p style={successLabelStyle}>My Diecast Garage</p>
+          <h1 style={successTitleStyle}>Pago exitoso</h1>
+          <p style={successParagraphStyle}>
             Tu pago en My Diecast Garage fue procesado correctamente.
           </p>
-          <p style={mutedParagraphStyle}>
+          <p style={successMutedParagraphStyle}>
             Tu acceso Pro o tus créditos de escaneo deberían reflejarse en tu cuenta en unos
             segundos.
           </p>
         </div>
 
-        {(showPro || expiresLabel || scansLabel) ? (
-          <div style={detailCardStyle}>
+        {showPro || expiresLabel || scansLabel ? (
+          <div style={successDetailCardStyle}>
             <div
               style={{
                 fontFamily: dvBodyFont,
@@ -127,20 +72,20 @@ function SuccessContent() {
               {expiresLabel ? (
                 <p style={{ margin: 0 }}>
                   Tu acceso vence o se renueva el:{" "}
-                  <span style={accentStrongStyle}>{expiresLabel}</span>
+                  <span style={successAccentStrongStyle}>{expiresLabel}</span>
                 </p>
               ) : null}
               {scansLabel ? (
                 <p style={{ margin: 0 }}>
                   Escaneos extra agregados:{" "}
-                  <span style={accentStrongStyle}>{scansLabel}</span>
+                  <span style={successAccentStrongStyle}>{scansLabel}</span>
                 </p>
               ) : null}
             </div>
           </div>
         ) : null}
 
-        <Link href="/" style={linkButtonStyle}>
+        <Link href="/" style={successPrimaryLinkStyle}>
           Ir al inicio
         </Link>
       </div>
@@ -152,9 +97,9 @@ function SuccessFallback() {
   return (
     <div style={dvAppPageShell}>
       <div style={{ ...dvDashboardInner, textAlign: "center" }}>
-        <p style={labelStyle}>My Diecast Garage</p>
-        <h1 style={titleStyle}>Pago exitoso</h1>
-        <p style={mutedParagraphStyle}>Cargando…</p>
+        <p style={successLabelStyle}>My Diecast Garage</p>
+        <h1 style={successTitleStyle}>Pago exitoso</h1>
+        <p style={successMutedParagraphStyle}>Cargando…</p>
       </div>
     </div>
   );

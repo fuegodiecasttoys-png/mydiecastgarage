@@ -83,7 +83,7 @@ export async function POST(req: Request) {
             ],
             client_reference_id: user.id,
             metadata: { ...baseMetadata },
-            success_url: `${appUrl}/pro?scanPackThanks=1`,
+            success_url: `${appUrl}/success/pack`,
             cancel_url: `${appUrl}/pro?scanPack=1`,
           })
         : await stripe.checkout.sessions.create({
