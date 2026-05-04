@@ -1,8 +1,9 @@
 import Stripe from "stripe";
-import { NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
 const PG_UNIQUE_VIOLATION = "23505";
 
@@ -116,7 +117,115 @@ async function grantScanPackCredits(
   return { ok: false, reason: insErr.message };
 }
 
-export async function POST(req: Request) {
+async function handleCheckoutSessionCompleted(
+  event: Stripe.Event,
+  supabaseAdmin: SupabaseClient
+): Promise<NextResponse> {
+  const session = event.data.object as Stripe.Checkout.Session;
+  const userId = session.metadata?.supabase_user_id ?? session.client_reference_id ?? null;
+
+  if (!userId) {
+    console.error(
+      "Stripe checkout.session.completed: missing Supabase user id (metadata/client_reference)"
+    );
+    return NextResponse.json({ received: true }, { status: 200 });
+  }
+
+  const claim = await tryClaimStripeEvent(supabaseAdmin, event, session.id);
+  if (claim.claimError) {
+    console.error("Stripe webhook idempotency insert failed:", claim.claimError);
+    return NextResponse.json({ error: "Idempotency record failed" }, { status: 500 });
+  }
+  if (!claim.claimed) {
+    return NextResponse.json({ received: true }, { status: 200 });
+  }
+
+  try {
+    const checkoutType = session.metadata?.checkout_type;
+
+    if (checkoutType === "scan_pack") {
+      const add = stripePackCredits();
+      const grant = await grantScanPackCredits(supabaseAdmin, userId, add);
+      if (!grant.ok) {
+        console.error("Scan pack grant failed:", grant.reason, { userId });
+        await releaseStripeEventClaim(supabaseAdmin, event.id);
+        return NextResponse.json({ error: "Failed to grant scan pack credits" }, { status: 500 });
+      }
+    } else {
+      const { data: updated, error } = await supabaseAdmin
+        .from("profiles")
+        .update({ plan: "pro" })
+        .eq("user_id", userId)
+        .select("user_id");
+
+      if (error) {
+        console.error("Failed to update profile to Pro from checkout webhook:", error.message);
+        await releaseStripeEventClaim(supabaseAdmin, event.id);
+        return NextResponse.json({ error: "Failed to update user plan" }, { status: 500 });
+      }
+      if (!updated?.length) {
+        console.error("Pro checkout webhook: no profile row for user_id", userId);
+        await releaseStripeEventClaim(supabaseAdmin, event.id);
+        return NextResponse.json({ error: "Profile missing for Pro upgrade" }, { status: 500 });
+      }
+    }
+  } catch {
+    console.error("checkout.session.completed handler error");
+    await releaseStripeEventClaim(supabaseAdmin, event.id);
+    return NextResponse.json({ error: "Webhook handler failed" }, { status: 500 });
+  }
+
+  return NextResponse.json({ received: true }, { status: 200 });
+}
+
+async function handleSubscriptionDeleted(
+  event: Stripe.Event,
+  supabaseAdmin: SupabaseClient
+): Promise<NextResponse> {
+  const subscription = event.data.object as Stripe.Subscription;
+  const userId = subscription.metadata?.supabase_user_id?.trim() || null;
+
+  if (!userId) {
+    console.error(
+      "customer.subscription.deleted: missing supabase_user_id on subscription metadata (checkout must set subscription_data.metadata)"
+    );
+    return NextResponse.json({ received: true }, { status: 200 });
+  }
+
+  const claim = await tryClaimStripeEvent(supabaseAdmin, event, subscription.id);
+  if (claim.claimError) {
+    console.error("Stripe webhook idempotency insert failed:", claim.claimError);
+    return NextResponse.json({ error: "Idempotency record failed" }, { status: 500 });
+  }
+  if (!claim.claimed) {
+    return NextResponse.json({ received: true }, { status: 200 });
+  }
+
+  try {
+    const { data: updated, error } = await supabaseAdmin
+      .from("profiles")
+      .update({ plan: "free" })
+      .eq("user_id", userId)
+      .select("user_id");
+
+    if (error) {
+      console.error("subscription.deleted: profile update failed:", error.message);
+      await releaseStripeEventClaim(supabaseAdmin, event.id);
+      return NextResponse.json({ error: "Failed to downgrade profile" }, { status: 500 });
+    }
+    if (!updated?.length) {
+      console.error("subscription.deleted: no profile row for user_id", userId);
+    }
+  } catch {
+    console.error("subscription.deleted handler error");
+    await releaseStripeEventClaim(supabaseAdmin, event.id);
+    return NextResponse.json({ error: "Webhook handler failed" }, { status: 500 });
+  }
+
+  return NextResponse.json({ received: true }, { status: 200 });
+}
+
+export async function POST(req: NextRequest) {
   const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
   const stripeWebhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -144,14 +253,15 @@ export async function POST(req: Request) {
     apiVersion: "2026-04-22.dahlia",
   });
 
-  const payload = await req.text();
   let event: Stripe.Event;
 
   try {
-    event = stripe.webhooks.constructEvent(payload, signature, stripeWebhookSecret);
-  } catch (error) {
-    console.error("Stripe webhook signature verification failed");
-    return NextResponse.json({ error: "Invalid webhook signature" }, { status: 400 });
+    const body = await req.text();
+    event = stripe.webhooks.constructEvent(body, signature, stripeWebhookSecret);
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : "Unknown error";
+    console.error("Stripe webhook signature verification failed:", message);
+    return NextResponse.json({ error: `Webhook Error: ${message}` }, { status: 400 });
   }
 
   const supabaseAdmin = createClient(supabaseUrl, supabaseServiceRoleKey, {
@@ -161,105 +271,26 @@ export async function POST(req: Request) {
     },
   });
 
-  if (event.type === "checkout.session.completed") {
-    const session = event.data.object as Stripe.Checkout.Session;
-    const userId = session.metadata?.supabase_user_id ?? session.client_reference_id ?? null;
-
-    if (!userId) {
-      console.error("Stripe checkout.session.completed: missing Supabase user id (metadata/client_reference)");
-      return NextResponse.json({ received: true });
+  try {
+    switch (event.type) {
+      case "checkout.session.completed":
+        return await handleCheckoutSessionCompleted(event, supabaseAdmin);
+      case "customer.subscription.deleted":
+        return await handleSubscriptionDeleted(event, supabaseAdmin);
+      default:
+        console.log(`Unhandled Stripe event type: ${event.type}`);
+        return NextResponse.json({ received: true }, { status: 200 });
     }
-
-    const claim = await tryClaimStripeEvent(supabaseAdmin, event, session.id);
-    if (claim.claimError) {
-      console.error("Stripe webhook idempotency insert failed:", claim.claimError);
-      return NextResponse.json({ error: "Idempotency record failed" }, { status: 500 });
-    }
-    if (!claim.claimed) {
-      return NextResponse.json({ received: true });
-    }
-
-    try {
-      const checkoutType = session.metadata?.checkout_type;
-
-      if (checkoutType === "scan_pack") {
-        const add = stripePackCredits();
-        const grant = await grantScanPackCredits(supabaseAdmin, userId, add);
-        if (!grant.ok) {
-          console.error("Scan pack grant failed:", grant.reason, { userId });
-          await releaseStripeEventClaim(supabaseAdmin, event.id);
-          return NextResponse.json({ error: "Failed to grant scan pack credits" }, { status: 500 });
-        }
-      } else {
-        const { data: updated, error } = await supabaseAdmin
-          .from("profiles")
-          .update({ plan: "pro" })
-          .eq("user_id", userId)
-          .select("user_id");
-
-        if (error) {
-          console.error("Failed to update profile to Pro from checkout webhook:", error.message);
-          await releaseStripeEventClaim(supabaseAdmin, event.id);
-          return NextResponse.json({ error: "Failed to update user plan" }, { status: 500 });
-        }
-        if (!updated?.length) {
-          console.error("Pro checkout webhook: no profile row for user_id", userId);
-          await releaseStripeEventClaim(supabaseAdmin, event.id);
-          return NextResponse.json({ error: "Profile missing for Pro upgrade" }, { status: 500 });
-        }
-      }
-    } catch (e) {
-      console.error("checkout.session.completed handler error");
-      await releaseStripeEventClaim(supabaseAdmin, event.id);
-      return NextResponse.json({ error: "Webhook handler failed" }, { status: 500 });
-    }
-
-    return NextResponse.json({ received: true });
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : "Unknown error";
+    console.error("Stripe webhook handler failed:", message);
+    return NextResponse.json({ error: "Webhook handler failed" }, { status: 500 });
   }
+}
 
-  if (event.type === "customer.subscription.deleted") {
-    const subscription = event.data.object as Stripe.Subscription;
-    const userId = subscription.metadata?.supabase_user_id?.trim() || null;
-
-    if (!userId) {
-      console.error(
-        "customer.subscription.deleted: missing supabase_user_id on subscription metadata (checkout must set subscription_data.metadata)"
-      );
-      return NextResponse.json({ received: true });
-    }
-
-    const claim = await tryClaimStripeEvent(supabaseAdmin, event, subscription.id);
-    if (claim.claimError) {
-      console.error("Stripe webhook idempotency insert failed:", claim.claimError);
-      return NextResponse.json({ error: "Idempotency record failed" }, { status: 500 });
-    }
-    if (!claim.claimed) {
-      return NextResponse.json({ received: true });
-    }
-
-    try {
-      const { data: updated, error } = await supabaseAdmin
-        .from("profiles")
-        .update({ plan: "free" })
-        .eq("user_id", userId)
-        .select("user_id");
-
-      if (error) {
-        console.error("subscription.deleted: profile update failed:", error.message);
-        await releaseStripeEventClaim(supabaseAdmin, event.id);
-        return NextResponse.json({ error: "Failed to downgrade profile" }, { status: 500 });
-      }
-      if (!updated?.length) {
-        console.error("subscription.deleted: no profile row for user_id", userId);
-      }
-    } catch {
-      console.error("subscription.deleted handler error");
-      await releaseStripeEventClaim(supabaseAdmin, event.id);
-      return NextResponse.json({ error: "Webhook handler failed" }, { status: 500 });
-    }
-
-    return NextResponse.json({ received: true });
-  }
-
-  return NextResponse.json({ received: true });
+export async function GET() {
+  return NextResponse.json(
+    { message: "Stripe webhook endpoint. Use POST." },
+    { status: 200 }
+  );
 }
