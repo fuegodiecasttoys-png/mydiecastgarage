@@ -4,7 +4,11 @@ import Image from "next/image";
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "@/app/lib/supabaseClient";
-import { PASSWORD_RULES_SUMMARY, validateSignupPassword } from "@/app/lib/signupValidation";
+import {
+  MIN_SIGNUP_PASSWORD_LENGTH,
+  PASSWORD_RULES_SUMMARY,
+  validateSignupPassword,
+} from "@/app/lib/signupValidation";
 import { t } from "@/app/ui/dv-tokens";
 import {
   dvAppPageShell,
@@ -247,6 +251,7 @@ export default function ResetPasswordClient() {
                       id="reset-pw"
                       type={showPw ? "text" : "password"}
                       autoComplete="new-password"
+                      minLength={MIN_SIGNUP_PASSWORD_LENGTH}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       style={inputPw}
@@ -276,6 +281,7 @@ export default function ResetPasswordClient() {
                       id="reset-pw2"
                       type={showConfirm ? "text" : "password"}
                       autoComplete="new-password"
+                      minLength={MIN_SIGNUP_PASSWORD_LENGTH}
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       style={inputPw}

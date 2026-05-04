@@ -12,6 +12,7 @@ import {
 } from "../lib/profileUsername";
 import {
   fetchUsernameAvailable,
+  MIN_SIGNUP_PASSWORD_LENGTH,
   PASSWORD_RULES_SUMMARY,
   validateSignupPassword,
 } from "../lib/signupValidation";
@@ -740,6 +741,7 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
                     id="auth-signup-password"
                     type={showSignupPassword ? "text" : "password"}
                     autoComplete="new-password"
+                    minLength={MIN_SIGNUP_PASSWORD_LENGTH}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     style={inputPasswordWithToggle}
@@ -767,6 +769,7 @@ export function AuthExperience({ initialTab }: { initialTab: Tab }) {
                     id="auth-signup-password-confirm"
                     type={showConfirmPassword ? "text" : "password"}
                     autoComplete="new-password"
+                    minLength={MIN_SIGNUP_PASSWORD_LENGTH}
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     style={inputPasswordWithToggle}
