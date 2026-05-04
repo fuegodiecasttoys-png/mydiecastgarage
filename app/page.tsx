@@ -341,6 +341,40 @@ export default function Home() {
 
         <button
           type="button"
+          onClick={() => router.push("/account")}
+          {...dvModelRowCardHoverHandlers}
+          style={{ ...rowCardBase, marginBottom: 12 }}
+        >
+          <IconCircle variant="orangeSubtle">👤</IconCircle>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div
+              style={{
+                fontSize: 16,
+                fontWeight: 800,
+                marginBottom: 4,
+                letterSpacing: "-0.02em",
+              }}
+            >
+              My Account
+            </div>
+            <div
+              style={{
+                fontSize: 12,
+                fontWeight: 500,
+                color: t.textMuted,
+                lineHeight: 1.35,
+              }}
+            >
+              Plan, usage, and subscription
+            </div>
+          </div>
+          <span style={{ ...chevronStyle, color: t.textMuted }} aria-hidden>
+            ›
+          </span>
+        </button>
+
+        <button
+          type="button"
           onClick={() => router.push("/mygarage")}
           {...dvModelHeroRowCardHoverHandlers}
           style={{
