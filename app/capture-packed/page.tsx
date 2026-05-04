@@ -413,17 +413,36 @@ export default function CapturePage() {
           dbMonthlyAiScans < optimisticMonthlyAiScans ||
           dbAiCredits < optimisticAiCredits
         ) {
+          console.log("SCAN BEFORE:", {
+            userId: user.id,
+            currentScans: currentAiScans,
+            aiCredits: packCredits,
+            isPro,
+            dbMonthlyAiScans,
+            dbAiCredits,
+            optimisticMonthlyAiScans,
+            optimisticAiCredits,
+            usedCreditForAnalyze,
+          })
+
           const usagePatch = usedCreditForAnalyze
             ? { ai_credits: optimisticAiCredits }
             : { monthly_ai_scans: optimisticMonthlyAiScans }
 
-          const { error: usageUpdateError } = await supabase
+          const { data: usageUpdateData, error: usageUpdateError } = await supabase
             .from("profiles")
             .update({
               ...usagePatch,
               last_ai_scan_reset: new Date().toISOString(),
             })
             .eq("user_id", user.id)
+            .select("monthly_ai_scans, ai_credits")
+            .single()
+
+          console.log("SCAN UPDATE RESULT:", {
+            data: usageUpdateData,
+            error: usageUpdateError,
+          })
 
           if (usageUpdateError) {
             console.error(
@@ -435,6 +454,11 @@ export default function CapturePage() {
             setAiCredits(optimisticAiCredits)
           }
         } else {
+          console.log("SCAN UPDATE RESULT:", {
+            data: usageRow,
+            error: null,
+            reason: "skip_client_update_db_already_up_to_date",
+          })
           setAiScansUsed(dbMonthlyAiScans)
           setAiCredits(dbAiCredits)
         }
