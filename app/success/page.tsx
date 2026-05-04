@@ -18,11 +18,11 @@ import {
 function formatExpires(raw: string | null): string | null {
   if (!raw?.trim()) return null;
   const d = new Date(raw.trim());
-  if (Number.isNaN(d.getTime())) return raw.trim();
-  return d.toLocaleDateString("es", {
-    day: "numeric",
-    month: "long",
+  if (Number.isNaN(d.getTime())) return null;
+  return d.toLocaleDateString("en-US", {
     year: "numeric",
+    month: "long",
+    day: "numeric",
   });
 }
 
@@ -36,22 +36,25 @@ function SuccessContent() {
   const expiresLabel = formatExpires(expiresRaw);
   const scansLabel = scansRaw?.trim() ?? "";
 
+  const showDetailCard = showPro || expiresLabel || scansLabel;
+
   return (
     <div style={dvAppPageShell}>
       <div style={{ ...dvDashboardInner, textAlign: "center" }}>
         <div style={{ marginBottom: 8 }}>
           <p style={successLabelStyle}>My Diecast Garage</p>
-          <h1 style={successTitleStyle}>Pago exitoso</h1>
-          <p style={successParagraphStyle}>
-            Tu pago en My Diecast Garage fue procesado correctamente.
+          <h1 style={successTitleStyle}>Payment successful</h1>
+          <p style={successParagraphStyle}>Your payment was processed successfully.</p>
+          <p style={{ ...successParagraphStyle, marginTop: 12 }}>
+            Thank you for your purchase.
           </p>
           <p style={successMutedParagraphStyle}>
-            Tu acceso Pro o tus créditos de escaneo deberían reflejarse en tu cuenta en unos
-            segundos.
+            Your Pro access or extra auto scan credits should appear in your account within a few
+            seconds.
           </p>
         </div>
 
-        {showPro || expiresLabel || scansLabel ? (
+        {showDetailCard ? (
           <div style={successDetailCardStyle}>
             <div
               style={{
@@ -66,18 +69,18 @@ function SuccessContent() {
             >
               {showPro ? (
                 <p style={{ margin: 0, color: t.textPrimary, fontWeight: 700 }}>
-                  Tu plan Pro está activo
+                  Your Pro plan is active.
                 </p>
               ) : null}
               {expiresLabel ? (
                 <p style={{ margin: 0 }}>
-                  Tu acceso vence o se renueva el:{" "}
+                  Your access renews on:{" "}
                   <span style={successAccentStrongStyle}>{expiresLabel}</span>
                 </p>
               ) : null}
               {scansLabel ? (
                 <p style={{ margin: 0 }}>
-                  Escaneos extra agregados:{" "}
+                  Extra auto scans added:{" "}
                   <span style={successAccentStrongStyle}>{scansLabel}</span>
                 </p>
               ) : null}
@@ -86,7 +89,7 @@ function SuccessContent() {
         ) : null}
 
         <Link href="/" style={successPrimaryLinkStyle}>
-          Ir al inicio
+          Back to Home
         </Link>
       </div>
     </div>
@@ -98,8 +101,8 @@ function SuccessFallback() {
     <div style={dvAppPageShell}>
       <div style={{ ...dvDashboardInner, textAlign: "center" }}>
         <p style={successLabelStyle}>My Diecast Garage</p>
-        <h1 style={successTitleStyle}>Pago exitoso</h1>
-        <p style={successMutedParagraphStyle}>Cargando…</p>
+        <h1 style={successTitleStyle}>Payment successful</h1>
+        <p style={successMutedParagraphStyle}>Loading...</p>
       </div>
     </div>
   );

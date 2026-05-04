@@ -16,14 +16,14 @@ export default function ScanPackSuccessPage() {
     <div style={dvAppPageShell}>
       <div style={{ ...dvDashboardInner, textAlign: "center" }}>
         <p style={successLabelStyle}>My Diecast Garage</p>
-        <h1 style={successTitleStyle}>Pack de escaneos listo</h1>
+        <h1 style={successTitleStyle}>Scan pack ready</h1>
         <p style={successParagraphStyle}>
-          Tu pago del pack de escaneos AI fue procesado correctamente.
+          Your auto scan pack payment was processed successfully.
         </p>
+        <p style={{ ...successParagraphStyle, marginTop: 12 }}>Thank you for your purchase.</p>
         <p style={successMutedParagraphStyle}>
-          Se agregaron <strong style={{ color: t.textPrimary }}>50 escaneos extra</strong> para
-          analizar fotos de tus modelos diecast. Deberían aparecer en tu cuenta en unos segundos,
-          después de tu cupo mensual de Pro.
+          We added 50 extra auto scans to help analyze photos of your diecast models. These credits
+          should appear in your account within a few seconds.
         </p>
 
         <div style={successDetailCardStyle}>
@@ -36,16 +36,16 @@ export default function ScanPackSuccessPage() {
               lineHeight: 1.55,
             }}
           >
-            Cuando uses tus 50 escaneos incluidos por mes con Pro, estos créditos extra se aplican
-            automáticamente en la captura empacada.
+            After you use your 50 monthly Pro scans, your extra auto scan credits will be applied
+            automatically when analyzing packaged diecast photos.
           </p>
         </div>
 
         <Link href="/" style={successPrimaryLinkStyle}>
-          Ir al inicio
+          Back to Home
         </Link>
         <Link href="/capture-packed" style={successSecondaryLinkStyle}>
-          Ir a captura empacada →
+          Go to Packed Capture
         </Link>
       </div>
     </div>
