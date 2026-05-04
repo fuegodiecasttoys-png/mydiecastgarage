@@ -235,6 +235,10 @@ export async function POST(req: NextRequest) {
     console.error("Missing STRIPE_SECRET_KEY");
     return NextResponse.json({ error: "Server misconfigured" }, { status: 500 });
   }
+  console.log("ENV CHECK:");
+  console.log("STRIPE_SECRET_KEY:", !!process.env.STRIPE_SECRET_KEY);
+  console.log("STRIPE_WEBHOOK_SECRET:", !!process.env.STRIPE_WEBHOOK_SECRET);
+  console.log("SUPABASE_SERVICE_ROLE_KEY:", !!process.env.SUPABASE_SERVICE_ROLE_KEY);
   if (!process.env.STRIPE_WEBHOOK_SECRET) {
     console.error("Missing STRIPE_WEBHOOK_SECRET");
     return NextResponse.json({ error: "Server misconfigured" }, { status: 500 });
