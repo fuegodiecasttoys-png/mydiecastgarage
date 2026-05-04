@@ -101,8 +101,8 @@ export async function POST(req: Request) {
                 supabase_user_id: user.id,
               },
             },
-            success_url: `${appUrl}/`,
-            cancel_url: `${appUrl}/`,
+            success_url: `${appUrl}/success`,
+            cancel_url: `${appUrl}/pro`,
           });
 
     return Response.json({ url: session.url });
