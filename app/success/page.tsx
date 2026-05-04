@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import { Suspense, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { t } from "../ui/dv-tokens";
 import { dvAppPageShell, dvBodyFont, dvDashboardInner } from "../ui/dv-visual";
 import {
@@ -27,8 +27,13 @@ function formatExpires(raw: string | null): string | null {
 }
 
 function SuccessContent() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const plan = searchParams.get("plan")?.trim().toLowerCase() ?? "";
+
+  useEffect(() => {
+    router.refresh();
+  }, [router]);
   const expiresRaw = searchParams.get("expires");
   const scansRaw = searchParams.get("scans");
 

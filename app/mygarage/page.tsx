@@ -1,7 +1,8 @@
 "use client"
 
 import Link from "next/link"
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
+import { fetchProfile, isActiveProRow } from "../lib/fetchProfile"
 import { supabase } from "../lib/supabaseClient"
 import { useRouter } from "next/navigation"
 import { t } from "../ui/dv-tokens"
@@ -147,6 +148,11 @@ export default function MyGarage() {
   const router = useRouter()
   const itemsPerPage = 20
 
+  const loadPlanProfile = useCallback(async (uid: string) => {
+    const row = await fetchProfile(uid, "plan, is_active")
+    setIsActivePro(isActiveProRow(row))
+  }, [])
+
   useEffect(() => {
     async function fetchItems() {
       const {
@@ -159,12 +165,7 @@ export default function MyGarage() {
       }
       setUserId(user.id)
 
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("plan, is_active")
-        .eq("user_id", user.id)
-        .single()
-      setIsActivePro(profile?.plan === "pro" && profile?.is_active === true)
+      await loadPlanProfile(user.id)
 
       const { data, error } = await supabase
         .from("items")
@@ -180,7 +181,16 @@ export default function MyGarage() {
     }
 
     fetchItems()
-  }, [router])
+  }, [router, loadPlanProfile])
+
+  useEffect(() => {
+    if (!userId) return
+    const handleFocus = () => {
+      void loadPlanProfile(userId)
+    }
+    window.addEventListener("focus", handleFocus)
+    return () => window.removeEventListener("focus", handleFocus)
+  }, [userId, loadPlanProfile])
 
   const filteredItems = useMemo(() => {
     const text = search.toLowerCase().trim()
@@ -213,10 +223,6 @@ export default function MyGarage() {
   const totalPages = Math.ceil(sortedItems.length / itemsPerPage)
   const startIndex = (page - 1) * itemsPerPage
   const paginatedItems = sortedItems.slice(startIndex, startIndex + itemsPerPage)
-
-  useEffect(() => {
-    setPage(1)
-  }, [search, sort])
 
   return (
     <div style={pageStyle}>
@@ -301,7 +307,10 @@ export default function MyGarage() {
               type="text"
               placeholder="Search your garage..."
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => {
+                setSearch(e.target.value)
+                setPage(1)
+              }}
               style={searchInputStyle}
             />
 
@@ -312,7 +321,10 @@ export default function MyGarage() {
 
           <select
             value={sort}
-            onChange={(e) => setSort(e.target.value)}
+            onChange={(e) => {
+              setSort(e.target.value)
+              setPage(1)
+            }}
             style={sortSelectStyle}
           >
             <option value="newest">Newest</option>
@@ -330,13 +342,8 @@ export default function MyGarage() {
                   return
                 }
 
-                const { data: profile } = await supabase
-                  .from("profiles")
-                  .select("plan, is_active")
-                  .eq("user_id", userId)
-                  .single()
-
-                const canExport = profile?.plan === "pro" && profile?.is_active === true
+                const row = await fetchProfile(userId, "plan, is_active")
+                const canExport = isActiveProRow(row)
                 if (!canExport) {
                   alert("CSV export is a Pro feature.")
                   return

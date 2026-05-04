@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  useCallback,
   useEffect,
   useRef,
   useState,
@@ -9,6 +10,7 @@ import {
 } from "react";
 
 import { compressImage } from "../lib/compressImage";
+import { fetchProfile, isActiveProRow } from "../lib/fetchProfile";
 import { supabase } from "../lib/supabaseClient";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -68,6 +70,27 @@ export default function CapturePage() {
   const [message, setMessage] = useState<string | null>(null)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [sessionChecked, setSessionChecked] = useState(false)
+  const [planStatus, setPlanStatus] = useState<{
+    plan: string | null
+    is_active: boolean | null
+  } | null>(null)
+
+  const loadPlanProfile = useCallback(async () => {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
+    if (!user) return
+    const row = await fetchProfile(user.id, "plan, is_active")
+    if (!row) {
+      setPlanStatus(null)
+      return
+    }
+    setPlanStatus({
+      plan: typeof row.plan === "string" ? row.plan : null,
+      is_active:
+        row.is_active === true ? true : row.is_active === false ? false : null,
+    })
+  }, [])
 
   useEffect(() => {
     async function init() {
@@ -85,6 +108,16 @@ export default function CapturePage() {
 
     void init()
   }, [router])
+
+  useEffect(() => {
+    if (!sessionChecked) return
+    void loadPlanProfile()
+    const handleFocus = () => {
+      void loadPlanProfile()
+    }
+    window.addEventListener("focus", handleFocus)
+    return () => window.removeEventListener("focus", handleFocus)
+  }, [sessionChecked, loadPlanProfile])
   
   useEffect(() => {
     return () => {
@@ -170,11 +203,11 @@ export default function CapturePage() {
 
       const { data: profile } = await supabase
         .from("profiles")
-        .select("plan, monthly_captures, last_capture_reset")
+        .select("plan, is_active, monthly_captures, last_capture_reset")
         .eq("user_id", user.id)
         .single()
 
-      if (profile?.plan !== "pro") {
+      if (!isActiveProRow(profile)) {
         const today = new Date()
         const lastReset = profile?.last_capture_reset
           ? new Date(profile.last_capture_reset)
@@ -321,7 +354,7 @@ export default function CapturePage() {
         return
       }
 
-      if (profile?.plan !== "pro") {
+      if (!isActiveProRow(profile)) {
         await supabase
           .from("profiles")
           .update({
@@ -395,6 +428,20 @@ export default function CapturePage() {
           <p style={{ margin: 0, marginBottom: 22, opacity: 0.8, lineHeight: 1.45 }}>
             Add a photo of your loose diecast, then enter the details below.
           </p>
+
+          {isActiveProRow(planStatus) ? (
+            <p
+              style={{
+                margin: "0 0 16px",
+                fontSize: 12,
+                fontWeight: 700,
+                color: t.textSecondary,
+                textAlign: "center",
+              }}
+            >
+              Pro plan active — unlimited monthly adds
+            </p>
+          ) : null}
 
           <div
             style={{

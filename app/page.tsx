@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState, type CSSProperties } from "react";
 import { useRouter } from "next/navigation";
+import { fetchProfile, isActiveProRow } from "./lib/fetchProfile";
 import { supabase } from "./lib/supabaseClient";
 import { FullPageLoading } from "./components/FullPageLoading";
 import { AccentBadge } from "./ui/AccentBadge";
@@ -45,7 +46,19 @@ export default function Home() {
   const [garageCountError, setGarageCountError] = useState<string | null>(null);
   const [garageCountRetrying, setGarageCountRetrying] = useState(false);
   const [pendingFriendRequestsCount, setPendingFriendRequestsCount] = useState(0);
-  const [profile, setProfile] = useState<any>(null);
+  const [profile, setProfile] = useState<Record<string, unknown> | null>(null);
+
+  const loadProfile = useCallback(async () => {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return;
+    const row = await fetchProfile(
+      user.id,
+      "plan, is_active, monthly_captures, monthly_ai_scans"
+    );
+    if (row) setProfile(row);
+  }, []);
 
   const fetchPendingFriendRequests = useCallback(async (uid: string) => {
     const { count, error } = await supabase
@@ -109,13 +122,7 @@ export default function Home() {
 
       setUserId(data.user.id);
 
-      const { data: profileData } = await supabase
-        .from("profiles")
-        .select("plan, monthly_captures, monthly_ai_scans")
-        .eq("user_id", data.user.id)
-        .single();
-
-      setProfile(profileData);
+      await loadProfile();
 
       await Promise.all([
         fetchGarageCount(data.user.id),
@@ -126,7 +133,15 @@ export default function Home() {
     }
 
     void checkUser();
-  }, [router, fetchGarageCount, fetchPendingFriendRequests]);
+  }, [router, fetchGarageCount, fetchPendingFriendRequests, loadProfile]);
+
+  useEffect(() => {
+    const handleFocus = () => {
+      void loadProfile();
+    };
+    window.addEventListener("focus", handleFocus);
+    return () => window.removeEventListener("focus", handleFocus);
+  }, [loadProfile]);
 
   if (checkingAuth) {
     return <FullPageLoading label="Loading your garage..." />;
@@ -259,7 +274,7 @@ export default function Home() {
           </button>
         </div>
 
-        {profile?.plan !== "pro" ? (
+        {!isActiveProRow(profile) ? (
           <div
             style={{
               marginBottom: 12,
@@ -273,7 +288,7 @@ export default function Home() {
               textAlign: "center",
             }}
           >
-            {(profile?.monthly_captures || 0)} / 30 captures used
+            {((profile?.monthly_captures as number | undefined) || 0)} / 30 captures used
           </div>
         ) : null}
 
