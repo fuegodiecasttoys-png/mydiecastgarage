@@ -286,10 +286,15 @@ export async function POST(req: NextRequest) {
         console.log(`Unhandled Stripe event type: ${event.type}`);
         return NextResponse.json({ received: true }, { status: 200 });
     }
-  } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : "Unknown error";
-    console.error("Stripe webhook handler failed:", message);
-    return NextResponse.json({ error: "Webhook handler failed" }, { status: 500 });
+  } catch (err: any) {
+    console.error("🔥 WEBHOOK ERROR FULL:", err);
+    console.error("🔥 MESSAGE:", err?.message);
+    console.error("🔥 STACK:", err?.stack);
+
+    return NextResponse.json(
+      { error: err?.message || "Webhook handler failed" },
+      { status: 500 }
+    );
   }
 }
 
