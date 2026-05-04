@@ -1,3 +1,4 @@
+import { SUPPORT_EMAIL } from "../lib/supportContact";
 import { t } from "../ui/dv-tokens";
 import { dvAppPageShell, dvBodyFont, dvDashboardInner, dvDisplayFont } from "../ui/dv-visual";
 
@@ -49,8 +50,8 @@ export default function LegalPage() {
 
         <h2 style={h2Style}>Third-Party Services</h2>
         <p style={paragraphStyle}>
-          We use third-party services such as Supabase to securely store and manage data. These
-          services may process your data in accordance with their own privacy policies.
+          We use third-party services such as Supabase and Stripe to securely store data and process
+          payments. Those providers may process information in accordance with their own policies.
         </p>
 
         <h2 style={h2Style}>Data Security</h2>
@@ -70,7 +71,12 @@ export default function LegalPage() {
         </p>
 
         <h2 style={h2Style}>Contact</h2>
-        <p style={paragraphStyle}>If you have questions, contact: your@email.com</p>
+        <p style={paragraphStyle}>
+          If you have questions, contact:{" "}
+          <a href={`mailto:${SUPPORT_EMAIL}`} style={{ color: t.textPrimary }}>
+            {SUPPORT_EMAIL}
+          </a>
+        </p>
 
         <h1 style={{ ...h1Style, marginTop: 40 }}>Terms of Service</h1>
 
@@ -96,8 +102,30 @@ export default function LegalPage() {
           We are not liable for any loss of data or damages resulting from the use of the app.
         </p>
 
+        <h2 style={h2Style}>Payments &amp; refunds</h2>
+        <p style={paragraphStyle}>
+          <strong>Pro</strong> is a recurring subscription billed through Stripe until you cancel in
+          accordance with Stripe and your app store or browser payment settings, where applicable.
+        </p>
+        <p style={{ ...paragraphStyle, marginTop: 12 }}>
+          <strong>Extra AI model scan credits</strong> (packs of scans for your diecast photos) are
+          digital consumables. Credits that have already been used are not refundable. If a pack
+          purchase did not apply correctly, contact support and we will investigate.
+        </p>
+        <p style={{ ...paragraphStyle, marginTop: 12 }}>
+          For billing questions, failed charges, or receipts, email{" "}
+          <a href={`mailto:${SUPPORT_EMAIL}`} style={{ color: t.textPrimary }}>
+            {SUPPORT_EMAIL}
+          </a>
+          .
+        </p>
+
         <h2 style={h2Style}>Contact</h2>
-        <p style={paragraphStyle}>your@email.com</p>
+        <p style={paragraphStyle}>
+          <a href={`mailto:${SUPPORT_EMAIL}`} style={{ color: t.textPrimary }}>
+            {SUPPORT_EMAIL}
+          </a>
+        </p>
       </div>
     </div>
   );
