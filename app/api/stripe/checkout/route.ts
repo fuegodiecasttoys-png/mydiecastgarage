@@ -21,8 +21,6 @@ function parseLineItem(bodyText: string): CheckoutLineItem {
 
 export async function POST(req: Request) {
   try {
-    console.log("Stripe checkout request started");
-
     const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
     const stripeProPriceId = process.env.STRIPE_PRO_PRICE_ID;
     const stripeScanPackPriceId =
@@ -32,26 +30,18 @@ export async function POST(req: Request) {
     const bodyText = await req.text();
     const lineItem = parseLineItem(bodyText);
 
-    console.log("Stripe env presence:", {
-      STRIPE_SECRET_KEY: Boolean(stripeSecretKey),
-      STRIPE_PRO_PRICE_ID: Boolean(stripeProPriceId),
-      STRIPE_SCAN_PACK_PRICE_ID: Boolean(process.env.STRIPE_SCAN_PACK_PRICE_ID?.trim()),
-      NEXT_PUBLIC_APP_URL: Boolean(appUrl),
-      lineItem,
-    });
-
     if (!stripeSecretKey) {
-      console.error("Missing STRIPE_SECRET_KEY");
+      console.error("Stripe checkout: missing STRIPE_SECRET_KEY");
       return Response.json({ error: "Missing STRIPE_SECRET_KEY" }, { status: 500 });
     }
 
     if (!appUrl) {
-      console.error("Missing NEXT_PUBLIC_APP_URL");
+      console.error("Stripe checkout: missing NEXT_PUBLIC_APP_URL");
       return Response.json({ error: "Missing NEXT_PUBLIC_APP_URL" }, { status: 500 });
     }
 
     if (lineItem === "pro" && !stripeProPriceId) {
-      console.error("Missing STRIPE_PRO_PRICE_ID");
+      console.error("Stripe checkout: missing STRIPE_PRO_PRICE_ID");
       return Response.json({ error: "Missing STRIPE_PRO_PRICE_ID" }, { status: 500 });
     }
 
@@ -72,7 +62,7 @@ export async function POST(req: Request) {
       : await supabase.auth.getUser();
 
     if (authError || !user) {
-      console.error("Checkout unauthorized");
+      console.error("Stripe checkout: unauthorized");
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -81,7 +71,6 @@ export async function POST(req: Request) {
       checkout_type: lineItem === "scan_pack" ? "scan_pack" : "pro_subscription",
     } as const;
 
-    console.log("Creating Stripe checkout session...");
     const session =
       lineItem === "scan_pack"
         ? await stripe.checkout.sessions.create({
@@ -107,14 +96,18 @@ export async function POST(req: Request) {
             ],
             client_reference_id: user.id,
             metadata: { ...baseMetadata },
-            success_url: `${appUrl}/success`,
-            cancel_url: `${appUrl}/pro`,
+            subscription_data: {
+              metadata: {
+                supabase_user_id: user.id,
+              },
+            },
+            success_url: `${appUrl}/`,
+            cancel_url: `${appUrl}/`,
           });
 
-    console.log("Checkout session created:", session.id);
     return Response.json({ url: session.url });
   } catch (error) {
-    console.error("Stripe checkout error:", error);
+    console.error("Stripe checkout failed:", error instanceof Error ? error.message : "unknown");
     return Response.json({ error: "Checkout failed" }, { status: 500 });
   }
 }
