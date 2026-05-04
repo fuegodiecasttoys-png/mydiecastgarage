@@ -5,11 +5,10 @@ import { Suspense, useEffect } from "react"
 import { useSearchParams } from "next/navigation"
 import { supabase } from "../lib/supabaseClient"
 
-function ScanPackUrlEffects() {
+/** Deep link from home (Buy more scans) — scroll to pack section. */
+function ScrollToScanPackSection() {
   const searchParams = useSearchParams()
-  const thanks = searchParams.get("scanPackThanks") === "1"
-  const scrollToPack =
-    searchParams.get("scanPack") === "1" || thanks
+  const scrollToPack = searchParams.get("scanPack") === "1"
 
   useEffect(() => {
     if (!scrollToPack) return
@@ -20,13 +19,7 @@ function ScanPackUrlEffects() {
     })
   }, [scrollToPack])
 
-  if (!thanks) return null
-
-  return (
-    <div className="rounded-2xl border border-emerald-500/40 bg-emerald-500/10 px-4 py-3 text-center text-sm text-emerald-100">
-      Payment received — your pack of 50 model scans was added to your account.
-    </div>
-  )
+  return null
 }
 
 export default function ProPage() {
@@ -34,7 +27,7 @@ export default function ProPage() {
     <main className="min-h-screen bg-[#020617] text-white px-5 py-8">
       <div className="mx-auto max-w-md space-y-6">
         <Suspense fallback={null}>
-          <ScanPackUrlEffects />
+          <ScrollToScanPackSection />
         </Suspense>
 
         <Link href="/" className="text-sm text-gray-400">
