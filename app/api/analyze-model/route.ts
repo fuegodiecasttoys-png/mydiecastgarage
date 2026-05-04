@@ -224,7 +224,7 @@ export async function POST(req: Request) {
       error: profileError,
     } = await supabase
       .from("profiles")
-      .select("plan, is_active, monthly_ai_scans, bonus_ai_scans, last_ai_scan_reset")
+      .select("plan, is_active, monthly_ai_scans, ai_credits, last_ai_scan_reset")
       .eq("user_id", user.id)
       .single()
 
@@ -247,7 +247,7 @@ export async function POST(req: Request) {
       lastReset.getFullYear() !== today.getFullYear()
 
     let currentAiScans = profile.monthly_ai_scans ?? 0
-    let bonusAiScans = profile.bonus_ai_scans ?? 0
+    const aiCredits = profile.ai_credits ?? 0
 
     if (isNewMonth) {
       currentAiScans = 0
@@ -269,7 +269,7 @@ export async function POST(req: Request) {
     }
 
     const monthlyExhausted = currentAiScans >= 50
-    if (monthlyExhausted && bonusAiScans <= 0) {
+    if (monthlyExhausted && aiCredits <= 0) {
       return NextResponse.json(
         { error: "You used your 50 model scans this month." },
         { status: 402 }
@@ -480,9 +480,9 @@ export async function POST(req: Request) {
     }
 
     const usagePatch =
-      monthlyExhausted && bonusAiScans > 0
+      monthlyExhausted && aiCredits > 0
         ? {
-            bonus_ai_scans: bonusAiScans - 1,
+            ai_credits: aiCredits - 1,
             last_ai_scan_reset: today.toISOString(),
           }
         : {

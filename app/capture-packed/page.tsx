@@ -3,6 +3,7 @@
 console.log("BUILD VERSION: 99f6bf8")
 
 import {
+  useCallback,
   useEffect,
   useRef,
   useState,
@@ -12,6 +13,7 @@ import {
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { compressImage, compressImageForAnalyze } from "../lib/compressImage"
+import { fetchProfile, isActiveProRow } from "../lib/fetchProfile"
 import { supabase } from "../lib/supabaseClient"
 import { BRANDS, COLORS } from "../lib/constants"
 import { DvAutocompleteInput } from "../components/DvAutocompleteInput"
@@ -95,7 +97,29 @@ export default function CapturePage() {
   const [sessionChecked, setSessionChecked] = useState(false)
   const [isPro, setIsPro] = useState(false)
   const [aiScansUsed, setAiScansUsed] = useState(0)
-  const [bonusAiScans, setBonusAiScans] = useState(0)
+  const [aiCredits, setAiCredits] = useState(0)
+
+  const loadProfile = useCallback(async () => {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
+    if (!user) return
+    const row = await fetchProfile(
+      user.id,
+      "plan, is_active, monthly_ai_scans, ai_credits"
+    )
+    if (!row) {
+      setIsPro(false)
+      return
+    }
+    setIsPro(isActiveProRow(row))
+    setAiScansUsed(
+      typeof row.monthly_ai_scans === "number" ? row.monthly_ai_scans : 0
+    )
+    setAiCredits(
+      typeof row.ai_credits === "number" ? row.ai_credits : 0
+    )
+  }, [])
 
   useEffect(() => {
     async function init() {
@@ -115,28 +139,14 @@ export default function CapturePage() {
   }, [router])
 
   useEffect(() => {
-    async function checkPlan() {
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) return
-
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("plan, monthly_ai_scans, bonus_ai_scans")
-    .eq("user_id", user.id)
-    .single()
-
-  if (profile?.plan === "pro") {
-    setIsPro(true)
-    setAiScansUsed(profile?.monthly_ai_scans || 0)
-    setBonusAiScans(profile?.bonus_ai_scans ?? 0)
-  }
-}
-
-    void checkPlan()
-  }, [])
+    if (!sessionChecked) return
+    void loadProfile()
+    const handleFocus = () => {
+      void loadProfile()
+    }
+    window.addEventListener("focus", handleFocus)
+    return () => window.removeEventListener("focus", handleFocus)
+  }, [sessionChecked, loadProfile])
 
   useEffect(() => {
     return () => {
@@ -224,11 +234,11 @@ export default function CapturePage() {
 
       const { data: profile } = await supabase
         .from("profiles")
-        .select("plan, monthly_ai_scans, bonus_ai_scans, last_ai_scan_reset")
+        .select("plan, is_active, monthly_ai_scans, ai_credits, last_ai_scan_reset")
         .eq("user_id", user.id)
         .single()
 
-      if (profile?.plan !== "pro") {
+      if (!isActiveProRow(profile)) {
         router.push("/pro")
         return
       }
@@ -244,7 +254,7 @@ export default function CapturePage() {
         lastReset.getFullYear() !== today.getFullYear()
 
       let currentAiScans = profile?.monthly_ai_scans || 0
-      const packCredits = profile?.bonus_ai_scans ?? 0
+      const packCredits = profile?.ai_credits ?? 0
 
       if (isNewMonth) {
         currentAiScans = 0
@@ -377,13 +387,13 @@ export default function CapturePage() {
 
       const { data: usageRow } = await supabase
         .from("profiles")
-        .select("monthly_ai_scans, bonus_ai_scans")
+        .select("monthly_ai_scans, ai_credits")
         .eq("user_id", user.id)
         .single()
 
       if (usageRow) {
         setAiScansUsed(usageRow.monthly_ai_scans ?? 0)
-        setBonusAiScans(usageRow.bonus_ai_scans ?? 0)
+        setAiCredits(usageRow.ai_credits ?? 0)
       }
 
       console.log("[analyze-model] client form state after apply", {
@@ -418,11 +428,11 @@ export default function CapturePage() {
 
       const { data: profile } = await supabase
         .from("profiles")
-        .select("plan, monthly_captures, last_capture_reset")
+        .select("plan, is_active, monthly_captures, last_capture_reset")
         .eq("user_id", user.id)
         .single()
 
-      if (profile?.plan !== "pro") {
+      if (!isActiveProRow(profile)) {
         const today = new Date()
         const lastReset = profile?.last_capture_reset
           ? new Date(profile.last_capture_reset)
@@ -601,7 +611,7 @@ export default function CapturePage() {
         return
       }
 
-      if (profile?.plan !== "pro") {
+      if (!isActiveProRow(profile)) {
         await supabase
           .from("profiles")
           .update({
@@ -751,7 +761,7 @@ export default function CapturePage() {
               }}
             >
               Model scans: {aiScansUsed} / 50
-              {bonusAiScans > 0 ? ` (+${bonusAiScans} pack)` : ""}
+              {aiCredits > 0 ? ` (+${aiCredits} pack)` : ""}
             </div>
           ) : null}
 
