@@ -1,8 +1,74 @@
 "use client";
 
 import Link from "next/link";
-import { Suspense } from "react";
+import { Suspense, type CSSProperties } from "react";
 import { useSearchParams } from "next/navigation";
+import { t } from "../ui/dv-tokens";
+import {
+  dvAppPageShell,
+  dvBodyFont,
+  dvDashboardInner,
+  dvDisplayFont,
+  dvPrimaryButton,
+} from "../ui/dv-visual";
+
+const labelStyle: CSSProperties = {
+  fontFamily: dvDisplayFont,
+  fontSize: 12,
+  fontWeight: 600,
+  letterSpacing: "0.08em",
+  textTransform: "uppercase",
+  color: t.orange400,
+  margin: "0 0 10px",
+};
+
+const titleStyle: CSSProperties = {
+  fontFamily: dvDisplayFont,
+  color: t.textPrimary,
+  fontSize: 26,
+  fontWeight: 700,
+  margin: "0 0 12px",
+  lineHeight: 1.2,
+};
+
+const paragraphStyle: CSSProperties = {
+  margin: 0,
+  color: t.textSecondary,
+  fontFamily: dvBodyFont,
+  lineHeight: 1.6,
+  fontSize: 15,
+};
+
+const mutedParagraphStyle: CSSProperties = {
+  ...paragraphStyle,
+  color: t.textMuted,
+  fontSize: 14,
+  marginTop: 16,
+};
+
+const detailCardStyle: CSSProperties = {
+  borderRadius: t.radiusLg,
+  border: `1px solid ${t.borderAccent}`,
+  background: t.surfaceElevated,
+  padding: "18px 16px",
+  marginTop: 20,
+  boxShadow: "0 8px 24px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.05)",
+  textAlign: "left",
+};
+
+const accentStrongStyle: CSSProperties = {
+  color: t.orange300,
+  fontWeight: 700,
+};
+
+const linkButtonStyle: CSSProperties = {
+  ...dvPrimaryButton,
+  display: "block",
+  textAlign: "center",
+  textDecoration: "none",
+  boxSizing: "border-box",
+  marginTop: 28,
+};
 
 function formatExpires(raw: string | null): string | null {
   if (!raw?.trim()) return null;
@@ -26,66 +92,71 @@ function SuccessContent() {
   const scansLabel = scansRaw?.trim() ?? "";
 
   return (
-    <main className="min-h-screen bg-[#020617] text-white px-5 py-12">
-      <div className="mx-auto max-w-md space-y-8 text-center">
-        <div className="space-y-3">
-          <p className="text-sm font-semibold uppercase tracking-wide text-orange-400">
-            My Diecast Garage
-          </p>
-          <h1 className="text-3xl font-bold leading-tight">Pago exitoso</h1>
-          <p className="text-base text-gray-300">
+    <div style={dvAppPageShell}>
+      <div style={{ ...dvDashboardInner, textAlign: "center" }}>
+        <div style={{ marginBottom: 8 }}>
+          <p style={labelStyle}>My Diecast Garage</p>
+          <h1 style={titleStyle}>Pago exitoso</h1>
+          <p style={paragraphStyle}>
             Tu pago en My Diecast Garage fue procesado correctamente.
+          </p>
+          <p style={mutedParagraphStyle}>
+            Tu acceso Pro o tus créditos de escaneo deberían reflejarse en tu cuenta en unos
+            segundos.
           </p>
         </div>
 
-        <p className="text-sm leading-relaxed text-gray-400">
-          Tu acceso Pro o tus créditos de escaneo deberían reflejarse en tu cuenta en unos segundos.
-        </p>
-
-        {(showPro || expiresLabel || scansLabel) && (
-          <div className="rounded-2xl border border-white/10 bg-white/5 px-5 py-4 text-left text-sm text-gray-200 space-y-3">
-            {showPro ? (
-              <p className="font-semibold text-white">Tu plan Pro está activo</p>
-            ) : null}
-            {expiresLabel ? (
-              <p>
-                Tu acceso vence o se renueva el:{" "}
-                <span className="font-medium text-orange-200">{expiresLabel}</span>
-              </p>
-            ) : null}
-            {scansLabel ? (
-              <p>
-                Escaneos extra agregados:{" "}
-                <span className="font-medium text-orange-200">{scansLabel}</span>
-              </p>
-            ) : null}
+        {(showPro || expiresLabel || scansLabel) ? (
+          <div style={detailCardStyle}>
+            <div
+              style={{
+                fontFamily: dvBodyFont,
+                fontSize: 14,
+                color: t.textSecondary,
+                lineHeight: 1.55,
+                display: "flex",
+                flexDirection: "column",
+                gap: 12,
+              }}
+            >
+              {showPro ? (
+                <p style={{ margin: 0, color: t.textPrimary, fontWeight: 700 }}>
+                  Tu plan Pro está activo
+                </p>
+              ) : null}
+              {expiresLabel ? (
+                <p style={{ margin: 0 }}>
+                  Tu acceso vence o se renueva el:{" "}
+                  <span style={accentStrongStyle}>{expiresLabel}</span>
+                </p>
+              ) : null}
+              {scansLabel ? (
+                <p style={{ margin: 0 }}>
+                  Escaneos extra agregados:{" "}
+                  <span style={accentStrongStyle}>{scansLabel}</span>
+                </p>
+              ) : null}
+            </div>
           </div>
-        )}
+        ) : null}
 
-        <Link
-          href="/"
-          className="inline-flex w-full items-center justify-center rounded-2xl bg-orange-500 py-4 text-base font-bold text-black no-underline transition hover:bg-orange-400"
-        >
+        <Link href="/" style={linkButtonStyle}>
           Ir al inicio
         </Link>
       </div>
-    </main>
+    </div>
   );
 }
 
 function SuccessFallback() {
   return (
-    <main className="min-h-screen bg-[#020617] text-white px-5 py-12">
-      <div className="mx-auto max-w-md space-y-8 text-center">
-        <div className="space-y-3">
-          <p className="text-sm font-semibold uppercase tracking-wide text-orange-400">
-            My Diecast Garage
-          </p>
-          <h1 className="text-3xl font-bold leading-tight">Pago exitoso</h1>
-          <p className="text-sm text-gray-400">Cargando…</p>
-        </div>
+    <div style={dvAppPageShell}>
+      <div style={{ ...dvDashboardInner, textAlign: "center" }}>
+        <p style={labelStyle}>My Diecast Garage</p>
+        <h1 style={titleStyle}>Pago exitoso</h1>
+        <p style={mutedParagraphStyle}>Cargando…</p>
       </div>
-    </main>
+    </div>
   );
 }
 
