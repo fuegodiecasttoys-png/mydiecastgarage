@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { Suspense, useEffect } from "react"
+import { Suspense, useEffect, useState } from "react"
 import { useSearchParams } from "next/navigation"
 import { supabase } from "../lib/supabaseClient"
 
@@ -22,7 +22,13 @@ function ScrollToScanPackSection() {
   return null
 }
 
+const checkoutButtonInteractionClasses =
+  "cursor-pointer transition-all duration-200 hover:scale-[1.02] active:scale-95 hover:shadow-[0_0_20px_rgba(249,115,22,0.35)] disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:active:scale-100 disabled:hover:shadow-none"
+
 export default function ProPage() {
+  const [subscribingPro, setSubscribingPro] = useState(false)
+  const [buyingScanPack, setBuyingScanPack] = useState(false)
+
   return (
     <main className="min-h-screen bg-[#020617] text-white px-5 py-8">
       <div className="mx-auto max-w-md space-y-6">
@@ -61,7 +67,10 @@ export default function ProPage() {
           </div>
 
           <button
+            type="button"
+            disabled={subscribingPro}
             onClick={async () => {
+              setSubscribingPro(true)
               try {
                 const {
                   data: { session },
@@ -82,15 +91,17 @@ export default function ProPage() {
                   window.location.href = "/login"
                 } else {
                   alert("Something went wrong")
+                  setSubscribingPro(false)
                 }
               } catch (err) {
                 console.error(err)
                 alert("Error starting checkout")
+                setSubscribingPro(false)
               }
             }}
-            className="mt-7 w-full rounded-2xl bg-orange-500 py-4 font-bold text-black"
+            className={`mt-7 w-full rounded-2xl bg-orange-500 py-4 font-bold text-black shadow-[0_0_18px_rgba(249,115,22,0.28)] hover:brightness-110 ${checkoutButtonInteractionClasses}`}
           >
-            Subscribe to Pro
+            {subscribingPro ? "Redirecting..." : "Subscribe to Pro"}
           </button>
 
           {/* 💥 SCAN PACK — anchor for /pro?scanPack=1 */}
@@ -104,7 +115,10 @@ export default function ProPage() {
           </div>
 
           <button
+            type="button"
+            disabled={buyingScanPack}
             onClick={async () => {
+              setBuyingScanPack(true)
               try {
                 const {
                   data: { session },
@@ -129,15 +143,17 @@ export default function ProPage() {
                   window.location.href = "/login"
                 } else {
                   alert("Something went wrong")
+                  setBuyingScanPack(false)
                 }
               } catch (err) {
                 console.error(err)
                 alert("Error starting checkout")
+                setBuyingScanPack(false)
               }
             }}
-            className="mt-3 w-full rounded-2xl border border-white/20 py-3 font-semibold text-white"
+            className={`mt-3 w-full rounded-2xl border border-orange-400/35 bg-white/5 py-3 font-semibold text-white shadow-[0_0_14px_rgba(249,115,22,0.2)] hover:border-orange-400/55 hover:bg-white/10 hover:brightness-105 ${checkoutButtonInteractionClasses}`}
           >
-            Buy Scan Pack ($0.99)
+            {buyingScanPack ? "Redirecting..." : "Buy Scan Pack ($0.99)"}
           </button>
 
           <p className="mt-3 text-center text-xs text-gray-500">
