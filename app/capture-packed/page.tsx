@@ -411,9 +411,9 @@ export default function CapturePage() {
         const dbAiCredits = usageRow.ai_credits ?? 0
 
         if (
-          dbMonthlyAiScans < optimisticMonthlyAiScans ||
-          dbAiCredits < optimisticAiCredits
-        ) {
+  dbMonthlyAiScans < optimisticMonthlyAiScans ||
+  dbAiCredits !== optimisticAiCredits
+) {
           console.log("SCAN BEFORE:", {
             userId: user.id,
             currentScans: currentAiScans,
