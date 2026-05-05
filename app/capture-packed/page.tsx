@@ -383,8 +383,8 @@ export default function CapturePage() {
       if (data.brand) setBrand(data.brand)
       if (data.model) setName(data.model)
       if (data.series) setSeries(data.series)
-      setMainNumber(data.main_number ?? "")
-      setSubNumber(data.sub_number ?? "")
+      setMainNumber(data.main_number === "null" ? "" : data.main_number ?? "")
+      setSubNumber(data.sub_number === "null" ? "" : data.sub_number ?? "")
 
       // Keep UI responsive immediately after a successful analyze call.
       const usedCreditForAnalyze =
@@ -1065,8 +1065,8 @@ export default function CapturePage() {
 
             <input
               type="text"
-              placeholder="Main # — top right (e.g. 157/250)"
-              value={mainNumber}
+              placeholder="Main #"
+              value={mainNumber === "null" ? "" : mainNumber}
               onChange={(e) => setMainNumber(e.target.value)}
               disabled={loading}
               style={inputStyle}
@@ -1074,8 +1074,8 @@ export default function CapturePage() {
 
             <input
               type="text"
-              placeholder="Sub # — mid-right box (e.g. 9/10)"
-              value={subNumber}
+              placeholder="Sub #"
+              value={subNumber === "null" ? "" : subNumber}
               onChange={(e) => setSubNumber(e.target.value)}
               disabled={loading}
               style={inputStyle}
