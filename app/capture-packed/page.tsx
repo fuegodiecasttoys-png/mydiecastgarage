@@ -383,8 +383,8 @@ export default function CapturePage() {
       if (data.brand) setBrand(data.brand)
       if (data.model) setName(data.model)
       if (data.series) setSeries(data.series)
-      if (data.main_number) setMainNumber(data.main_number)
-      if (data.sub_number) setSubNumber(data.sub_number)
+      setMainNumber(data.main_number ?? "")
+      setSubNumber(data.sub_number ?? "")
 
       // Keep UI responsive immediately after a successful analyze call.
       const usedCreditForAnalyze =
