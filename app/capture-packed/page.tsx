@@ -117,9 +117,7 @@ export default function CapturePage() {
     setAiScansUsed(
       typeof row.monthly_ai_scans === "number" ? row.monthly_ai_scans : 0
     )
-    setAiCredits(
-      typeof row.ai_credits === "number" ? row.ai_credits : 0
-    )
+    setAiCredits(typeof row.ai_credits === "number" ? row.ai_credits : 0)
   }, [])
 
   useEffect(() => {
@@ -214,6 +212,8 @@ export default function CapturePage() {
   }
 
   async function handleAnalyze() {
+    if (loading) return
+
     if (!file) {
       alert("Select or upload an image first, then tap Analyze model.")
       return
@@ -386,12 +386,13 @@ export default function CapturePage() {
       setMainNumber(data.main_number === "null" ? "" : data.main_number ?? "")
       setSubNumber(data.sub_number === "null" ? "" : data.sub_number ?? "")
 
-      // Keep UI responsive immediately after a successful analyze call.
       const usedCreditForAnalyze =
         currentAiScans >= MONTHLY_AI_SCAN_LIMIT && packCredits > 0
+
       const optimisticMonthlyAiScans = usedCreditForAnalyze
         ? currentAiScans
         : currentAiScans + 1
+
       const optimisticAiCredits = usedCreditForAnalyze
         ? Math.max(packCredits - 1, 0)
         : packCredits
