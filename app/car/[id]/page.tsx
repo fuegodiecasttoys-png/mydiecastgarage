@@ -41,7 +41,6 @@ type Item = {
 }
 
 const pageStyle: CSSProperties = dvAppPageShell
-
 const containerStyle: CSSProperties = dvDashboardInner
 
 const detailPanelStyle: CSSProperties = {
@@ -159,10 +158,7 @@ export default function CarDetail() {
   async function handleDelete() {
     if (!item) return
 
-    const { error } = await supabase
-      .from("items")
-      .delete()
-      .eq("id", item.id)
+    const { error } = await supabase.from("items").delete().eq("id", item.id)
 
     if (error) {
       console.error(error)
@@ -223,6 +219,9 @@ export default function CarDetail() {
         year: editItem.year?.trim() || null,
         location: editItem.location?.trim() || null,
         notes: editItem.notes?.trim() || null,
+        th: editItem.th ?? false,
+        sth: editItem.sth ?? false,
+        chase: editItem.chase ?? false,
       })
       .eq("id", editItem.id)
       .select()
@@ -376,52 +375,100 @@ export default function CarDetail() {
             marginBottom: 20,
           }}
         >
-          {item.sth && (
-            <span
-              style={{
-                background: "rgba(255, 200, 90, 0.12)",
-                color: t.textPrimary,
-                border: "1px solid rgba(255, 200, 100, 0.35)",
-                padding: "4px 10px",
-                borderRadius: 999,
-                fontSize: 12,
-                fontWeight: 700,
-              }}
-            >
-              🔥 STH
-            </span>
-          )}
+          {isEditing ? (
+            <>
+              {[
+                { key: "sth", label: "🔥 STH" },
+                { key: "th", label: "TH" },
+                { key: "chase", label: "Chase" },
+              ].map((badge) => {
+                const badgeKey = badge.key as "sth" | "th" | "chase"
+                const active = Boolean(editItem?.[badgeKey])
 
-          {item.th && (
-            <span
-              style={{
-                background: "rgba(255, 122, 24, 0.14)",
-                color: t.textPrimary,
-                border: "1px solid rgba(255, 122, 24, 0.3)",
-                padding: "4px 10px",
-                borderRadius: 999,
-                fontSize: 12,
-                fontWeight: 700,
-              }}
-            >
-              TH
-            </span>
-          )}
+                return (
+                  <button
+                    key={badge.key}
+                    type="button"
+                    onClick={() =>
+                      setEditItem((prev) =>
+                        prev
+                          ? {
+                              ...prev,
+                              [badgeKey]: !Boolean(prev[badgeKey]),
+                            }
+                          : prev
+                      )
+                    }
+                    style={{
+                      background: active
+                        ? "rgba(255, 122, 24, 0.18)"
+                        : "rgba(255,255,255,0.04)",
+                      color: t.textPrimary,
+                      border: active
+                        ? "1px solid rgba(255, 122, 24, 0.45)"
+                        : "1px solid rgba(255,255,255,0.12)",
+                      padding: "4px 10px",
+                      borderRadius: 999,
+                      fontSize: 12,
+                      fontWeight: 700,
+                      cursor: "pointer",
+                    }}
+                  >
+                    {badge.label}
+                  </button>
+                )
+              })}
+            </>
+          ) : (
+            <>
+              {item.sth && (
+                <span
+                  style={{
+                    background: "rgba(255, 200, 90, 0.12)",
+                    color: t.textPrimary,
+                    border: "1px solid rgba(255, 200, 100, 0.35)",
+                    padding: "4px 10px",
+                    borderRadius: 999,
+                    fontSize: 12,
+                    fontWeight: 700,
+                  }}
+                >
+                  🔥 STH
+                </span>
+              )}
 
-          {item.chase && (
-            <span
-              style={{
-                background: "rgba(200, 50, 70, 0.2)",
-                color: "#F5F7FA",
-                border: "1px solid rgba(200, 70, 90, 0.4)",
-                padding: "4px 10px",
-                borderRadius: 999,
-                fontSize: 12,
-                fontWeight: 700,
-              }}
-            >
-              Chase
-            </span>
+              {item.th && (
+                <span
+                  style={{
+                    background: "rgba(255, 122, 24, 0.14)",
+                    color: t.textPrimary,
+                    border: "1px solid rgba(255, 122, 24, 0.3)",
+                    padding: "4px 10px",
+                    borderRadius: 999,
+                    fontSize: 12,
+                    fontWeight: 700,
+                  }}
+                >
+                  TH
+                </span>
+              )}
+
+              {item.chase && (
+                <span
+                  style={{
+                    background: "rgba(200, 50, 70, 0.2)",
+                    color: "#F5F7FA",
+                    border: "1px solid rgba(200, 70, 90, 0.4)",
+                    padding: "4px 10px",
+                    borderRadius: 999,
+                    fontSize: 12,
+                    fontWeight: 700,
+                  }}
+                >
+                  Chase
+                </span>
+              )}
+            </>
           )}
         </div>
 
@@ -484,7 +531,9 @@ export default function CarDetail() {
                 type="text"
                 value={editItem?.scale || ""}
                 onChange={(e) =>
-                  setEditItem((prev) => (prev ? { ...prev, scale: e.target.value } : prev))
+                  setEditItem((prev) =>
+                    prev ? { ...prev, scale: e.target.value } : prev
+                  )
                 }
                 style={inputStyle}
               />
@@ -525,7 +574,9 @@ export default function CarDetail() {
                 type="text"
                 value={editItem?.main_number || ""}
                 onChange={(e) =>
-                  setEditItem((prev) => (prev ? { ...prev, main_number: e.target.value } : prev))
+                  setEditItem((prev) =>
+                    prev ? { ...prev, main_number: e.target.value } : prev
+                  )
                 }
                 style={inputStyle}
               />
@@ -541,7 +592,9 @@ export default function CarDetail() {
                 type="text"
                 value={editItem?.sub_number || ""}
                 onChange={(e) =>
-                  setEditItem((prev) => (prev ? { ...prev, sub_number: e.target.value } : prev))
+                  setEditItem((prev) =>
+                    prev ? { ...prev, sub_number: e.target.value } : prev
+                  )
                 }
                 style={inputStyle}
               />
@@ -557,7 +610,9 @@ export default function CarDetail() {
                 type="text"
                 value={editItem?.series || ""}
                 onChange={(e) =>
-                  setEditItem((prev) => (prev ? { ...prev, series: e.target.value } : prev))
+                  setEditItem((prev) =>
+                    prev ? { ...prev, series: e.target.value } : prev
+                  )
                 }
                 style={inputStyle}
               />
@@ -573,7 +628,9 @@ export default function CarDetail() {
                 type="text"
                 value={editItem?.year || ""}
                 onChange={(e) =>
-                  setEditItem((prev) => (prev ? { ...prev, year: e.target.value } : prev))
+                  setEditItem((prev) =>
+                    prev ? { ...prev, year: e.target.value } : prev
+                  )
                 }
                 style={inputStyle}
               />
@@ -589,7 +646,9 @@ export default function CarDetail() {
                 type="text"
                 value={editItem?.location || ""}
                 onChange={(e) =>
-                  setEditItem((prev) => (prev ? { ...prev, location: e.target.value } : prev))
+                  setEditItem((prev) =>
+                    prev ? { ...prev, location: e.target.value } : prev
+                  )
                 }
                 style={inputStyle}
               />
@@ -614,9 +673,7 @@ export default function CarDetail() {
                 style={notesInputStyle}
               />
             ) : (
-              <div style={{ lineHeight: 1.5, wordBreak: "break-word" }}>
-                {item.notes}
-              </div>
+              <div style={{ lineHeight: 1.5, wordBreak: "break-word" }}>{item.notes}</div>
             )}
           </div>
         )}
@@ -673,9 +730,7 @@ export default function CarDetail() {
                 width: "100%",
               }}
             >
-              <p style={{ marginBottom: 20, color: t.textPrimary }}>
-                Delete this diecast?
-              </p>
+              <p style={{ marginBottom: 20, color: t.textPrimary }}>Delete this diecast?</p>
 
               <div style={{ display: "flex", gap: 10 }}>
                 <button
