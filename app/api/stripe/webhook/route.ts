@@ -55,7 +55,7 @@ async function applyBonusAiScans(
 ): Promise<{ ok: true } | { ok: false; reason: string }> {
   const { data: updated, error: upErr } = await admin
     .from("profiles")
-    .update({ bonus_ai_scans: nextTotal })
+    .update({ ai_credits: nextTotal })
     .eq("user_id", userId)
     .select("user_id");
 
@@ -75,7 +75,7 @@ async function grantScanPackCredits(
 ): Promise<{ ok: true } | { ok: false; reason: string }> {
   const { data: row, error: selErr } = await admin
     .from("profiles")
-    .select("user_id, bonus_ai_scans")
+    .select("user_id, ai_credits")
     .eq("user_id", userId)
     .maybeSingle();
 
@@ -84,7 +84,7 @@ async function grantScanPackCredits(
   }
 
   if (row?.user_id) {
-    const next = (typeof row.bonus_ai_scans === "number" ? row.bonus_ai_scans : 0) + add;
+    const next = (typeof row.ai_credits === "number" ? row.ai_credits : 0) + add;
     return applyBonusAiScans(admin, userId, next);
   }
 
@@ -95,7 +95,7 @@ async function grantScanPackCredits(
     name: null,
     plan: "free",
     is_active: true,
-    bonus_ai_scans: add,
+    ai_credits: add,
   });
 
   if (!insErr) {
