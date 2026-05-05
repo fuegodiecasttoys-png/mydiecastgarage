@@ -112,12 +112,12 @@ async function grantScanPackCredits(
 
   const { data: row2 } = await admin
     .from("profiles")
-    .select("user_id, bonus_ai_scans")
+    .select("user_id, ai_credits")
     .eq("user_id", userId)
     .maybeSingle();
 
   if (row2?.user_id) {
-    const next2 = (typeof row2.bonus_ai_scans === "number" ? row2.bonus_ai_scans : 0) + add;
+    const next2 = (typeof row2.ai_credits === "number" ? row2.ai_credits : 0) + add;
     return applyBonusAiScans(admin, userId, next2);
   }
 
