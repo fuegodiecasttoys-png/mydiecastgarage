@@ -4,7 +4,7 @@ import { headers } from "next/headers";
 import { createClient as createSupabaseServerClient } from "../../../lib/supabaseServer";
 
 /** Default Stripe Price for the $0.99 scan pack; override with STRIPE_SCAN_PACK_PRICE_ID. */
-const DEFAULT_SCAN_PACK_PRICE_ID = "price_1TT8MSGZxjPLLizkZ3b0UbrP";
+const DEFAULT_SCAN_PACK_PRICE_ID = "price_1TU8Z3K2z5VAXL52O5PIvsDU";
 
 type CheckoutLineItem = "pro" | "scan_pack";
 
@@ -23,7 +23,9 @@ export async function POST(req: Request) {
   try {
     const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
     const stripeProPriceId = process.env.STRIPE_PRO_PRICE_ID;
-    const stripeScanPackPriceId = process.env.STRIPE_SCAN_PACK_PRICE_ID?.trim();
+    const stripeScanPackPriceId =
+  process.env.STRIPE_SCAN_PACK_PRICE_ID?.trim() ||
+  DEFAULT_SCAN_PACK_PRICE_ID;
 
 console.log("SCAN ENV:", stripeScanPackPriceId);
     const appUrl = process.env.NEXT_PUBLIC_APP_URL;
@@ -47,8 +49,8 @@ console.log("SCAN ENV:", stripeScanPackPriceId);
     }
 
     if (lineItem === "scan_pack" && !stripeScanPackPriceId) {
-  console.error("Stripe checkout: missing STRIPE_SCAN_PACK_PRICE_ID");
-  return Response.json({ error: "Missing STRIPE_SCAN_PACK_PRICE_ID" }, { status: 500 });
+      console.error("Stripe checkout: missing STRIPE_SCAN_PACK_PRICE_ID");
+      return Response.json({ error: "Missing STRIPE_SCAN_PACK_PRICE_ID" }, { status: 500 });
 }
 
     const stripe = new Stripe(stripeSecretKey, {
