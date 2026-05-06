@@ -286,24 +286,35 @@ export default function AccountPage() {
           ) : null}
 
           {!activePro ? (
-            <button
-              type="button"
-              onClick={() => router.push("/pro")}
-              style={{ ...dvPrimaryButton, marginTop: 4 }}
-            >
-              Upgrade to Pro
-            </button>
-          ) : (
-            <button
-              type="button"
-              onClick={() => {
-                alert("Subscription management is coming soon.");
-              }}
-              style={{ ...dvGhostButton, width: "100%", marginTop: 4 }}
-            >
-              Manage subscription
-            </button>
-          )}
+  <button
+    type="button"
+    onClick={() => router.push("/pro")}
+    style={{ ...dvPrimaryButton, marginTop: 4 }}
+  >
+    Upgrade to Pro
+  </button>
+) : (
+  <button
+    type="button"
+    onClick={async () => {
+      const res = await fetch("/api/stripe/customer-portal", {
+        method: "POST",
+      })
+
+      const data = await res.json()
+
+      if (!res.ok || !data?.url) {
+        alert(data?.error ?? "Could not open subscription management.")
+        return
+      }
+
+      window.location.href = data.url
+    }}
+    style={{ ...dvGhostButton, width: "100%", marginTop: 4 }}
+  >
+    Manage subscription
+  </button>
+)}
         </div>
 
         <div style={{ ...sectionCard, marginBottom: 0 }}>
