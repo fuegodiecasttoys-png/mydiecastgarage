@@ -23,8 +23,9 @@ export async function POST(req: Request) {
   try {
     const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
     const stripeProPriceId = process.env.STRIPE_PRO_PRICE_ID;
-    const stripeScanPackPriceId =
-      process.env.STRIPE_SCAN_PACK_PRICE_ID?.trim() || DEFAULT_SCAN_PACK_PRICE_ID;
+    const stripeScanPackPriceId = process.env.STRIPE_SCAN_PACK_PRICE_ID?.trim();
+
+console.log("SCAN ENV:", stripeScanPackPriceId);
     const appUrl = process.env.NEXT_PUBLIC_APP_URL;
 
     const bodyText = await req.text();
@@ -44,6 +45,11 @@ export async function POST(req: Request) {
       console.error("Stripe checkout: missing STRIPE_PRO_PRICE_ID");
       return Response.json({ error: "Missing STRIPE_PRO_PRICE_ID" }, { status: 500 });
     }
+
+    if (lineItem === "scan_pack" && !stripeScanPackPriceId) {
+  console.error("Stripe checkout: missing STRIPE_SCAN_PACK_PRICE_ID");
+  return Response.json({ error: "Missing STRIPE_SCAN_PACK_PRICE_ID" }, { status: 500 });
+}
 
     const stripe = new Stripe(stripeSecretKey, {
       apiVersion: "2026-04-22.dahlia",
