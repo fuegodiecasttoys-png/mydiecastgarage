@@ -295,25 +295,34 @@ export default function AccountPage() {
   </button>
 ) : (
   <button
-    type="button"
-    onClick={async () => {
-      const res = await fetch("/api/stripe/customer-portal", {
-        method: "POST",
-      })
+  type="button"
+  onClick={async () => {
+    const {
+      data: { session },
+    } = await supabase.auth.getSession()
 
-      const data = await res.json()
+    const res = await fetch("/api/stripe/customer-portal", {
+      method: "POST",
+      headers: {
+        ...(session?.access_token
+          ? { Authorization: `Bearer ${session.access_token}` }
+          : {}),
+      },
+    })
 
-      if (!res.ok || !data?.url) {
-        alert(data?.error ?? "Could not open subscription management.")
-        return
-      }
+    const data = await res.json()
 
-      window.location.href = data.url
-    }}
-    style={{ ...dvGhostButton, width: "100%", marginTop: 4 }}
-  >
-    Manage subscription
-  </button>
+    if (!res.ok || !data?.url) {
+      alert(data?.error ?? "Could not open subscription management.")
+      return
+    }
+
+    window.location.href = data.url
+  }}
+  style={{ ...dvGhostButton, width: "100%", marginTop: 4 }}
+>
+  Manage subscription
+</button>
 )}
         </div>
 
