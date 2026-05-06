@@ -345,7 +345,7 @@ export default function MyGarage() {
                 const row = await fetchProfile(userId, "plan, is_active")
                 const canExport = isActiveProRow(row)
                 if (!canExport) {
-                  alert("CSV export is a Pro feature.")
+                  alert("Ecxel export is a Pro feature.")
                   return
                 }
 
@@ -362,7 +362,7 @@ export default function MyGarage() {
                 cursor: !isActivePro ? "not-allowed" : "pointer",
               }}
             >
-              Export CSV
+              Excel Export 
             </button>
             <button
               type="button"
