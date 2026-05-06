@@ -230,10 +230,7 @@ export default function AccountPage() {
             </div>
           </div>
 
-          <div>
-            <div style={labelStyle}>Name</div>
-            <div style={valueStyle}>{displayName(profile)}</div>
-          </div>
+          
         </div>
 
         <div style={sectionCard}>
